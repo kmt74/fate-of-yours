@@ -685,13 +685,8 @@ export default function DeckPage() {
         {/* ── Deck Stage ── */}
         <div
           id="Deck-Stage"
-          style={{
-            flex: 1, padding: "0 24px 32px",
-            maxWidth: "1200px", margin: "0 auto", width: "100%",
-            display: "flex", alignItems: deckState !== "interactive" ? "center" : "flex-start",
-            justifyContent: deckState !== "interactive" ? "center" : "flex-start",
-            flexDirection: "column",
-          }}
+          className={`mx-auto flex w-full max-w-[1400px] flex-col px-6 pb-8 items-center justify-center`}
+          style={{ overflow: "visible" }}
         >
           {deckState === "stacked" && <StackedDeck onBegin={handleBegin} />}
           {deckState === "splitting" && <SplittingDeck />}
