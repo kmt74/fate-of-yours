@@ -513,6 +513,66 @@ function CurvedSpread({
   );
 }
 
+// ─── Selected Slot Component ──────────────────────────────────────────────────
+function SelectedSlot({
+  position,
+  card,
+  onRemove,
+}: {
+  position: string;
+  card: TarotCard | null;
+  onRemove?: () => void;
+}) {
+  return (
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
+    }}>
+      <span style={{
+        fontFamily: "'Raleway', sans-serif", fontSize: "0.7rem",
+        color: "rgba(240,230,211,0.5)", letterSpacing: "0.08em",
+        textTransform: "uppercase",
+      }}>
+        {position}
+      </span>
+      <div style={{ position: "relative" }}>
+        {card ? (
+          <>
+            <CardBack width={88} height={138} compact selected />
+            {onRemove && (
+              <button
+                onClick={onRemove}
+                style={{
+                  position: "absolute", top: "-6px", right: "-6px",
+                  width: "20px", height: "20px", borderRadius: "50%",
+                  background: "linear-gradient(145deg, #C9A84C, #E2C97E)",
+                  border: "1px solid rgba(240,230,211,0.3)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", padding: 0,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
+                }}
+              >
+                <X size={12} color="#161628" strokeWidth={2.5} />
+              </button>
+            )}
+          </>
+        ) : (
+          <div style={{
+            width: "57px", height: "90px", borderRadius: "6px",
+            border: "1.5px dashed rgba(240,230,211,0.15)",
+            background: "rgba(240,230,211,0.02)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <div style={{
+              width: "16px", height: "16px", borderRadius: "50%",
+              border: "1.5px solid rgba(240,230,211,0.2)",
+            }} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Deck Page ───────────────────────────────────────────────────────────
 export default function DeckPage() {
   const { readingSetup, setSelectedCards } = useApp();
