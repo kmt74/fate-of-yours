@@ -37,23 +37,68 @@ export function CurvedSpread({ deck, selectedIds, onToggle }: CurvedSpreadProps)
     return amplitude * 4 * Math.pow(normalized - 0.5, 2);
   };
   return (
-    <div id="Curved-Spread" className="flex w-full flex-col gap-2.5" style={{ animation: "fadeIn 0.5s ease" }}>
-      <p className="text-center text-[0.77rem] tracking-[0.04em]" style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.32)" }}>Let your intuition guide you — hover and click to select. <span style={{ color: "rgba(201,168,76,0.5)" }}> Choose 3 cards.</span></p>
-      {rows.map((row, rowIndex) => {
-        const amplitude = ARC_AMPLITUDES[rowIndex];
-        const n = row.length;
-        return (
-          <div key={rowIndex} id={`Arc-Row-${rowIndex + 1}`} className="relative" style={{ paddingBottom: `${amplitude + 18}px`, paddingTop: "10px", paddingLeft: `${rowIndex * 12}px` }}>
-            <div className="flex items-start overflow-x-auto px-5" style={{ WebkitOverflowScrolling: "touch" as any, msOverflowStyle: "none", scrollbarWidth: "none" as any }}>
-              {row.map((card, colIndex) => {
-                const arcY = getArcOffset(colIndex, n, amplitude);
-                const globalIndex = rowIndex * 26 + colIndex;
-                return <ArcCard key={card.id} card={card} globalIndex={globalIndex} arcOffsetY={arcY} selected={selectedIds.includes(card.id)} selectionOrder={selectedIds.indexOf(card.id) + 1} disabled={!selectedIds.includes(card.id) && allSelected} onToggle={onToggle} />;
-              })}
+    <div 
+      id="Curved-Spread-Wrapper" 
+      style={{ 
+        width: "100%", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center", 
+        justifyContent: "center",
+        overflow: "visible !important" 
+      }}
+    >
+      <div 
+        id="Curved-Spread" 
+        className="flex flex-col gap-12" 
+        style={{ 
+          animation: "fadeIn 0.5s ease", 
+          width: "fit-content",
+          minWidth: "1100px", // Base width for the spread
+          transform: "scale(clamp(0.4, calc(100vw / 1200), 1))",
+          transformOrigin: "center top",
+          overflow: "visible !important",
+          padding: "20px 0"
+        }}
+      >
+        <p className="text-center text-[0.77rem] tracking-[0.04em]" style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.32)", marginBottom: "-20px" }}>
+          Let your intuition guide you — hover and click to select. <span style={{ color: "rgba(201,168,76,0.5)" }}> Choose 3 cards.</span>
+        </p>
+        {rows.map((row, rowIndex) => {
+          const amplitude = ARC_AMPLITUDES[rowIndex];
+          const n = row.length;
+          return (
+            <div 
+              key={rowIndex} 
+              id={`Arc-Row-${rowIndex + 1}`} 
+              className="relative" 
+              style={{ 
+                paddingBottom: `${amplitude + 18}px`, 
+                paddingTop: "10px", 
+                width: "100%", 
+                display: "flex", 
+                justifyContent: "center",
+                overflow: "visible !important"
+              }}
+            >
+              <div 
+                className="flex items-start" 
+                style={{ 
+                  overflow: "visible !important",
+                  msOverflowStyle: "none", 
+                  scrollbarWidth: "none" as any 
+                }}
+              >
+                {row.map((card, colIndex) => {
+                  const arcY = getArcOffset(colIndex, n, amplitude);
+                  const globalIndex = rowIndex * 26 + colIndex;
+                  return <ArcCard key={card.id} card={card} globalIndex={globalIndex} arcOffsetY={arcY} selected={selectedIds.includes(card.id)} selectionOrder={selectedIds.indexOf(card.id) + 1} disabled={!selectedIds.includes(card.id) && allSelected} onToggle={onToggle} />;
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

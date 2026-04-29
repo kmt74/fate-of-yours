@@ -1,0 +1,64 @@
+{
+  "landing": {
+    "eyebrow": "NGHỆ THUẬT CỔ XƯA · HÀNH TRÌNH HIỆN ĐẠI",
+    "title": "SỐ PHẬN CỦA BẠN",
+    "subtitle": "Khám Phá Vận Mệnh",
+    "quote": "\"Những lá bài không tiết lộ điều gì sẽ xảy ra — chúng soi sáng những gì đã tồn tại trong bạn.\"",
+    "features": [
+      { "sym": "☽", "text": "78 lá bài cổ mẫu, 5 thế kỷ trí tuệ" },
+      { "sym": "✦", "text": "Giải thích được cá nhân hóa bởi AI" },
+      { "sym": "◎", "text": "Riêng tư, có chủ ý, sâu sắc" }
+    ],
+    "scrollHint": "CUỘN ĐỂ KHÁM PHÁ",
+    "introBadge": "GIỚI THIỆU VỀ BÀI TAROT",
+    "introHeadline": "Nhà Tiên Tri Cổ Đại,",
+    "introHeadline2": "Được Tái Tạo",
+    "introP1": "Tarot đã dẫn dắt những người tìm kiếm trong hơn năm thế kỷ. Xuất phát từ châu Âu thế kỷ 15 như một trò chơi bài, 78 nguyên mẫu này đã trở thành một trong những công cụ tự nhìn lại và khám phá tâm linh lâu đời nhất của nhân loại.",
+    "introP2": "Mỗi lá bài trong bộ bài là một tấm gương phản chiếu tâm lý — không phải để tiên đoán số phận cố định, mà để soi sáng những mô thức đã hiện diện trong bạn.",
+    "introBullets": ["78 biểu tượng cổ mẫu độc đáo", "Bộ Arcana Lớn & Arcana Nhỏ", "Nhiều thế kỷ trí tuệ tập thể"],
+    "introPullQuote": "\"Biết mình qua những lá bài\"",
+    "benefitsBadge": "TẠI SAO CHỌN CHÚNG TÔI",
+    "benefitsTitle": "Lợi Ích từ",
+    "benefitsTitleAccent": "Những Buổi Đọc Bài",
+    "benefitsSub": "Mỗi buổi đọc bài là một hành trình hướng nội. Đây là những gì trải nghiệm tham vấn lá bài có thể mang lại cho bạn.",
+    "footerTitle": "Buổi đọc bài của bạn đang chờ",
+    "footerSub": "Đăng nhập hoặc tạo tài khoản để bắt đầu hành trình vào trí tuệ cổ xưa của những lá bài.",
+    "footerTags": ["RIÊNG TƯ", "CÁ NHÂN", "SÂU SẮC"],
+    "benefits": [
+      { "title": "Sự Rõ Ràng Cá Nhân", "desc": "Có được cái nhìn sâu sắc về cảm xúc, mô thức và động lực tiềm thức của bạn. Những lá bài tiết lộ những gì tâm trí ý thức của bạn có thể đang né tránh." },
+      { "title": "Định Hướng Có Chỉ Dẫn", "desc": "Khi cuộc đời đặt ra những ngã rẽ, một buổi đọc bài giúp bạn cân nhắc các năng lượng và khả năng — không phải lời tiên tri mà là la bàn cho trực giác." },
+      { "title": "Suy Ngẫm Sâu Sắc", "desc": "Mỗi trải bài tạo ra một khoảnh khắc tĩnh lặng có cấu trúc. Tarot mời bạn chậm lại và lắng nghe những điều quan trọng nhất." },
+      { "title": "Lựa Chọn Có Sức Mạnh", "desc": "Hiểu được các năng lượng cổ mẫu xung quanh một tình huống giúp bạn hành động với sự nhận thức lớn hơn và ít phản ứng hơn." },
+      { "title": "Công Tác Bóng Tối", "desc": "Những lá bài dũng cảm soi sáng những phần của bản thân bạn có thể đã che giấu. Sự phát triển bắt đầu ở những nơi chúng ta ít muốn nhìn vào nhất." },
+      { "title": "Nghi Thức Hàng Ngày", "desc": "Rút một lá bài mỗi sáng để neo đậu ý định cho ngày — một thực hành chánh niệm mạnh mẽ chỉ cần vài phút." }
+    ],
+    "auth": {
+      "loginHead": "Chào Mừng Trở Lại",
+      "loginSub": "Những lá bài đang chờ sự trở về của bạn",
+      "signupHead": "Bắt Đầu Hành Trình",
+      "signupSub": "Hãy để vũ trụ biết bạn là ai",
+      "loginTab": "Đăng Nhập",
+      "signupTab": "Đăng Ký",
+      "emailLabel": "ĐỊA CHỈ EMAIL",
+      "passwordLabel": "MẬT KHẨU",
+      "dobLabel": "NGÀY SINH",
+      "dobHint": "Ngày sinh của bạn giúp cá nhân hóa buổi đọc bài",
+      "dobActive": "✦ Chọn ngày, tháng và năm sinh của bạn",
+      "dobValid": "✓ Ngày sinh đã được xác nhận",
+      "loginBtn": "Đăng Nhập",
+      "signupBtn": "Tạo Tài Khoản",
+      "loggingIn": "Đang mở bức màn...",
+      "signingUp": "Đang dệt vận mệnh của bạn..."
+    }
+  },
+  "setup": {
+    "step": "BƯỚC 1/3 · THIẾT LẬP MỤC ĐÍCH",
+    "heading": "Chọn Lĩnh Vực Của Bạn",
+    "sub": "Trước khi lá bài lên tiếng, bạn phải nói với chúng. Chọn lĩnh vực cuộc sống bạn muốn làm rõ.",
+    "sectionLabel": "CÁC LĨNH VỰC ĐỌC BÀI",
+    "sectionSub": "Chọn một lĩnh vực để tập trung năng lượng đọc bài",
+    "questionHeading": "CÂU HỎI CỦA BẠN",
+    "proceedBtn": "Tiến Tới Bộ Bài",
+    "chooseHint": "Vui lòng chọn một lĩnh vực và một câu hỏi"
+  }
+}
