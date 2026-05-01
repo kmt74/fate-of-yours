@@ -62,12 +62,15 @@ function GlassPanel({ children, id }: { children: React.ReactNode; id?: string }
 
 // ─── Main Landing Page ─────────────────────────────────────────────────────────
 export default function LandingPage() {
-  const { isAuthenticated, language, setLanguage } = useApp();
+  const { isAuthenticated, user, language, setLanguage } = useApp();
   const [adminOpen, setAdminOpen] = useState(false);
   const locale = useLocale();
   const t = locale.landing;
 
-  if (isAuthenticated) return <Navigate to="/setup" replace />;
+  if (isAuthenticated) {
+    if (user?.isAdmin) return <Navigate to="/admin" replace />;
+    return <Navigate to="/setup" replace />;
+  }
 
   const lang = language as Lang;
 

@@ -1,0 +1,190 @@
+@startuml Fate_of_Yours_Database_Schema
+
+!define TABLE(name, desc) class name as "desc" << (T, #C9A84C) >>
+!define PK(x) <u>x</u>
+!define FK(x) <i>x</i>
+!define NOT_NULL(x) x
+!define NULLABLE(x) x [NULL]
+
+skinparam class {
+    BackgroundColor #0F0F1C
+    BorderColor #C9A84C
+    ArrowColor #8B5CF6
+    FontColor #F0E6D3
+    FontName Segoe UI
+    FontSize 12
+    HeaderBackgroundColor #1A1430
+    HeaderFontColor #C9A84C
+    HeaderFontStyle bold
+    AttributeFontColor #D4C5A9
+}
+
+skinparam stereotypeCBackgroundColor #2A1F50
+skinparam stereotypeCBorderColor #8B5CF6
+
+skinparam note {
+    BackgroundColor #13111E
+    BorderColor #8B5CF6
+    FontColor #A89AC0
+}
+
+title <color:#C9A84C><size:20>✦ Fate of Yours — Database Schema (ERD)</size></color>
+
+' ══════════════════════════════════════════════
+'  USERS
+' ══════════════════════════════════════════════
+TABLE(users, "users") {
+    + PK(id)            : UUID            <<PK, auto>>
+    --
+    NOT_NULL(email)     : VARCHAR(255)    <<UNIQUE, NOT NULL>>
+    NOT_NULL(password)  : VARCHAR(255)    <<NOT NULL, hashed>>
+    NULLABLE(dob)       : DATE            <<date of birth>>
+    NOT_NULL(language)  : ENUM('EN','VI','ZH')  <<default 'EN'>>
+    NOT_NULL(is_admin)  : BOOLEAN         <<default false>>
+    NOT_NULL(created_at): TIMESTAMPTZ     <<default now()>>
+    NOT_NULL(updated_at): TIMESTAMPTZ     <<auto-update>>
+}
+
+' ══════════════════════════════════════════════
+'  CATEGORIES  (lookup / seeded, not user-editable)
+' ══════════════════════════════════════════════
+TABLE(categories, "categories") {
+    + PK(id)            : VARCHAR(30)     <<PK, e.g. 'love'>>
+    --
+    NOT_NULL(label_en)  : VARCHAR(60)
+    NOT_NULL(label_vi)  : VARCHAR(60)
+    NOT_NULL(label_zh)  : VARCHAR(60)
+    NOT_NULL(icon)      : VARCHAR(4)      <<unicode symbol>>
+    NOT_NULL(desc_en)   : TEXT
+    NOT_NULL(desc_vi)   : TEXT
+    NOT_NULL(desc_zh)   : TEXT
+    NOT_NULL(accent_color): VARCHAR(9)    <<hex color>>
+    NOT_NULL(sort_order): SMALLINT
+}
+
+' ══════════════════════════════════════════════
+'  CATEGORY_QUESTIONS  (suggested questions per category)
+' ══════════════════════════════════════════════
+TABLE(category_questions, "category_questions") {
+    + PK(id)            : UUID            <<PK>>
+    --
+    FK(category_id)     : VARCHAR(30)     <<FK → categories.id>>
+    NOT_NULL(question_en): TEXT
+    NOT_NULL(question_vi): TEXT
+    NOT_NULL(question_zh): TEXT
+    NOT_NULL(sort_order): SMALLINT
+}
+
+' ══════════════════════════════════════════════
+'  TAROT_CARDS  (78 cards, seeded / static)
+' ══════════════════════════════════════════════
+TABLE(tarot_cards, "tarot_cards") {
+    + PK(id)            : SMALLINT        <<PK, 0–77>>
+    --
+    NOT_NULL(name_en)   : VARCHAR(80)
+    NOT_NULL(name_vi)   : VARCHAR(80)
+    NOT_NULL(name_zh)   : VARCHAR(80)
+    NOT_NULL(suit)      : ENUM('major','wands','cups','swords','pentacles')
+    NOT_NULL(symbol)    : VARCHAR(4)      <<unicode>>
+    NOT_NULL(meaning_en): TEXT
+    NOT_NULL(meaning_vi): TEXT
+    NOT_NULL(meaning_zh): TEXT
+}
+
+' ══════════════════════════════════════════════
+'  READINGS  (each reading session)
+' ══════════════════════════════════════════════
+TABLE(readings, "readings") {
+    + PK(id)            : UUID            <<PK>>
+    --
+    FK(user_id)         : UUID            <<FK → users.id>>
+    FK(category_id)     : VARCHAR(30)     <<FK → categories.id>>
+    NOT_NULL(question)  : TEXT            <<user's actual question>>
+    NOT_NULL(language)  : ENUM('EN','VI','ZH')
+    NOT_NULL(created_at): TIMESTAMPTZ     <<default now()>>
+}
+
+' ══════════════════════════════════════════════
+'  READING_CARDS  (3 cards drawn per reading)
+' ══════════════════════════════════════════════
+TABLE(reading_cards, "reading_cards") {
+    + PK(id)            : UUID            <<PK>>
+    --
+    FK(reading_id)      : UUID            <<FK → readings.id>>
+    FK(card_id)         : SMALLINT        <<FK → tarot_cards.id>>
+    NOT_NULL(position)  : ENUM('past','present','future')
+    NOT_NULL(position_order): SMALLINT    <<0=past,1=present,2=future>>
+}
+
+' ══════════════════════════════════════════════
+'  READING_INTERPRETATIONS  (AI-generated result)
+' ══════════════════════════════════════════════
+TABLE(reading_interpretations, "reading_interpretations") {
+    + PK(id)            : UUID            <<PK>>
+    --
+    FK(reading_id)      : UUID            <<FK → readings.id, UNIQUE>>
+    NOT_NULL(content)   : TEXT            <<generated markdown text>>
+    NOT_NULL(model_ver) : VARCHAR(50)     <<AI version used>>
+    NOT_NULL(created_at): TIMESTAMPTZ
+}
+
+' ══════════════════════════════════════════════
+'  ADMIN_SESSIONS  (admin portal access log)
+' ══════════════════════════════════════════════
+TABLE(admin_sessions, "admin_sessions") {
+    + PK(id)            : UUID            <<PK>>
+    --
+    FK(user_id)         : UUID            <<FK → users.id>>
+    NOT_NULL(ip_address): INET
+    NOT_NULL(created_at): TIMESTAMPTZ
+    NULLABLE(expires_at): TIMESTAMPTZ
+}
+
+' ══════════════════════════════════════════════
+'  RELATIONSHIPS
+' ══════════════════════════════════════════════
+
+users               "1" --o{ "0..*" readings                   : "makes"
+categories          "1" --o{ "0..*" readings                   : "categorises"
+categories          "1" --o{ "1..*" category_questions         : "has suggested"
+readings            "1" --|| "3"    reading_cards              : "draws exactly"
+tarot_cards         "1" --o{ "0..*" reading_cards              : "drawn in"
+readings            "1" --o| "0..1" reading_interpretations    : "has"
+users               "1" --o{ "0..*" admin_sessions             : "opens"
+
+' ══════════════════════════════════════════════
+'  NOTES
+' ══════════════════════════════════════════════
+note top of users
+  <color:#C9A84C>**Authentication**</color>
+  Password is bcrypt-hashed.
+  Currently stored in localStorage
+  (dev). Production: Supabase Auth.
+end note
+
+note top of tarot_cards
+  <color:#C9A84C>**Static Seed Data**</color>
+  78 cards total:
+  · 22 Major Arcana  (id 0–21)
+  · 14 Wands         (id 22–35)
+  · 14 Cups          (id 36–49)
+  · 14 Swords        (id 50–63)
+  · 14 Pentacles     (id 64–77)
+end note
+
+note bottom of readings
+  <color:#C9A84C>**Reading Lifecycle**</color>
+  1. User selects category + question
+  2. 3 cards drawn → reading_cards
+  3. Interpretation generated →
+     reading_interpretations
+end note
+
+note bottom of reading_interpretations
+  <color:#8B5CF6>**AI Content**</color>
+  Generated by generateInterpretation()
+  based on all 3 cards + category
+  + user's question.
+end note
+
+@enduml

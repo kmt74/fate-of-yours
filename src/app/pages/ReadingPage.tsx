@@ -5,6 +5,7 @@ import { RefreshCw } from "lucide-react";
 // ─── Context & Data ───────────────────────────────────────────────────────────
 import { useApp } from "../context/AppContext";
 import { CATEGORIES, generateInterpretation } from "../data/tarot-data";
+import { getTarotReading, offlineReading, RateLimitError } from "../../lib/ai";
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 import { Layout } from "../components/Layout";
@@ -37,7 +38,7 @@ import type { Position } from "../lib/theme";
 //     └─ GlobalNavBar
 
 export default function ReadingPage() {
-  const { readingSetup, selectedCards, resetReading } = useApp();
+  const { readingSetup, selectedCards, resetReading, language } = useApp();
   const navigate = useNavigate();
 
   // ─── Derived Data ─────────────────────────────────────────────────────────
@@ -45,21 +46,51 @@ export default function ReadingPage() {
   const question = readingSetup?.question ?? "What does my journey hold?";
   const categoryObj = CATEGORIES.find((c) => c.id === category);
 
-  const fullText =
+  // Static fallback (used while AI is loading)
+  const staticText =
     selectedCards.length === 3
       ? generateInterpretation(selectedCards, category, question)
       : "";
 
-  // ─── State (via custom hooks) ─────────────────────────────────────────────
-  const cardsRevealed = useCardReveal(400);
+  // ─── State ────────────────────────────────────────────────────────────────
+  const [fullText, setFullText] = useState(staticText);
   const [aiLoading, setAiLoading] = useState(true);
+  const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
 
-  // Wait for card flip animation to complete before showing AI content
+  // ─── Card reveal animation ────────────────────────────────────────────────
+  const cardsRevealed = useCardReveal(400);
+
+  // ─── Fetch AI reading after cards are revealed ────────────────────────────
   useEffect(() => {
-    if (!cardsRevealed) return;
-    const timer = setTimeout(() => setAiLoading(false), 3200);
+    if (!cardsRevealed || selectedCards.length < 3) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        const aiText = await getTarotReading(selectedCards, category, question, language);
+        setFullText(aiText);
+        setRateLimitMsg(null);
+      } catch (err) {
+        console.error("[ReadingPage] AI failed:", err);
+        if (err instanceof RateLimitError) {
+          if (err.limitType === "rpd") {
+            setRateLimitMsg(language === "VI"
+              ? "⚠️ AI đã hết lượt gọi hôm nay. Bài đọc dưới đây là bản offline."
+              : "⚠️ Daily AI quota reached. Showing offline reading.");
+          } else {
+            const s = Math.ceil(err.retryAfterMs / 1000);
+            setRateLimitMsg(language === "VI"
+              ? `⏳ API đang bận (chờ ${s}s). Đã dùng bản offline.`
+              : `⏳ API busy (${s}s). Showing offline reading.`);
+          }
+        }
+        setFullText(offlineReading(selectedCards, category, question, language));
+      } finally {
+        setAiLoading(false);
+      }
+    }, 2400);
+
     return () => clearTimeout(timer);
-  }, [cardsRevealed]);
+  }, [cardsRevealed, selectedCards, category, question, language]);
 
   const { displayedText, isDone: typingDone } = useTypewriter({
     text: fullText,
@@ -72,6 +103,7 @@ export default function ReadingPage() {
     resetReading();
     navigate("/setup");
   };
+
 
   // ─── Guard: not enough cards ──────────────────────────────────────────────
   if (selectedCards.length < 3) {
@@ -155,6 +187,22 @@ export default function ReadingPage() {
               ))}
             </div>
           </section>
+
+          {/* ── Rate Limit Notice ── */}
+          {rateLimitMsg && (
+            <div style={{
+              padding: "10px 16px",
+              borderRadius: "8px",
+              background: "rgba(201,168,76,0.08)",
+              border: "1px solid rgba(201,168,76,0.25)",
+              color: "rgba(201,168,76,0.85)",
+              fontSize: "0.82rem",
+              fontFamily: "'Raleway', sans-serif",
+              letterSpacing: "0.02em",
+            }}>
+              {rateLimitMsg}
+            </div>
+          )}
 
           {/* ── AI Interpretation ── */}
           <AiInterpretationPanel

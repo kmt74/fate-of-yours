@@ -6,6 +6,7 @@ import SetupPage from "./pages/SetupPage";
 import DeckPage from "./pages/DeckPage";
 import ReadingPage from "./pages/ReadingPage";
 import HistoryPage from "./pages/HistoryPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useApp();
@@ -24,5 +25,6 @@ export const router = createBrowserRouter([
   { path: "/deck", Component: DeckRoute },
   { path: "/reading", Component: ReadingRoute },
   { path: "/history", Component: HistoryRoute },
+  { path: "/admin", Component: AdminDashboard },
   { path: "*", Component: () => <Navigate to="/" replace /> },
 ]);
