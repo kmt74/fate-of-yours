@@ -77,11 +77,14 @@ CREATE TRIGGER tarot_cards_updated_at
 ALTER TABLE tarot_cards ENABLE ROW LEVEL SECURITY;
 
 -- Public can read all cards
-CREATE POLICY IF NOT EXISTS "Public read tarot cards"
+DROP POLICY IF EXISTS "Public read tarot cards" ON tarot_cards;
+CREATE POLICY "Public read tarot cards"
   ON tarot_cards FOR SELECT
   USING (true);
 
 -- Only authenticated admin can modify
-CREATE POLICY IF NOT EXISTS "Admin can modify tarot cards"
+DROP POLICY IF EXISTS "Admin can modify tarot cards" ON tarot_cards;
+CREATE POLICY "Admin can modify tarot cards"
   ON tarot_cards FOR ALL
   USING (auth.email() = 'admin@fate-of-yours.com');
+
