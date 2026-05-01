@@ -1,0 +1,395 @@
+@startuml Fate_of_Yours_OOP
+
+skinparam class {
+    BackgroundColor #0F0F1C
+    BorderColor #C9A84C
+    ArrowColor #8B5CF6
+    FontColor #F0E6D3
+    FontName Segoe UI
+    FontSize 12
+    HeaderBackgroundColor #1A1430
+    HeaderFontColor #C9A84C
+    HeaderFontStyle bold
+    AttributeFontColor #D4C5A9
+    StereotypeFontColor #A78BFA
+}
+skinparam note {
+    BackgroundColor #13111E
+    BorderColor #8B5CF6
+    FontColor #A89AC0
+}
+skinparam arrow {
+    Color #8B5CF6
+    FontColor #A89AC0
+}
+skinparam enum {
+    BackgroundColor #13111E
+    BorderColor #8B5CF6
+    FontColor #D4C5A9
+    HeaderBackgroundColor #1A1430
+    HeaderFontColor #A78BFA
+}
+skinparam interface {
+    BackgroundColor #0F0F1C
+    BorderColor #8B5CF6
+    FontColor #D4C5A9
+    HeaderBackgroundColor #1A1430
+    HeaderFontColor #A78BFA
+}
+
+title <color:#C9A84C><size:20>✦ Fate of Yours — OOP Class Diagram</size></color>
+
+' ══════════════════════════════════════════════════════════════
+'  ENUMS
+' ══════════════════════════════════════════════════════════════
+
+enum Language {
+    EN
+    VI
+    ZH
+}
+
+enum Suit {
+    MAJOR
+    WANDS
+    CUPS
+    SWORDS
+    PENTACLES
+}
+
+enum Position {
+    PAST
+    PRESENT
+    FUTURE
+}
+
+' ══════════════════════════════════════════════════════════════
+'  INTERFACES
+' ══════════════════════════════════════════════════════════════
+
+interface ILocalizable {
+    + getLabel(lang: Language): String
+    + getDescription(lang: Language): String
+}
+
+interface IIdentifiable {
+    + getId(): String
+    + equals(other: IIdentifiable): Boolean
+}
+
+interface IAuthService {
+    + login(email: String, password: String): User
+    + signup(email: String, password: String, dob: Date): User
+    + logout(user: User): void
+    + isAuthenticated(): Boolean
+}
+
+interface IReadingRepository {
+    + save(reading: Reading): void
+    + findByUser(userId: String): List<Reading>
+    + findById(id: String): Reading
+    + delete(id: String): void
+}
+
+interface IInterpretationEngine {
+    + generate(cards: List<DrawnCard>, category: Category, question: String): String
+}
+
+' ══════════════════════════════════════════════════════════════
+'  DOMAIN MODELS
+' ══════════════════════════════════════════════════════════════
+
+abstract class BaseEntity {
+    # id: String
+    # createdAt: Date
+    # updatedAt: Date
+    --
+    + getId(): String
+    + getCreatedAt(): Date
+    + equals(other: BaseEntity): Boolean
+    + {abstract} validate(): Boolean
+}
+
+class User {
+    - email: String
+    - passwordHash: String
+    - dob: Date
+    - language: Language
+    - isAdmin: Boolean
+    --
+    + User(email, password, dob)
+    + getEmail(): String
+    + getDob(): Date
+    + getLanguage(): Language
+    + setLanguage(lang: Language): void
+    + isAdminUser(): Boolean
+    + maskEmail(): String
+    + validate(): Boolean
+}
+
+class TarotCard {
+    - name: Map<Language, String>
+    - suit: Suit
+    - symbol: String
+    - meaning: Map<Language, String>
+    --
+    + TarotCard(id, suit, symbol)
+    + getName(lang: Language): String
+    + getMeaning(lang: Language): String
+    + getSuit(): Suit
+    + getSymbol(): String
+    + isMajorArcana(): Boolean
+    + validate(): Boolean
+}
+
+class Category {
+    - label: Map<Language, String>
+    - description: Map<Language, String>
+    - icon: String
+    - accentColor: String
+    - questions: List<SuggestedQuestion>
+    --
+    + Category(id, icon, accentColor)
+    + getLabel(lang: Language): String
+    + getDescription(lang: Language): String
+    + getIcon(): String
+    + getAccentColor(): String
+    + getQuestions(): List<SuggestedQuestion>
+    + addQuestion(q: SuggestedQuestion): void
+    + validate(): Boolean
+}
+
+class SuggestedQuestion {
+    - text: Map<Language, String>
+    - sortOrder: Integer
+    --
+    + SuggestedQuestion(sortOrder)
+    + getText(lang: Language): String
+    + getSortOrder(): Integer
+    + validate(): Boolean
+}
+
+class ReadingSetup {
+    - category: Category
+    - question: String
+    --
+    + ReadingSetup(category, question)
+    + getCategory(): Category
+    + getQuestion(): String
+    + isValid(): Boolean
+}
+
+class DrawnCard {
+    - card: TarotCard
+    - position: Position
+    - positionOrder: Integer
+    --
+    + DrawnCard(card, position, order)
+    + getCard(): TarotCard
+    + getPosition(): Position
+    + getPositionOrder(): Integer
+}
+
+class Reading {
+    - user: User
+    - setup: ReadingSetup
+    - drawnCards: List<DrawnCard>
+    - interpretation: Interpretation
+    - language: Language
+    --
+    + Reading(user, setup, language)
+    + addCard(card: DrawnCard): void
+    + getCards(): List<DrawnCard>
+    + getPastCard(): DrawnCard
+    + getPresentCard(): DrawnCard
+    + getFutureCard(): DrawnCard
+    + setInterpretation(i: Interpretation): void
+    + getInterpretation(): Interpretation
+    + isComplete(): Boolean
+    + validate(): Boolean
+}
+
+class Interpretation {
+    - content: String
+    - modelVersion: String
+    --
+    + Interpretation(content, modelVersion)
+    + getContent(): String
+    + getModelVersion(): String
+    + getWordCount(): Integer
+    + validate(): Boolean
+}
+
+' ══════════════════════════════════════════════════════════════
+'  SERVICES
+' ══════════════════════════════════════════════════════════════
+
+class AuthService {
+    - userRepository: UserRepository
+    - currentUser: User
+    --
+    + AuthService(userRepository)
+    + login(email: String, password: String): User
+    + signup(email: String, password: String, dob: Date): User
+    + logout(user: User): void
+    + isAuthenticated(): Boolean
+    - hashPassword(raw: String): String
+    - verifyPassword(raw, hash: String): Boolean
+}
+
+class ReadingService {
+    - readingRepository: IReadingRepository
+    - deck: TarotDeck
+    - engine: IInterpretationEngine
+    --
+    + ReadingService(repo, deck, engine)
+    + startReading(user: User, setup: ReadingSetup): Reading
+    + drawCards(count: Integer): List<TarotCard>
+    + finaliseReading(reading: Reading): Reading
+    + getHistory(user: User): List<Reading>
+}
+
+class TarotDeck {
+    - cards: List<TarotCard>
+    --
+    + TarotDeck()
+    + shuffle(): void
+    + draw(count: Integer): List<TarotCard>
+    + reset(): void
+    + count(): Integer
+    + findById(id: Integer): TarotCard
+}
+
+class InterpretationEngine {
+    - templates: Map<String, String>
+    --
+    + InterpretationEngine()
+    + generate(cards: List<DrawnCard>, category: Category, question: String): String
+    - buildPastSection(card: DrawnCard, lang: Language): String
+    - buildPresentSection(card: DrawnCard, lang: Language): String
+    - buildFutureSection(card: DrawnCard, lang: Language): String
+    - buildSynthesis(cards: List<DrawnCard>): String
+}
+
+' ══════════════════════════════════════════════════════════════
+'  REPOSITORIES
+' ══════════════════════════════════════════════════════════════
+
+class UserRepository {
+    - storage: Map<String, User>
+    --
+    + save(user: User): void
+    + findByEmail(email: String): User
+    + findById(id: String): User
+    + delete(id: String): void
+    + exists(email: String): Boolean
+}
+
+class LocalStorageReadingRepository {
+    - prefix: String
+    --
+    + LocalStorageReadingRepository(prefix)
+    + save(reading: Reading): void
+    + findByUser(userId: String): List<Reading>
+    + findById(id: String): Reading
+    + delete(id: String): void
+    - serialize(reading: Reading): String
+    - deserialize(data: String): Reading
+}
+
+' ══════════════════════════════════════════════════════════════
+'  APPLICATION CONTEXT  (Facade)
+' ══════════════════════════════════════════════════════════════
+
+class AppContext {
+    - authService: AuthService
+    - readingService: ReadingService
+    - language: Language
+    - currentReading: Reading
+    --
+    + {static} getInstance(): AppContext
+    + getAuthService(): AuthService
+    + getReadingService(): ReadingService
+    + getLanguage(): Language
+    + setLanguage(lang: Language): void
+    + getCurrentUser(): User
+    + getCurrentReading(): Reading
+    + setCurrentReading(r: Reading): void
+    + resetReading(): void
+}
+
+' ══════════════════════════════════════════════════════════════
+'  INHERITANCE / REALIZATION
+' ══════════════════════════════════════════════════════════════
+
+BaseEntity      <|-- User
+BaseEntity      <|-- TarotCard
+BaseEntity      <|-- Category
+BaseEntity      <|-- SuggestedQuestion
+BaseEntity      <|-- Reading
+BaseEntity      <|-- Interpretation
+
+IIdentifiable   <|.. BaseEntity
+ILocalizable    <|.. Category
+ILocalizable    <|.. SuggestedQuestion
+
+IAuthService        <|.. AuthService
+IReadingRepository  <|.. LocalStorageReadingRepository
+IInterpretationEngine <|.. InterpretationEngine
+
+' ══════════════════════════════════════════════════════════════
+'  ASSOCIATIONS
+' ══════════════════════════════════════════════════════════════
+
+User                "1"  *--  "1"    Language            : prefers >
+Reading             "1"  *--  "1"    ReadingSetup        : built from >
+Reading             "1"  *--  "3"    DrawnCard           : contains >
+Reading             "1"  o--  "0..1" Interpretation      : has >
+Reading             "*"  *--  "1"    User                : belongs to >
+ReadingSetup        "*"  *--  "1"    Category            : focuses on >
+DrawnCard           "*"  o--  "1"    TarotCard           : references >
+DrawnCard           "1"  *--  "1"    Position            : placed at >
+Category            "1"  *--  "1..*" SuggestedQuestion   : suggests >
+TarotCard           "1"  *--  "1"    Suit                : typed as >
+
+AppContext          "1" --  "1" AuthService             : uses >
+AppContext          "1" --  "1" ReadingService          : uses >
+ReadingService      "1" --  "1" TarotDeck               : manages >
+ReadingService      "1" --  "1" IReadingRepository      : persists via >
+ReadingService      "1" --  "1" IInterpretationEngine   : interprets via >
+AuthService         "1" --  "1" UserRepository          : finds users via >
+
+' ══════════════════════════════════════════════════════════════
+'  NOTES
+' ══════════════════════════════════════════════════════════════
+
+note right of AppContext
+    <color:#C9A84C>**Singleton / Facade**</color>
+    Central access point to all
+    services. Maps to React's
+    AppContext + useApp() hook.
+end note
+
+note right of InterpretationEngine
+    <color:#C9A84C>**Strategy Pattern**</color>
+    Swappable via IInterpretationEngine.
+    Current impl: template-based.
+    Future: could be an LLM API call.
+end note
+
+note bottom of LocalStorageReadingRepository
+    <color:#C9A84C>**Repository Pattern**</color>
+    Dev: localStorage.
+    Production: swap for
+    SupabaseReadingRepository
+    without changing service layer.
+end note
+
+note left of TarotDeck
+    <color:#C9A84C>**78 Cards Total**</color>
+    · 22 Major Arcana
+    · 14 × 4 Minor Arcana suits
+    Fisher-Yates shuffle on draw().
+end note
+
+@enduml

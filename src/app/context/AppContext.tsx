@@ -66,9 +66,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
+  const ADMIN_EMAIL = "admin@fate-of-yours.com";
+
   const login = (email: string, _password: string) => {
     setIsAuthenticated(true);
-    setUser({ email, dob: "" });
+    if (email === ADMIN_EMAIL) {
+      setUser({ email, dob: "1990-01-01", isAdmin: true });
+    } else {
+      setUser({ email, dob: "" });
+    }
   };
 
   const signup = (email: string, _password: string, dob: string) => {

@@ -246,7 +246,7 @@ export const CATEGORIES: Category[] = [
   },
 ];
 
-// --- AI Interpretation Generator ---
+// --- AI Interpretation Generator (Offline Fallback) ---
 export function generateInterpretation(
   cards: TarotCard[],
   category: string,
@@ -256,55 +256,45 @@ export function generateInterpretation(
   const categoryObj = CATEGORIES.find((c) => c.id === category);
   const categoryLabel = categoryObj?.label ?? "life";
 
-  return `## The Three-Card Spread
+  return `## A Reading on ${categoryLabel}
 
-*A reading on ${categoryLabel.toLowerCase()} · "${question}"*
+*You asked: "${question}"*
 
 ---
 
 ### I. The Past · ${past.name}
 
-In the shadowed realm of what has been, **${past.name}** emerges — bearing the resonance of *${past.meaning.toLowerCase()}*. This energy forms the invisible bedrock beneath your present circumstance.
+*${past.meaning}.* This energy forms the invisible ground beneath what you're navigating now in the realm of **${categoryLabel.toLowerCase()}**. Look honestly at what **${past.name}** stirs in you — not as history to escape, but as the root that explains how you arrived at this question.
 
-> "What was lived cannot be unlived — but understood, it becomes your compass rather than your cage."
+Something was established here — a pattern, a belief, an experience — that quietly shapes how you approach **${categoryLabel.toLowerCase()}** today. The gift and the burden of this card both belong to you.
 
-Look honestly at what this card stirs within you. The roots of **${past.name}** run deep, quietly shaping every choice that follows. Do not dismiss what arose then as irrelevant to now.
-
-**What this placement reveals:**
-- The foundational energy you carry into the present
-- Patterns and conditioning that may still be active
-- The harvest — both gift and burden — of the path walked so far
+> *"What was lived cannot be unlived — but understood, it becomes your compass rather than your cage."*
 
 ---
 
 ### II. The Present · ${present.name}
 
-**${present.name}** stands at the threshold with you now. Its essence — *${present.meaning.toLowerCase()}* — is the living truth of this moment.
+At the centre of your question — *"${question}"* — stands **${present.name}**, carrying the quality of *${present.meaning.toLowerCase()}*. This is not a coincidence. The cards have placed this energy here precisely because it speaks to what you are navigating right now in **${categoryLabel.toLowerCase()}**.
 
-This card does not flatter, nor does it condemn. It simply **is**. Breathe into its symbolism. Allow it to illuminate what you already sense but have not yet dared to fully name.
+Breathe into it. What within you already recognises this truth? There is something here you may be resisting, or something you haven't yet fully claimed.
 
-> "The present is never merely a consequence — it is always also a choice."
-
-**Key energies at play:**
-- The primary force surrounding your current situation
-- Where your attention and energy are most concentrated
-- The invitation ${present.name} is extending to you right now
+> *"The present is never merely a consequence — it is always also a choice."*
 
 ---
 
 ### III. The Future · ${future.name}
 
-Turning toward what may be, **${future.name}** rises on the horizon — carrying the potential of *${future.meaning.toLowerCase()}*.
+Emerging from where you stand now, **${future.name}** appears on the horizon — *${future.meaning.toLowerCase()}*. This is not a locked fate. It is the trajectory your current energy is building in the context of **${categoryLabel.toLowerCase()}**.
 
-The future is not a fixed point in the dark. It is a current shaped by every intention and action you carry forward from this moment. ${future.name} reveals a *trajectory*, not a prison.
-
-> "The most powerful force in shaping what comes next is the quality of presence you bring to right now."
+The question becomes: does this feel like a destination you're moving toward consciously, or one you're drifting into? What small shift in how you hold your question — *"${question}"* — might change this trajectory?
 
 ---
 
-## The Synthesis
+## The Story These Three Cards Tell
 
-Together, **${past.name}**, **${present.name}**, and **${future.name}** form a living arc — a single narrative woven from three distinct moments of time and energy. The movement from *${past.meaning.toLowerCase()}* through *${present.meaning.toLowerCase()}* toward *${future.meaning.toLowerCase()}* is not accidental. It is the story the cards have recognised in you.
+From *${past.meaning.toLowerCase()}* (${past.name}) through *${present.meaning.toLowerCase()}* (${present.name}) toward *${future.meaning.toLowerCase()}* (${future.name}) — there is a coherent arc here. Something is being released, something is being held, and something is becoming possible.
 
-Receive this reading not as destiny, but as a mirror. The ancient wisdom held within these symbols has spoken. **What you do with this knowledge is, and has always been, entirely up to you.**`;
+In the context of **${categoryLabel.toLowerCase()}** and your question, this triad suggests: the past has given you more than you may credit yourself for. The present asks you to stop, see clearly, and choose. The future is waiting for that clarity.
+
+**Core insight for you now:** *The cards have spoken. What you do with this knowledge is, and has always been, entirely up to you.*`;
 }

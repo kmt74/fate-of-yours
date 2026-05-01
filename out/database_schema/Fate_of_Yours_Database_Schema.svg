@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="944px" preserveAspectRatio="none" style="width:1195px;height:944px;" version="1.1" viewBox="0 0 1195 944" width="1195px" zoomAndPan="magnify"><defs><filter height="300%" id="fvnjs0ioty0hg" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#C9A84C" font-family="sans-serif" font-size="20" lengthAdjust="spacing" textLength="398" x="392" y="20.7617">✦ Fate of Yours — Database Schema (ERD)</text><!--MD5=[8413f8248b2da7966d2de021109ec289]
+class users--><rect codeLine="35" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="158.6875" id="users" style="stroke:#C9A84C;stroke-width:1.5;" width="268" x="824" y="180.6563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="268" x="824" y="180.6563"/><ellipse cx="940.25" cy="196.6563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M941.1719,194.0469 L941.1719,200.7031 L942.3281,200.7031 Q942.9375,200.7031 943.1875,200.9375 Q943.4531,201.1719 943.4531,201.5625 Q943.4531,201.9375 943.1875,202.1719 Q942.9375,202.4063 942.3281,202.4063 L938.3438,202.4063 Q937.7188,202.4063 937.4531,202.1719 Q937.2031,201.9375 937.2031,201.5469 Q937.2031,201.1719 937.4531,200.9375 Q937.7188,200.7031 938.3438,200.7031 L939.4688,200.7031 L939.4688,194.0469 L937.625,194.0469 L937.625,195.6563 Q937.625,196.2656 937.3906,196.5313 Q937.1563,196.7969 936.7813,196.7969 Q936.4063,196.7969 936.1719,196.5313 Q935.9375,196.2656 935.9375,195.6563 L935.9375,192.3438 L944.75,192.3438 L944.75,195.6563 Q944.75,196.2656 944.5,196.5313 Q944.2656,196.7969 943.8906,196.7969 Q943.5156,196.7969 943.2813,196.5313 Q943.0469,196.2656 943.0469,195.6563 L943.0469,194.0469 L941.1719,194.0469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="27" x="960.75" y="201.625">users</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="825" x2="1091" y1="212.6563" y2="212.6563"/><ellipse cx="835" cy="223.6563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="844" y="228.0752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="117" x="888" y="228.0752">: UUID            «PK, auto»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="825" x2="1091" y1="234.4922" y2="234.4922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="240" x="830" y="249.9111">email     : VARCHAR(255)    «UNIQUE, NOT NULL»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="256" x="830" y="263.7471">password  : VARCHAR(255)    «NOT NULL, hashed»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="213" x="830" y="277.583">dob [NULL]       : DATE            «date of birth»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="218" x="830" y="291.4189">language  : ENUM('EN','VI','ZH')  «default 'EN'»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="203" x="830" y="305.2549">is_admin  : BOOLEAN         «default false»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="221" x="830" y="319.0908">created_at: TIMESTAMPTZ     «default now()»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="215" x="830" y="332.9268">updated_at: TIMESTAMPTZ     «auto-update»</text><!--MD5=[8d53228b184e70212eb202c858fab81b]
+class categories--><rect codeLine="50" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="186.3594" id="categories" style="stroke:#C9A84C;stroke-width:1.5;" width="239" x="492.5" y="167.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="239" x="492.5" y="167.1563"/><ellipse cx="580.75" cy="183.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M581.6719,180.5469 L581.6719,187.2031 L582.8281,187.2031 Q583.4375,187.2031 583.6875,187.4375 Q583.9531,187.6719 583.9531,188.0625 Q583.9531,188.4375 583.6875,188.6719 Q583.4375,188.9063 582.8281,188.9063 L578.8438,188.9063 Q578.2188,188.9063 577.9531,188.6719 Q577.7031,188.4375 577.7031,188.0469 Q577.7031,187.6719 577.9531,187.4375 Q578.2188,187.2031 578.8438,187.2031 L579.9688,187.2031 L579.9688,180.5469 L578.125,180.5469 L578.125,182.1563 Q578.125,182.7656 577.8906,183.0313 Q577.6563,183.2969 577.2813,183.2969 Q576.9063,183.2969 576.6719,183.0313 Q576.4375,182.7656 576.4375,182.1563 L576.4375,178.8438 L585.25,178.8438 L585.25,182.1563 Q585.25,182.7656 585,183.0313 Q584.7656,183.2969 584.3906,183.2969 Q584.0156,183.2969 583.7813,183.0313 Q583.5469,182.7656 583.5469,182.1563 L583.5469,180.5469 L581.6719,180.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="54" x="601.25" y="188.125">categories</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="493.5" x2="730.5" y1="199.1563" y2="199.1563"/><ellipse cx="503.5" cy="210.1563" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="512.5" y="214.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="169" x="556.5" y="214.5752">: VARCHAR(30)     «PK, e.g. 'love'»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="493.5" x2="730.5" y1="220.9922" y2="220.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="124" x="498.5" y="236.4111">label_en  : VARCHAR(60)</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="120" x="498.5" y="250.2471">label_vi  : VARCHAR(60)</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="124" x="498.5" y="264.083">label_zh  : VARCHAR(60)</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="215" x="498.5" y="277.9189">icon      : VARCHAR(4)      «unicode symbol»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="82" x="498.5" y="291.7549">desc_en   : TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="78" x="498.5" y="305.5908">desc_vi   : TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="82" x="498.5" y="319.4268">desc_zh   : TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="204" x="498.5" y="333.2627">accent_color: VARCHAR(9)    «hex color»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="498.5" y="347.0986">sort_order: SMALLINT</text><!--MD5=[074b2b29301c4ed461792a1c230d916b]
+class category_questions--><rect codeLine="67" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="131.0156" id="category_questions" style="stroke:#C9A84C;stroke-width:1.5;" width="279" x="332.5" y="452.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="279" x="332.5" y="452.1563"/><ellipse cx="416.75" cy="468.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M417.6719,465.5469 L417.6719,472.2031 L418.8281,472.2031 Q419.4375,472.2031 419.6875,472.4375 Q419.9531,472.6719 419.9531,473.0625 Q419.9531,473.4375 419.6875,473.6719 Q419.4375,473.9063 418.8281,473.9063 L414.8438,473.9063 Q414.2188,473.9063 413.9531,473.6719 Q413.7031,473.4375 413.7031,473.0469 Q413.7031,472.6719 413.9531,472.4375 Q414.2188,472.2031 414.8438,472.2031 L415.9688,472.2031 L415.9688,465.5469 L414.125,465.5469 L414.125,467.1563 Q414.125,467.7656 413.8906,468.0313 Q413.6563,468.2969 413.2813,468.2969 Q412.9063,468.2969 412.6719,468.0313 Q412.4375,467.7656 412.4375,467.1563 L412.4375,463.8438 L421.25,463.8438 L421.25,467.1563 Q421.25,467.7656 421,468.0313 Q420.7656,468.2969 420.3906,468.2969 Q420.0156,468.2969 419.7813,468.0313 Q419.5469,467.7656 419.5469,467.1563 L419.5469,465.5469 L417.6719,465.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="102" x="437.25" y="473.125">category_questions</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="333.5" x2="610.5" y1="484.1563" y2="484.1563"/><ellipse cx="343.5" cy="495.1563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="352.5" y="499.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="396.5" y="499.5752">: UUID            «PK»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="333.5" x2="610.5" y1="505.9922" y2="505.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="57" x="338.5" y="521.4111">category_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="195" x="410.5" y="521.4111">: VARCHAR(30)     «FK → categories.id»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="338.5" y="535.2471">question_en: TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="86" x="338.5" y="549.083">question_vi: TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="338.5" y="562.9189">question_zh: TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="107" x="338.5" y="576.7549">sort_order: SMALLINT</text><!--MD5=[931ac9dd595e6f4e5b3480b0c4baada3]
+class tarot_cards--><rect codeLine="80" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="172.5234" id="tarot_cards" style="stroke:#C9A84C;stroke-width:1.5;" width="290" x="7" y="431.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="290" x="7" y="431.1563"/><ellipse cx="118.75" cy="447.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M119.6719,444.5469 L119.6719,451.2031 L120.8281,451.2031 Q121.4375,451.2031 121.6875,451.4375 Q121.9531,451.6719 121.9531,452.0625 Q121.9531,452.4375 121.6875,452.6719 Q121.4375,452.9063 120.8281,452.9063 L116.8438,452.9063 Q116.2188,452.9063 115.9531,452.6719 Q115.7031,452.4375 115.7031,452.0469 Q115.7031,451.6719 115.9531,451.4375 Q116.2188,451.2031 116.8438,451.2031 L117.9688,451.2031 L117.9688,444.5469 L116.125,444.5469 L116.125,446.1563 Q116.125,446.7656 115.8906,447.0313 Q115.6563,447.2969 115.2813,447.2969 Q114.9063,447.2969 114.6719,447.0313 Q114.4375,446.7656 114.4375,446.1563 L114.4375,442.8438 L123.25,442.8438 L123.25,446.1563 Q123.25,446.7656 123,447.0313 Q122.7656,447.2969 122.3906,447.2969 Q122.0156,447.2969 121.7813,447.0313 Q121.5469,446.7656 121.5469,446.1563 L121.5469,444.5469 L119.6719,444.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="58" x="139.25" y="452.125">tarot_cards</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="8" x2="296" y1="463.1563" y2="463.1563"/><ellipse cx="18" cy="474.1563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="27" y="478.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="133" x="71" y="478.5752">: SMALLINT        «PK, 0-77»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="8" x2="296" y1="484.9922" y2="484.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="131" x="13" y="500.4111">name_en   : VARCHAR(80)</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="127" x="13" y="514.2471">name_vi   : VARCHAR(80)</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="131" x="13" y="528.083">name_zh   : VARCHAR(80)</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="278" x="13" y="541.9189">suit      : ENUM('major','wands','cups','swords','pentacles')</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="186" x="13" y="555.7549">symbol    : VARCHAR(4)      «unicode»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="89" x="13" y="569.5908">meaning_en: TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="85" x="13" y="583.4268">meaning_vi: TEXT</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="89" x="13" y="597.2627">meaning_zh: TEXT</text><!--MD5=[4e6673c2c4c85fe17439a419a784e913]
+class readings--><rect codeLine="96" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="131.0156" id="readings" style="stroke:#C9A84C;stroke-width:1.5;" width="279" x="646.5" y="452.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="279" x="646.5" y="452.1563"/><ellipse cx="759.25" cy="468.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M760.1719,465.5469 L760.1719,472.2031 L761.3281,472.2031 Q761.9375,472.2031 762.1875,472.4375 Q762.4531,472.6719 762.4531,473.0625 Q762.4531,473.4375 762.1875,473.6719 Q761.9375,473.9063 761.3281,473.9063 L757.3438,473.9063 Q756.7188,473.9063 756.4531,473.6719 Q756.2031,473.4375 756.2031,473.0469 Q756.2031,472.6719 756.4531,472.4375 Q756.7188,472.2031 757.3438,472.2031 L758.4688,472.2031 L758.4688,465.5469 L756.625,465.5469 L756.625,467.1563 Q756.625,467.7656 756.3906,468.0313 Q756.1563,468.2969 755.7813,468.2969 Q755.4063,468.2969 755.1719,468.0313 Q754.9375,467.7656 754.9375,467.1563 L754.9375,463.8438 L763.75,463.8438 L763.75,467.1563 Q763.75,467.7656 763.5,468.0313 Q763.2656,468.2969 762.8906,468.2969 Q762.5156,468.2969 762.2813,468.0313 Q762.0469,467.7656 762.0469,467.1563 L762.0469,465.5469 L760.1719,465.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="45" x="779.75" y="473.125">readings</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="647.5" x2="924.5" y1="484.1563" y2="484.1563"/><ellipse cx="657.5" cy="495.1563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="666.5" y="499.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="710.5" y="499.5752">: UUID            «PK»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="647.5" x2="924.5" y1="505.9922" y2="505.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="37" x="652.5" y="521.4111">user_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="144" x="716.5" y="521.4111">: UUID            «FK → users.id»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="57" x="652.5" y="535.2471">category_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="195" x="724.5" y="535.2471">: VARCHAR(30)     «FK → categories.id»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="232" x="652.5" y="549.083">question  : TEXT            «user's actual question»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="147" x="652.5" y="562.9189">language  : ENUM('EN','VI','ZH')</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="221" x="652.5" y="576.7549">created_at: TIMESTAMPTZ     «default now()»</text><!--MD5=[7adc5cdfe05e02db9004ae37e06834cc]
+class reading_cards--><rect codeLine="109" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="117.1797" id="reading_cards" style="stroke:#C9A84C;stroke-width:1.5;" width="290" x="168" y="682.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="290" x="168" y="682.1563"/><ellipse cx="272.25" cy="698.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M273.1719,695.5469 L273.1719,702.2031 L274.3281,702.2031 Q274.9375,702.2031 275.1875,702.4375 Q275.4531,702.6719 275.4531,703.0625 Q275.4531,703.4375 275.1875,703.6719 Q274.9375,703.9063 274.3281,703.9063 L270.3438,703.9063 Q269.7188,703.9063 269.4531,703.6719 Q269.2031,703.4375 269.2031,703.0469 Q269.2031,702.6719 269.4531,702.4375 Q269.7188,702.2031 270.3438,702.2031 L271.4688,702.2031 L271.4688,695.5469 L269.625,695.5469 L269.625,697.1563 Q269.625,697.7656 269.3906,698.0313 Q269.1563,698.2969 268.7813,698.2969 Q268.4063,698.2969 268.1719,698.0313 Q267.9375,697.7656 267.9375,697.1563 L267.9375,693.8438 L276.75,693.8438 L276.75,697.1563 Q276.75,697.7656 276.5,698.0313 Q276.2656,698.2969 275.8906,698.2969 Q275.5156,698.2969 275.2813,698.0313 Q275.0469,697.7656 275.0469,697.1563 L275.0469,695.5469 L273.1719,695.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="73" x="292.75" y="703.125">reading_cards</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="169" x2="457" y1="714.1563" y2="714.1563"/><ellipse cx="179" cy="725.1563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="188" y="729.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="232" y="729.5752">: UUID            «PK»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="169" x2="457" y1="735.9922" y2="735.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="52" x="174" y="751.4111">reading_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="158" x="244" y="751.4111">: UUID            «FK → readings.id»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="37" x="174" y="765.2471">card_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="187" x="238" y="765.2471">: SMALLINT        «FK → tarot_cards.id»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="190" x="174" y="779.083">position  : ENUM('past','present','future')</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="278" x="174" y="792.9189">position_order: SMALLINT    «0=past,1=present,2=future»</text><!--MD5=[e9d213274de4bb748085e56f3f5196e8]
+class reading_interpretations--><rect codeLine="121" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="117.1797" id="reading_interpretations" style="stroke:#C9A84C;stroke-width:1.5;" width="283" x="498.5" y="682.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="283" x="498.5" y="682.1563"/><ellipse cx="574.75" cy="698.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M575.6719,695.5469 L575.6719,702.2031 L576.8281,702.2031 Q577.4375,702.2031 577.6875,702.4375 Q577.9531,702.6719 577.9531,703.0625 Q577.9531,703.4375 577.6875,703.6719 Q577.4375,703.9063 576.8281,703.9063 L572.8438,703.9063 Q572.2188,703.9063 571.9531,703.6719 Q571.7031,703.4375 571.7031,703.0469 Q571.7031,702.6719 571.9531,702.4375 Q572.2188,702.2031 572.8438,702.2031 L573.9688,702.2031 L573.9688,695.5469 L572.125,695.5469 L572.125,697.1563 Q572.125,697.7656 571.8906,698.0313 Q571.6563,698.2969 571.2813,698.2969 Q570.9063,698.2969 570.6719,698.0313 Q570.4375,697.7656 570.4375,697.1563 L570.4375,693.8438 L579.25,693.8438 L579.25,697.1563 Q579.25,697.7656 579,698.0313 Q578.7656,698.2969 578.3906,698.2969 Q578.0156,698.2969 577.7813,698.0313 Q577.5469,697.7656 577.5469,697.1563 L577.5469,695.5469 L575.6719,695.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="122" x="595.25" y="703.125">reading_interpretations</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="499.5" x2="780.5" y1="714.1563" y2="714.1563"/><ellipse cx="509.5" cy="725.1563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="518.5" y="729.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="562.5" y="729.5752">: UUID            «PK»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="499.5" x2="780.5" y1="735.9922" y2="735.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="52" x="504.5" y="751.4111">reading_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="201" x="574.5" y="751.4111">: UUID            «FK → readings.id, UNIQUE»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="248" x="504.5" y="765.2471">content   : TEXT            «generated markdown text»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="234" x="504.5" y="779.083">model_ver : VARCHAR(50)     «AI version used»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="128" x="504.5" y="792.9189">created_at: TIMESTAMPTZ</text><!--MD5=[3d052017a0a628b6e2586bdc6e340267]
+class admin_sessions--><rect codeLine="133" fill="#0F0F1C" filter="url(#fvnjs0ioty0hg)" height="117.1797" id="admin_sessions" style="stroke:#C9A84C;stroke-width:1.5;" width="220" x="961" y="459.1563"/><rect fill="#1A1430" height="32" style="stroke:#C9A84C;stroke-width:1.5;" width="220" x="961" y="459.1563"/><ellipse cx="1025.75" cy="475.1563" fill="#C9A84C" rx="11" ry="11" style="stroke:#C9A84C;stroke-width:1.0;"/><path d="M1026.6719,472.5469 L1026.6719,479.2031 L1027.8281,479.2031 Q1028.4375,479.2031 1028.6875,479.4375 Q1028.9531,479.6719 1028.9531,480.0625 Q1028.9531,480.4375 1028.6875,480.6719 Q1028.4375,480.9063 1027.8281,480.9063 L1023.8438,480.9063 Q1023.2188,480.9063 1022.9531,480.6719 Q1022.7031,480.4375 1022.7031,480.0469 Q1022.7031,479.6719 1022.9531,479.4375 Q1023.2188,479.2031 1023.8438,479.2031 L1024.9688,479.2031 L1024.9688,472.5469 L1023.125,472.5469 L1023.125,474.1563 Q1023.125,474.7656 1022.8906,475.0313 Q1022.6563,475.2969 1022.2813,475.2969 Q1021.9063,475.2969 1021.6719,475.0313 Q1021.4375,474.7656 1021.4375,474.1563 L1021.4375,470.8438 L1030.25,470.8438 L1030.25,474.1563 Q1030.25,474.7656 1030,475.0313 Q1029.7656,475.2969 1029.3906,475.2969 Q1029.0156,475.2969 1028.7813,475.0313 Q1028.5469,474.7656 1028.5469,474.1563 L1028.5469,472.5469 L1026.6719,472.5469 Z " fill="#000000"/><text fill="#F0E6D3" font-family="Segoe UI" font-size="12" lengthAdjust="spacing" textLength="82" x="1046.25" y="480.125">admin_sessions</text><line style="stroke:#C9A84C;stroke-width:1.5;" x1="962" x2="1180" y1="491.1563" y2="491.1563"/><ellipse cx="972" cy="502.1563" fill="none" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" text-decoration="underline" textLength="8" x="981" y="506.5752">id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="90" x="1025" y="506.5752">: UUID            «PK»</text><line style="stroke:#C9A84C;stroke-width:1.0;" x1="962" x2="1180" y1="512.9922" y2="512.9922"/><text fill="#D4C5A9" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacing" textLength="37" x="967" y="528.4111">user_id</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="144" x="1031" y="528.4111">: UUID            «FK → users.id»</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="81" x="967" y="542.2471">ip_address: INET</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="128" x="967" y="556.083">created_at: TIMESTAMPTZ</text><text fill="#D4C5A9" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="162" x="967" y="569.9189">expires_at [NULL]: TIMESTAMPTZ</text><path d="M848.5,31.1563 L848.5,106.5625 A0,0 0 0 0 848.5,106.5625 L954,106.5625 L958,180.3663 L962,106.5625 L1067.5,106.5625 A0,0 0 0 0 1067.5,106.5625 L1067.5,41.1563 L1057.5,31.1563 L848.5,31.1563 A0,0 0 0 0 848.5,31.1563 " fill="#13111E" filter="url(#fvnjs0ioty0hg)" style="stroke:#8B5CF6;stroke-width:1.0;"/><path d="M1057.5,31.1563 L1057.5,41.1563 L1067.5,41.1563 L1057.5,31.1563 " fill="#13111E" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#C9A84C" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="92" x="854.5" y="49.6514">Authentication</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="161" x="854.5" y="66.0029">Password is bcrypt-hashed.</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="182" x="854.5" y="82.3545">Currently stored in localStorage</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="198" x="854.5" y="98.7061">(dev). Production: Supabase Auth.</text><path d="M62.5,198.1563 L62.5,322.6172 A0,0 0 0 0 62.5,322.6172 L148,322.6172 L152,430.8363 L156,322.6172 L241.5,322.6172 A0,0 0 0 0 241.5,322.6172 L241.5,208.1563 L231.5,198.1563 L62.5,198.1563 A0,0 0 0 0 62.5,198.1563 " fill="#13111E" filter="url(#fvnjs0ioty0hg)" style="stroke:#8B5CF6;stroke-width:1.0;"/><path d="M231.5,198.1563 L231.5,208.1563 L241.5,208.1563 L231.5,198.1563 " fill="#13111E" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#C9A84C" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="106" x="68.5" y="216.6514">Static Seed Data</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="83" x="68.5" y="233.0029">78 cards total:</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="158" x="68.5" y="249.3545">· 22 Major Arcana  (id 0-21)</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="157" x="68.5" y="265.7061">· 14 Wands         (id 22-35)</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="150" x="68.5" y="282.0576">· 14 Cups          (id 36-49)</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155" x="68.5" y="298.4092">· 14 Swords        (id 50-63)</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="158" x="68.5" y="314.7607">· 14 Pentacles     (id 64-77)</text><path d="M817,694.6563 L817,786.4141 A0,0 0 0 0 817,786.4141 L1045,786.4141 A0,0 0 0 0 1045,786.4141 L1045,704.6563 L1035,694.6563 L905.28,694.6563 L828.33,583.1763 L897.28,694.6563 L817,694.6563 A0,0 0 0 0 817,694.6563 " fill="#13111E" filter="url(#fvnjs0ioty0hg)" style="stroke:#8B5CF6;stroke-width:1.0;"/><path d="M1035,694.6563 L1035,704.6563 L1045,704.6563 L1035,694.6563 " fill="#13111E" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#C9A84C" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="114" x="823" y="713.1514">Reading Lifecycle</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="207" x="823" y="729.5029">1. User selects category + question</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="196" x="823" y="745.8545">2. 3 cards drawn → reading_cards</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="166" x="823" y="762.2061">3. Interpretation generated →</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="131" x="835" y="778.5576">reading_interpretations</text><path d="M522,860.1563 L522,935.5625 A0,0 0 0 0 522,935.5625 L758,935.5625 A0,0 0 0 0 758,935.5625 L758,870.1563 L748,860.1563 L644,860.1563 L640,799.3763 L636,860.1563 L522,860.1563 A0,0 0 0 0 522,860.1563 " fill="#13111E" filter="url(#fvnjs0ioty0hg)" style="stroke:#8B5CF6;stroke-width:1.0;"/><path d="M748,860.1563 L748,870.1563 L758,870.1563 L748,860.1563 " fill="#13111E" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#8B5CF6" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="66" x="528" y="878.6514">AI Content</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="215" x="528" y="895.0029">Generated by generateInterpretation()</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="183" x="528" y="911.3545">based on all 3 cards + category</text><text fill="#A89AC0" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="103" x="528" y="927.7061">+ user's question.</text><!--MD5=[1e18d8eea0a7a8f6e6ed423c6095b829]
+link users to readings--><path codeLine="146" d="M904.99,339.8963 C882.41,373.4363 856.26,412.2863 834.23,445.0063 " fill="none" id="users-to-readings" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="834.0574" x2="834.5824" y1="445.2531" y2="455.2393"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="834.0574" x2="824.6176" y1="445.2531" y2="448.5532"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="834.0574" x2="829.6" y1="445.2531" y2="451.8963"/><ellipse cx="837.4004" cy="440.2707" fill="none" rx="4" ry="4" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="39" x="873" y="397.6514">makes</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="893.1337" y="360.9601">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="20" x="813.275" y="441.3422">0..*</text><!--MD5=[13f2923fbd3f738c269c97e414759af8]
+link categories to readings--><path codeLine="147" d="M674.82,353.3963 C695.37,383.5662 717.87,416.6063 737.22,445.0263 " fill="none" id="categories-to-readings" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="737.31" x2="746.7708" y1="445.1519" y2="448.3912"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="737.31" x2="736.8492" y1="445.1519" y2="455.1413"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="737.31" x2="741.81" y1="445.1519" y2="451.7663"/><ellipse cx="733.9349" cy="440.1911" fill="none" rx="4" ry="4" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67" x="706" y="397.6514">categorises</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="672.5471" y="374.9586">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="20" x="715.883" y="441.198">0..*</text><!--MD5=[f1c7535df281aac24c44e5bd75df4be8]
+link categories to category_questions--><path codeLine="148" d="M561.46,353.3963 C544.99,383.4462 526.97,416.3362 511.45,444.6663 " fill="none" id="categories-to-category_questions" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="511.3938" x2="512.812" y1="444.7502" y2="454.6491"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="511.3938" x2="502.288" y1="444.7502" y2="448.8834"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="511.3938" x2="507.55" y1="444.7502" y2="451.7663"/><ellipse cx="514.2767" cy="439.4882" fill="none" rx="4" ry="4" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="85" x="543" y="397.6514">has suggested</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="550.1537" y="374.9586">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="20" x="490.3445" y="441.198">1..*</text><!--MD5=[9f70dcaadd9302337b51a3303b46da8a]
+link readings to reading_cards--><path codeLine="149" d="M670.46,583.1563 C656.59,590.4363 642.54,597.5863 629,604.1563 C575.07,630.3263 514.83,656.8163 461.53,679.3463 " fill="none" id="readings-to-reading_cards" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="460.2975" x2="457.1974" y1="684.2137" y2="676.8387"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="463.0631" x2="459.963" y1="683.0511" y2="675.6762"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="462.4349" x2="455.06" y1="678.9762" y2="682.0763"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80" x="562" y="648.6514">draws exactly</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="650.44" y="604.7088">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="464.947" y="671.4674">3</text><!--MD5=[6351fa442e70e67717bab9cbb9d04d9f]
+link tarot_cards to reading_cards--><path codeLine="150" d="M214.48,604.4163 C231.69,628.0463 250.07,653.2763 266.23,675.4563 " fill="none" id="tarot_cards-to-reading_cards" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="266.2395" x2="275.7996" y1="675.4701" y2="678.4034"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="266.2395" x2="266.1004" y1="675.4701" y2="685.4691"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="266.2395" x2="270.95" y1="675.4701" y2="681.9363"/><ellipse cx="262.7067" cy="670.6204" fill="none" rx="4" ry="4" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48" x="248" y="648.6514">drawn in</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="211.9957" y="625.1981">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="20" x="244.6064" y="671.3103">0..*</text><!--MD5=[4535a8068c461f727784fba720907f4e]
+link readings to reading_interpretations--><path codeLine="151" d="M743.38,583.1763 C724.29,612.0663 701.82,646.0763 682.72,674.9862 " fill="none" id="readings-to-reading_interpretations" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="684.2563" x2="678.2" y1="672.6536" y2="681.8363"/><ellipse cx="684.2563" cy="672.6536" fill="none" rx="4" ry="4" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="683.7414" x2="677.0631" y1="680.6994" y2="676.2948"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21" x="710" y="648.6514">has</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="731.3356" y="604.731">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22" x="659.515" y="671.1982">0..1</text><!--MD5=[65f9638f18e1b224938ad1b49cadcef0]
+link users to admin_sessions--><path codeLine="152" d="M992.83,339.8963 C1008.62,375.6163 1027.08,417.3563 1042.09,451.2963 " fill="none" id="users-to-admin_sessions" style="stroke:#8B5CF6;stroke-width:1.0;"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="1042.2095" x2="1050.929" y1="451.5475" y2="456.4434"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="1042.2095" x2="1039.951" y1="451.5475" y2="461.2891"/><line style="stroke:#8B5CF6;stroke-width:1.0;" x1="1042.2095" x2="1045.44" y1="451.5475" y2="458.8663"/><ellipse cx="1039.7866" cy="446.0585" fill="none" rx="4" ry="4" style="stroke:#8B5CF6;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="35" x="1018" y="397.6514">opens</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="988.5224" y="360.9601">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="20" x="1021.1061" y="448.2318">0..*</text><!--MD5=[041ca00064b266d62dd2c727a9472cf5]
+@startuml Fate_of_Yours_Database_Schema
+
+!define TABLE(name, desc) class name as "desc" << (T, #C9A84C) >>
+!define PK(x) <u>x</u>
+!define FK(x) <i>x</i>
+!define NOT_NULL(x) x
+!define NULLABLE(x) x [NULL]
+
+skinparam class {
+    BackgroundColor #0F0F1C
+    BorderColor #C9A84C
+    ArrowColor #8B5CF6
+    FontColor #F0E6D3
+    FontName Segoe UI
+    FontSize 12
+    HeaderBackgroundColor #1A1430
+    HeaderFontColor #C9A84C
+    HeaderFontStyle bold
+    AttributeFontColor #D4C5A9
+}
+
+skinparam stereotypeCBackgroundColor #2A1F50
+skinparam stereotypeCBorderColor #8B5CF6
+
+skinparam note {
+    BackgroundColor #13111E
+    BorderColor #8B5CF6
+    FontColor #A89AC0
+}
+
+title <color:#C9A84C><size:20>✦ Fate of Yours — Database Schema (ERD)</size></color>
+
+' ══════════════════════════════════════════════
+'  USERS
+' ══════════════════════════════════════════════
+TABLE(users, "users") {
+    + PK(id)            : UUID            <<PK, auto>>
+    - -
+    NOT_NULL(email)     : VARCHAR(255)    <<UNIQUE, NOT NULL>>
+    NOT_NULL(password)  : VARCHAR(255)    <<NOT NULL, hashed>>
+    NULLABLE(dob)       : DATE            <<date of birth>>
+    NOT_NULL(language)  : ENUM('EN','VI','ZH')  <<default 'EN'>>
+    NOT_NULL(is_admin)  : BOOLEAN         <<default false>>
+    NOT_NULL(created_at): TIMESTAMPTZ     <<default now()>>
+    NOT_NULL(updated_at): TIMESTAMPTZ     <<auto-update>>
+}
+
+' ══════════════════════════════════════════════
+'  CATEGORIES  (lookup / seeded, not user-editable)
+' ══════════════════════════════════════════════
+TABLE(categories, "categories") {
+    + PK(id)            : VARCHAR(30)     <<PK, e.g. 'love'>>
+    - -
+    NOT_NULL(label_en)  : VARCHAR(60)
+    NOT_NULL(label_vi)  : VARCHAR(60)
+    NOT_NULL(label_zh)  : VARCHAR(60)
+    NOT_NULL(icon)      : VARCHAR(4)      <<unicode symbol>>
+    NOT_NULL(desc_en)   : TEXT
+    NOT_NULL(desc_vi)   : TEXT
+    NOT_NULL(desc_zh)   : TEXT
+    NOT_NULL(accent_color): VARCHAR(9)    <<hex color>>
+    NOT_NULL(sort_order): SMALLINT
+}
+
+' ══════════════════════════════════════════════
+'  CATEGORY_QUESTIONS  (suggested questions per category)
+' ══════════════════════════════════════════════
+TABLE(category_questions, "category_questions") {
+    + PK(id)            : UUID            <<PK>>
+    - -
+    FK(category_id)     : VARCHAR(30)     <<FK → categories.id>>
+    NOT_NULL(question_en): TEXT
+    NOT_NULL(question_vi): TEXT
+    NOT_NULL(question_zh): TEXT
+    NOT_NULL(sort_order): SMALLINT
+}
+
+' ══════════════════════════════════════════════
+'  TAROT_CARDS  (78 cards, seeded / static)
+' ══════════════════════════════════════════════
+TABLE(tarot_cards, "tarot_cards") {
+    + PK(id)            : SMALLINT        <<PK, 0-77>>
+    - -
+    NOT_NULL(name_en)   : VARCHAR(80)
+    NOT_NULL(name_vi)   : VARCHAR(80)
+    NOT_NULL(name_zh)   : VARCHAR(80)
+    NOT_NULL(suit)      : ENUM('major','wands','cups','swords','pentacles')
+    NOT_NULL(symbol)    : VARCHAR(4)      <<unicode>>
+    NOT_NULL(meaning_en): TEXT
+    NOT_NULL(meaning_vi): TEXT
+    NOT_NULL(meaning_zh): TEXT
+}
+
+' ══════════════════════════════════════════════
+'  READINGS  (each reading session)
+' ══════════════════════════════════════════════
+TABLE(readings, "readings") {
+    + PK(id)            : UUID            <<PK>>
+    - -
+    FK(user_id)         : UUID            <<FK → users.id>>
+    FK(category_id)     : VARCHAR(30)     <<FK → categories.id>>
+    NOT_NULL(question)  : TEXT            <<user's actual question>>
+    NOT_NULL(language)  : ENUM('EN','VI','ZH')
+    NOT_NULL(created_at): TIMESTAMPTZ     <<default now()>>
+}
+
+' ══════════════════════════════════════════════
+'  READING_CARDS  (3 cards drawn per reading)
+' ══════════════════════════════════════════════
+TABLE(reading_cards, "reading_cards") {
+    + PK(id)            : UUID            <<PK>>
+    - -
+    FK(reading_id)      : UUID            <<FK → readings.id>>
+    FK(card_id)         : SMALLINT        <<FK → tarot_cards.id>>
+    NOT_NULL(position)  : ENUM('past','present','future')
+    NOT_NULL(position_order): SMALLINT    <<0=past,1=present,2=future>>
+}
+
+' ══════════════════════════════════════════════
+'  READING_INTERPRETATIONS  (AI-generated result)
+' ══════════════════════════════════════════════
+TABLE(reading_interpretations, "reading_interpretations") {
+    + PK(id)            : UUID            <<PK>>
+    - -
+    FK(reading_id)      : UUID            <<FK → readings.id, UNIQUE>>
+    NOT_NULL(content)   : TEXT            <<generated markdown text>>
+    NOT_NULL(model_ver) : VARCHAR(50)     <<AI version used>>
+    NOT_NULL(created_at): TIMESTAMPTZ
+}
+
+' ══════════════════════════════════════════════
+'  ADMIN_SESSIONS  (admin portal access log)
+' ══════════════════════════════════════════════
+TABLE(admin_sessions, "admin_sessions") {
+    + PK(id)            : UUID            <<PK>>
+    - -
+    FK(user_id)         : UUID            <<FK → users.id>>
+    NOT_NULL(ip_address): INET
+    NOT_NULL(created_at): TIMESTAMPTZ
+    NULLABLE(expires_at): TIMESTAMPTZ
+}
+
+' ══════════════════════════════════════════════
+'  RELATIONSHIPS
+' ══════════════════════════════════════════════
+
+users               "1" - -o{ "0..*" readings                   : "makes"
+categories          "1" - -o{ "0..*" readings                   : "categorises"
+categories          "1" - -o{ "1..*" category_questions         : "has suggested"
+readings            "1" - -|| "3"    reading_cards              : "draws exactly"
+tarot_cards         "1" - -o{ "0..*" reading_cards              : "drawn in"
+readings            "1" - -o| "0..1" reading_interpretations    : "has"
+users               "1" - -o{ "0..*" admin_sessions             : "opens"
+
+' ══════════════════════════════════════════════
+'  NOTES
+' ══════════════════════════════════════════════
+note top of users
+  <color:#C9A84C>**Authentication**</color>
+  Password is bcrypt-hashed.
+  Currently stored in localStorage
+  (dev). Production: Supabase Auth.
+end note
+
+note top of tarot_cards
+  <color:#C9A84C>**Static Seed Data**</color>
+  78 cards total:
+  · 22 Major Arcana  (id 0-21)
+  · 14 Wands         (id 22-35)
+  · 14 Cups          (id 36-49)
+  · 14 Swords        (id 50-63)
+  · 14 Pentacles     (id 64-77)
+end note
+
+note bottom of readings
+  <color:#C9A84C>**Reading Lifecycle**</color>
+  1. User selects category + question
+  2. 3 cards drawn → reading_cards
+  3. Interpretation generated →
+     reading_interpretations
+end note
+
+note bottom of reading_interpretations
+  <color:#8B5CF6>**AI Content**</color>
+  Generated by generateInterpretation()
+  based on all 3 cards + category
+  + user's question.
+end note
+
+@enduml
+
+@startuml Fate_of_Yours_Database_Schema
+
+
+skinparam class {
+    BackgroundColor #0F0F1C
+    BorderColor #C9A84C
+    ArrowColor #8B5CF6
+    FontColor #F0E6D3
+    FontName Segoe UI
+    FontSize 12
+    HeaderBackgroundColor #1A1430
+    HeaderFontColor #C9A84C
+    HeaderFontStyle bold
+    AttributeFontColor #D4C5A9
+}
+
+skinparam stereotypeCBackgroundColor #2A1F50
+skinparam stereotypeCBorderColor #8B5CF6
+
+skinparam note {
+    BackgroundColor #13111E
+    BorderColor #8B5CF6
+    FontColor #A89AC0
+}
+
+title <color:#C9A84C><size:20>✦ Fate of Yours — Database Schema (ERD)</size></color>
+
+class users as "users" << (T, #C9A84C) >> {
+    + <u>id</u>            : UUID            <<PK, auto>>
+    - -
+    email     : VARCHAR(255)    <<UNIQUE, NOT NULL>>
+    password  : VARCHAR(255)    <<NOT NULL, hashed>>
+    dob [NULL]       : DATE            <<date of birth>>
+    language  : ENUM('EN','VI','ZH')  <<default 'EN'>>
+    is_admin  : BOOLEAN         <<default false>>
+    created_at: TIMESTAMPTZ     <<default now()>>
+    updated_at: TIMESTAMPTZ     <<auto-update>>
+}
+
+class categories as "categories" << (T, #C9A84C) >> {
+    + <u>id</u>            : VARCHAR(30)     <<PK, e.g. 'love'>>
+    - -
+    label_en  : VARCHAR(60)
+    label_vi  : VARCHAR(60)
+    label_zh  : VARCHAR(60)
+    icon      : VARCHAR(4)      <<unicode symbol>>
+    desc_en   : TEXT
+    desc_vi   : TEXT
+    desc_zh   : TEXT
+    accent_color: VARCHAR(9)    <<hex color>>
+    sort_order: SMALLINT
+}
+
+class category_questions as "category_questions" << (T, #C9A84C) >> {
+    + <u>id</u>            : UUID            <<PK>>
+    - -
+    <i>category_id</i>     : VARCHAR(30)     <<FK → categories.id>>
+    question_en: TEXT
+    question_vi: TEXT
+    question_zh: TEXT
+    sort_order: SMALLINT
+}
+
+class tarot_cards as "tarot_cards" << (T, #C9A84C) >> {
+    + <u>id</u>            : SMALLINT        <<PK, 0-77>>
+    - -
+    name_en   : VARCHAR(80)
+    name_vi   : VARCHAR(80)
+    name_zh   : VARCHAR(80)
+    suit      : ENUM('major','wands','cups','swords','pentacles')
+    symbol    : VARCHAR(4)      <<unicode>>
+    meaning_en: TEXT
+    meaning_vi: TEXT
+    meaning_zh: TEXT
+}
+
+class readings as "readings" << (T, #C9A84C) >> {
+    + <u>id</u>            : UUID            <<PK>>
+    - -
+    <i>user_id</i>         : UUID            <<FK → users.id>>
+    <i>category_id</i>     : VARCHAR(30)     <<FK → categories.id>>
+    question  : TEXT            <<user's actual question>>
+    language  : ENUM('EN','VI','ZH')
+    created_at: TIMESTAMPTZ     <<default now()>>
+}
+
+class reading_cards as "reading_cards" << (T, #C9A84C) >> {
+    + <u>id</u>            : UUID            <<PK>>
+    - -
+    <i>reading_id</i>      : UUID            <<FK → readings.id>>
+    <i>card_id</i>         : SMALLINT        <<FK → tarot_cards.id>>
+    position  : ENUM('past','present','future')
+    position_order: SMALLINT    <<0=past,1=present,2=future>>
+}
+
+class reading_interpretations as "reading_interpretations" << (T, #C9A84C) >> {
+    + <u>id</u>            : UUID            <<PK>>
+    - -
+    <i>reading_id</i>      : UUID            <<FK → readings.id, UNIQUE>>
+    content   : TEXT            <<generated markdown text>>
+    model_ver : VARCHAR(50)     <<AI version used>>
+    created_at: TIMESTAMPTZ
+}
+
+class admin_sessions as "admin_sessions" << (T, #C9A84C) >> {
+    + <u>id</u>            : UUID            <<PK>>
+    - -
+    <i>user_id</i>         : UUID            <<FK → users.id>>
+    ip_address: INET
+    created_at: TIMESTAMPTZ
+    expires_at [NULL]: TIMESTAMPTZ
+}
+
+
+users               "1" - -o{ "0..*" readings                   : "makes"
+categories          "1" - -o{ "0..*" readings                   : "categorises"
+categories          "1" - -o{ "1..*" category_questions         : "has suggested"
+readings            "1" - -|| "3"    reading_cards              : "draws exactly"
+tarot_cards         "1" - -o{ "0..*" reading_cards              : "drawn in"
+readings            "1" - -o| "0..1" reading_interpretations    : "has"
+users               "1" - -o{ "0..*" admin_sessions             : "opens"
+
+note top of users
+  <color:#C9A84C>**Authentication**</color>
+  Password is bcrypt-hashed.
+  Currently stored in localStorage
+  (dev). Production: Supabase Auth.
+end note
+
+note top of tarot_cards
+  <color:#C9A84C>**Static Seed Data**</color>
+  78 cards total:
+  · 22 Major Arcana  (id 0-21)
+  · 14 Wands         (id 22-35)
+  · 14 Cups          (id 36-49)
+  · 14 Swords        (id 50-63)
+  · 14 Pentacles     (id 64-77)
+end note
+
+note bottom of readings
+  <color:#C9A84C>**Reading Lifecycle**</color>
+  1. User selects category + question
+  2. 3 cards drawn → reading_cards
+  3. Interpretation generated →
+     reading_interpretations
+end note
+
+note bottom of reading_interpretations
+  <color:#8B5CF6>**AI Content**</color>
+  Generated by generateInterpretation()
+  based on all 3 cards + category
+  + user's question.
+end note
+
+@enduml
+
+PlantUML version 1.2021.00(Sun Jan 10 17:25:05 GMT+07:00 2021)
+(MIT source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
