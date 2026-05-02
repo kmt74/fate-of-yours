@@ -250,7 +250,7 @@ export const CATEGORIES: Category[] = [
   },
 ];
 
-// --- AI Interpretation Generator ---
+// --- AI Interpretation Generator (Offline Fallback) ---
 export function generateInterpretation(
   cards: TarotCard[],
   category: string,
@@ -260,9 +260,9 @@ export function generateInterpretation(
   const categoryObj = CATEGORIES.find((c) => c.id === category);
   const categoryLabel = categoryObj?.label ?? "life";
 
-  return `## The Three-Card Spread
+  return `## A Reading on ${categoryLabel}
 
-*A reading on ${categoryLabel.toLowerCase()} · "${question}"*
+*You asked: "${question}"*
 
 ---
 
@@ -270,14 +270,9 @@ export function generateInterpretation(
 
 In the shadowed realm of what has been, **${past.name}${past.orientation === "reversed" ? " (Reversed)" : ""}** emerges — bearing the resonance of *${past.meaning.toLowerCase()}*. This energy forms the invisible bedrock beneath your present circumstance.
 
-> "What was lived cannot be unlived — but understood, it becomes your compass rather than your cage."
+Something was established here — a pattern, a belief, an experience — that quietly shapes how you approach **${categoryLabel.toLowerCase()}** today. The gift and the burden of this card both belong to you.
 
-Look honestly at what this card stirs within you. The roots of **${past.name}** run deep, quietly shaping every choice that follows. Do not dismiss what arose then as irrelevant to now.
-
-**What this placement reveals:**
-- The foundational energy you carry into the present
-- Patterns and conditioning that may still be active
-- The harvest — both gift and burden — of the path walked so far
+> *"What was lived cannot be unlived — but understood, it becomes your compass rather than your cage."*
 
 ---
 
@@ -287,12 +282,9 @@ Look honestly at what this card stirs within you. The roots of **${past.name}** 
 
 This card does not flatter, nor does it condemn. It simply **is**. Breathe into its symbolism. Allow it to illuminate what you already sense but have not yet dared to fully name.
 
-> "The present is never merely a consequence — it is always also a choice."
+Breathe into it. What within you already recognises this truth? There is something here you may be resisting, or something you haven't yet fully claimed.
 
-**Key energies at play:**
-- The primary force surrounding your current situation
-- Where your attention and energy are most concentrated
-- The invitation ${present.name} is extending to you right now
+> *"The present is never merely a consequence — it is always also a choice."*
 
 ---
 
@@ -300,15 +292,15 @@ This card does not flatter, nor does it condemn. It simply **is**. Breathe into 
 
 Turning toward what may be, **${future.name}${future.orientation === "reversed" ? " (Reversed)" : ""}** rises on the horizon — carrying the potential of *${future.meaning.toLowerCase()}*.
 
-The future is not a fixed point in the dark. It is a current shaped by every intention and action you carry forward from this moment. ${future.name} reveals a *trajectory*, not a prison.
-
-> "The most powerful force in shaping what comes next is the quality of presence you bring to right now."
+The question becomes: does this feel like a destination you're moving toward consciously, or one you're drifting into? What small shift in how you hold your question — *"${question}"* — might change this trajectory?
 
 ---
 
-## The Synthesis
+## The Story These Three Cards Tell
+
+From *${past.meaning.toLowerCase()}* (${past.name}) through *${present.meaning.toLowerCase()}* (${present.name}) toward *${future.meaning.toLowerCase()}* (${future.name}) — there is a coherent arc here. Something is being released, something is being held, and something is becoming possible.
 
 Together, **${past.name}${past.orientation === "reversed" ? " (Reversed)" : ""}**, **${present.name}${present.orientation === "reversed" ? " (Reversed)" : ""}**, and **${future.name}${future.orientation === "reversed" ? " (Reversed)" : ""}** form a living arc — a single narrative woven from three distinct moments of time and energy. The movement from *${past.meaning.toLowerCase()}* through *${present.meaning.toLowerCase()}* toward *${future.meaning.toLowerCase()}* is not accidental. It is the story the cards have recognised in you.
 
-Receive this reading not as destiny, but as a mirror. The ancient wisdom held within these symbols has spoken. **What you do with this knowledge is, and has always been, entirely up to you.**`;
+**Core insight for you now:** *The cards have spoken. What you do with this knowledge is, and has always been, entirely up to you.*`;
 }

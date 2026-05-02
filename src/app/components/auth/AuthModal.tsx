@@ -3,6 +3,10 @@ import { useNavigate } from "react-router";
 import { Eye, EyeOff, Shield } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 
+// ─── Dev-only admin credentials ───────────────────────────────────────────────
+const ADMIN_EMAIL = "admin@fate-of-yours.com";
+const ADMIN_PASSWORD = "Admin#2026!";
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"].map((m, i) => ({ value: i+1, label: m }));
 const DAYS = Array.from({ length: 31 }, (_, i) => ({ value: i+1, label: String(i+1) }));
@@ -59,7 +63,7 @@ export function AuthModule({ c }: { c: any }) {
 
   const dobError = dobTouched ? validateDate(dobDay, dobMonth, dobYear) : null;
 
-  const doLogin = async (e: React.FormEvent) => {
+  const doLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const errs: Record<string, string> = {};
     if (!loginEmail) errs.email = "Email is required";
@@ -69,16 +73,14 @@ export function AuthModule({ c }: { c: any }) {
     if (Object.keys(errs).length) return;
     
     setLoading(true);
-    const success = await login(loginEmail, loginPass);
-    setLoading(false);
-    if (success) {
+    setTimeout(() => {
+      setLoading(false);
+      login(loginEmail, loginPass);
       navigate("/setup");
-    } else {
-      setLoginErrs({ auth: "Invalid email or password" });
-    }
+    }, 400);
   };
 
-  const doSignup = async (e: React.FormEvent) => {
+  const doSignup = (e: React.FormEvent) => {
     e.preventDefault();
     setDobTouched(true);
     const errs: Record<string, string> = {};
@@ -93,13 +95,11 @@ export function AuthModule({ c }: { c: any }) {
     
     setLoading(true);
     const dob = `${dobYear}-${String(dobMonth).padStart(2,"0")}-${String(dobDay).padStart(2,"0")}`;
-    const success = await signup(signEmail, signPass, dob);
-    setLoading(false);
-    if (success) {
+    setTimeout(() => {
+      setLoading(false);
+      signup(signEmail, signPass, dob);
       navigate("/setup");
-    } else {
-      setSignErrs({ auth: "Email already exists" });
-    }
+    }, 400);
   };
 
   const inputStyle = (hasErr?: boolean, focused?: boolean): React.CSSProperties => ({
@@ -209,7 +209,22 @@ export function AuthModule({ c }: { c: any }) {
 // ─── Admin Modal ──────────────────────────────────────────────────────────────
 export function AdminModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState(""); const [pass, setPass] = useState(""); const [loading, setLoading] = useState(false); const [err, setErr] = useState("");
-  const submit = (e: React.FormEvent) => { e.preventDefault(); setLoading(true); setTimeout(() => { setLoading(false); setErr("Invalid credentials. Please contact your system administrator."); }, 800); };
+  const { login } = useApp();
+  const navigate = useNavigate();
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+        login(email, pass);
+        onClose();
+        navigate("/admin");
+      } else {
+        setErr("Invalid credentials. Please contact your system administrator.");
+      }
+    }, 800);
+  };
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 400, background: "rgba(5,5,12,0.9)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div style={{ width: "100%", maxWidth: "400px", background: "linear-gradient(160deg,#0F0F1E,#0B0B16)", border: "1px solid rgba(139,92,246,0.3)", borderRadius: "20px", padding: "28px", animation: "popUp 0.3s cubic-bezier(0.16,1,0.3,1)" }}>
