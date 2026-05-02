@@ -73,7 +73,7 @@ export function CardPlaceholder({ card, revealed, index }: CardPlaceholderProps)
             transition: `transform 0.75s cubic-bezier(0.4, 0.0, 0.2, 1) ${index * 0.18}s`,
             position: "relative",
             width: "100%",
-            paddingBottom: "160%",
+            paddingBottom: "171.5%",
           }}
         >
           {/* Card Back */}

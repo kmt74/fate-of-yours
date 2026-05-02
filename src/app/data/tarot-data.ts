@@ -4,6 +4,7 @@ export interface TarotCard {
   suit: "major" | "wands" | "cups" | "swords" | "pentacles";
   symbol: string;
   meaning: string;
+  orientation?: "upright" | "reversed";
 }
 
 const majorArcana: TarotCard[] = [
@@ -85,7 +86,10 @@ export const TAROT_DECK: TarotCard[] = [
   ...cups,
   ...swords,
   ...pentacles,
-];
+].map(card => ({
+  ...card,
+  image: `/assets/cards/card_${card.id}.jpg`
+}));
 
 // ─── Bilingual Major Arcana Names ─────────────────────────────────────────────
 export const MAJOR_ARCANA_VI: Record<number, string> = {
@@ -262,9 +266,9 @@ export function generateInterpretation(
 
 ---
 
-### I. The Past · ${past.name}
+### I. The Past · ${past.name} ${past.orientation === "reversed" ? "(Reversed)" : ""}
 
-*${past.meaning}.* This energy forms the invisible ground beneath what you're navigating now in the realm of **${categoryLabel.toLowerCase()}**. Look honestly at what **${past.name}** stirs in you — not as history to escape, but as the root that explains how you arrived at this question.
+In the shadowed realm of what has been, **${past.name}${past.orientation === "reversed" ? " (Reversed)" : ""}** emerges — bearing the resonance of *${past.meaning.toLowerCase()}*. This energy forms the invisible bedrock beneath your present circumstance.
 
 Something was established here — a pattern, a belief, an experience — that quietly shapes how you approach **${categoryLabel.toLowerCase()}** today. The gift and the burden of this card both belong to you.
 
@@ -272,9 +276,11 @@ Something was established here — a pattern, a belief, an experience — that q
 
 ---
 
-### II. The Present · ${present.name}
+### II. The Present · ${present.name} ${present.orientation === "reversed" ? "(Reversed)" : ""}
 
-At the centre of your question — *"${question}"* — stands **${present.name}**, carrying the quality of *${present.meaning.toLowerCase()}*. This is not a coincidence. The cards have placed this energy here precisely because it speaks to what you are navigating right now in **${categoryLabel.toLowerCase()}**.
+**${present.name}${present.orientation === "reversed" ? " (Reversed)" : ""}** stands at the threshold with you now. Its essence — *${present.meaning.toLowerCase()}* — is the living truth of this moment.
+
+This card does not flatter, nor does it condemn. It simply **is**. Breathe into its symbolism. Allow it to illuminate what you already sense but have not yet dared to fully name.
 
 Breathe into it. What within you already recognises this truth? There is something here you may be resisting, or something you haven't yet fully claimed.
 
@@ -282,9 +288,9 @@ Breathe into it. What within you already recognises this truth? There is somethi
 
 ---
 
-### III. The Future · ${future.name}
+### III. The Future · ${future.name} ${future.orientation === "reversed" ? "(Reversed)" : ""}
 
-Emerging from where you stand now, **${future.name}** appears on the horizon — *${future.meaning.toLowerCase()}*. This is not a locked fate. It is the trajectory your current energy is building in the context of **${categoryLabel.toLowerCase()}**.
+Turning toward what may be, **${future.name}${future.orientation === "reversed" ? " (Reversed)" : ""}** rises on the horizon — carrying the potential of *${future.meaning.toLowerCase()}*.
 
 The question becomes: does this feel like a destination you're moving toward consciously, or one you're drifting into? What small shift in how you hold your question — *"${question}"* — might change this trajectory?
 
@@ -294,7 +300,7 @@ The question becomes: does this feel like a destination you're moving toward con
 
 From *${past.meaning.toLowerCase()}* (${past.name}) through *${present.meaning.toLowerCase()}* (${present.name}) toward *${future.meaning.toLowerCase()}* (${future.name}) — there is a coherent arc here. Something is being released, something is being held, and something is becoming possible.
 
-In the context of **${categoryLabel.toLowerCase()}** and your question, this triad suggests: the past has given you more than you may credit yourself for. The present asks you to stop, see clearly, and choose. The future is waiting for that clarity.
+Together, **${past.name}${past.orientation === "reversed" ? " (Reversed)" : ""}**, **${present.name}${present.orientation === "reversed" ? " (Reversed)" : ""}**, and **${future.name}${future.orientation === "reversed" ? " (Reversed)" : ""}** form a living arc — a single narrative woven from three distinct moments of time and energy. The movement from *${past.meaning.toLowerCase()}* through *${present.meaning.toLowerCase()}* toward *${future.meaning.toLowerCase()}* is not accidental. It is the story the cards have recognised in you.
 
 **Core insight for you now:** *The cards have spoken. What you do with this knowledge is, and has always been, entirely up to you.*`;
 }

@@ -145,14 +145,16 @@ export default function ReadingPage() {
           {/* ── Reading Header ── */}
           <header
             id="Reading-Header"
-            className="flex flex-col gap-4"
+            className="flex flex-col items-center text-center gap-5"
           >
-            <SectionTag text="STEP 3 OF 3 · YOUR READING" centered={false} />
+            <SectionTag text="STEP 3 OF 3 · YOUR READING" centered={true} />
             {categoryObj && (
-              <ReadingContextCard
-                category={categoryObj}
-                question={question}
-              />
+              <div className="w-full max-w-[600px]">
+                <ReadingContextCard
+                  category={categoryObj}
+                  question={question}
+                />
+              </div>
             )}
           </header>
 

@@ -77,7 +77,7 @@ export default function LandingPage() {
   return (
     <div id="Landing-Page" style={{ backgroundColor: "#070710", minHeight: "100vh" }}>
       
-      {/* Unified Background Layer (GSAP) */}
+      {/* Unified Background Layer */}
       <div
         id="Unified-Background"
         style={{
@@ -86,7 +86,7 @@ export default function LandingPage() {
           overflow: "hidden"
         }}
       >
-        <ImmersiveScrollScene />
+        {/* The scene is now moved inside the main scroller for better trigger sync */}
       </div>
 
       <nav id="Nav-Bar" style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 100, backgroundColor: "rgba(7,7,16,0.8)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,168,76,0.06)" }}>
@@ -105,11 +105,36 @@ export default function LandingPage() {
       </nav>
 
       {/* Main Content Area */}
-      <main id="Landing-Main" style={{ position: "relative", zIndex: 10, padding: "100px 24px" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "120px" }}>
+      <main id="Landing-Main" style={{ 
+        position: "relative", 
+        zIndex: 10, 
+        paddingTop: "64px"
+      }}>
+        <ImmersiveScrollScene />
+        <style>{`
+          html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+          }
+          #Landing-Main section {
+            scroll-snap-align: start;
+            min-height: 100vh;
+          }
+        `}</style>
+        <div id="Landing-Content-Wrapper" style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column" }}>
           
           {/* Hero */}
-          <section id="Hero-Section" style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: "32px" }}>
+          <section id="Hero-Section" style={{ 
+            minHeight: "calc(100vh - 64px)", 
+            display: "flex", 
+            flexDirection: "column", 
+            alignItems: "center", 
+            justifyContent: "center", 
+            textAlign: "center", 
+            gap: "32px",
+            scrollSnapAlign: "start",
+            padding: "40px 24px"
+          }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <div style={{ height: "1px", width: "40px", background: "linear-gradient(to right,transparent,rgba(201,168,76,0.4))" }} />
               <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(201,168,76,0.5)", fontSize: "0.65rem", letterSpacing: "0.25em", fontWeight: 600 }}>{t.eyebrow}</span>
@@ -136,7 +161,14 @@ export default function LandingPage() {
           </section>
 
           {/* Intro to Tarot */}
-          <section id="Intro-Tarot" style={{ scrollMarginTop: "100px" }}>
+          <section id="Intro-Tarot" style={{ 
+            scrollMarginTop: "64px", 
+            scrollSnapAlign: "start",
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            padding: "40px 24px"
+          }}>
             <GlassPanel>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "60px", alignItems: "center" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
@@ -163,7 +195,14 @@ export default function LandingPage() {
           </section>
 
           {/* Benefits */}
-          <section id="Benefits-Section" style={{ scrollMarginTop: "100px" }}>
+          <section id="Benefits-Section" style={{ 
+            scrollMarginTop: "64px", 
+            scrollSnapAlign: "start",
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            padding: "40px 24px"
+          }}>
             <GlassPanel>
               <div style={{ textAlign: "center", marginBottom: "50px" }}>
                 <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(201,168,76,0.6)", fontSize: "0.7rem", letterSpacing: "0.25em", fontWeight: 600, display: "block", marginBottom: "12px" }}>{t.benefitsBadge}</span>
@@ -212,12 +251,30 @@ export default function LandingPage() {
           </section>
 
           {/* Auth Section */}
-          <section id="Auth-Section" style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", scrollMarginTop: "100px" }}>
+          <section id="Auth-Section" style={{ 
+            minHeight: "100vh", 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center", 
+            scrollMarginTop: "64px",
+            scrollSnapAlign: "start",
+            padding: "40px 24px"
+          }}>
             <AuthModule c={t.auth} />
           </section>
 
           {/* Footer CTA */}
-          <section id="Footer-CTA" style={{ padding: "60px 0", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "24px" }}>
+          <section id="Footer-CTA" style={{ 
+            padding: "80px 24px", 
+            textAlign: "center", 
+            display: "flex", 
+            flexDirection: "column", 
+            alignItems: "center", 
+            gap: "24px",
+            scrollSnapAlign: "start",
+            minHeight: "100vh",
+            justifyContent: "center"
+          }}>
             <div style={{
               background: "rgba(10, 10, 25, 0.3)",
               backdropFilter: "blur(12px)",

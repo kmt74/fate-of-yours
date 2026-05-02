@@ -6,11 +6,18 @@ import SetupPage from "./pages/SetupPage";
 import DeckPage from "./pages/DeckPage";
 import ReadingPage from "./pages/ReadingPage";
 import HistoryPage from "./pages/HistoryPage";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminPage from "./pages/AdminPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useApp();
   if (!isAuthenticated) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
+function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
+  const isAdmin = sessionStorage.getItem("isAdminAuthenticated") === "true";
+  if (!isAdmin) return <Navigate to="/admin/login" replace />;
   return <>{children}</>;
 }
 
@@ -25,6 +32,7 @@ export const router = createBrowserRouter([
   { path: "/deck", Component: DeckRoute },
   { path: "/reading", Component: ReadingRoute },
   { path: "/history", Component: HistoryRoute },
-  { path: "/admin", Component: AdminDashboard },
+  { path: "/admin", Component: () => <AdminProtectedRoute><AdminPage /></AdminProtectedRoute> },
+  { path: "/admin/login", Component: AdminLoginPage },
   { path: "*", Component: () => <Navigate to="/" replace /> },
 ]);
