@@ -4,6 +4,7 @@ export interface TarotCard {
   suit: "major" | "wands" | "cups" | "swords" | "pentacles";
   symbol: string;
   meaning: string;
+  orientation?: "upright" | "reversed";
 }
 
 const majorArcana: TarotCard[] = [
@@ -85,7 +86,10 @@ export const TAROT_DECK: TarotCard[] = [
   ...cups,
   ...swords,
   ...pentacles,
-];
+].map(card => ({
+  ...card,
+  image: `/assets/cards/card_${card.id}.jpg`
+}));
 
 // ─── Bilingual Major Arcana Names ─────────────────────────────────────────────
 export const MAJOR_ARCANA_VI: Record<number, string> = {
@@ -262,9 +266,9 @@ export function generateInterpretation(
 
 ---
 
-### I. The Past · ${past.name}
+### I. The Past · ${past.name} ${past.orientation === "reversed" ? "(Reversed)" : ""}
 
-In the shadowed realm of what has been, **${past.name}** emerges — bearing the resonance of *${past.meaning.toLowerCase()}*. This energy forms the invisible bedrock beneath your present circumstance.
+In the shadowed realm of what has been, **${past.name}${past.orientation === "reversed" ? " (Reversed)" : ""}** emerges — bearing the resonance of *${past.meaning.toLowerCase()}*. This energy forms the invisible bedrock beneath your present circumstance.
 
 > "What was lived cannot be unlived — but understood, it becomes your compass rather than your cage."
 
@@ -277,9 +281,9 @@ Look honestly at what this card stirs within you. The roots of **${past.name}** 
 
 ---
 
-### II. The Present · ${present.name}
+### II. The Present · ${present.name} ${present.orientation === "reversed" ? "(Reversed)" : ""}
 
-**${present.name}** stands at the threshold with you now. Its essence — *${present.meaning.toLowerCase()}* — is the living truth of this moment.
+**${present.name}${present.orientation === "reversed" ? " (Reversed)" : ""}** stands at the threshold with you now. Its essence — *${present.meaning.toLowerCase()}* — is the living truth of this moment.
 
 This card does not flatter, nor does it condemn. It simply **is**. Breathe into its symbolism. Allow it to illuminate what you already sense but have not yet dared to fully name.
 
@@ -292,9 +296,9 @@ This card does not flatter, nor does it condemn. It simply **is**. Breathe into 
 
 ---
 
-### III. The Future · ${future.name}
+### III. The Future · ${future.name} ${future.orientation === "reversed" ? "(Reversed)" : ""}
 
-Turning toward what may be, **${future.name}** rises on the horizon — carrying the potential of *${future.meaning.toLowerCase()}*.
+Turning toward what may be, **${future.name}${future.orientation === "reversed" ? " (Reversed)" : ""}** rises on the horizon — carrying the potential of *${future.meaning.toLowerCase()}*.
 
 The future is not a fixed point in the dark. It is a current shaped by every intention and action you carry forward from this moment. ${future.name} reveals a *trajectory*, not a prison.
 
@@ -304,7 +308,7 @@ The future is not a fixed point in the dark. It is a current shaped by every int
 
 ## The Synthesis
 
-Together, **${past.name}**, **${present.name}**, and **${future.name}** form a living arc — a single narrative woven from three distinct moments of time and energy. The movement from *${past.meaning.toLowerCase()}* through *${present.meaning.toLowerCase()}* toward *${future.meaning.toLowerCase()}* is not accidental. It is the story the cards have recognised in you.
+Together, **${past.name}${past.orientation === "reversed" ? " (Reversed)" : ""}**, **${present.name}${present.orientation === "reversed" ? " (Reversed)" : ""}**, and **${future.name}${future.orientation === "reversed" ? " (Reversed)" : ""}** form a living arc — a single narrative woven from three distinct moments of time and energy. The movement from *${past.meaning.toLowerCase()}* through *${present.meaning.toLowerCase()}* toward *${future.meaning.toLowerCase()}* is not accidental. It is the story the cards have recognised in you.
 
 Receive this reading not as destiny, but as a mirror. The ancient wisdom held within these symbols has spoken. **What you do with this knowledge is, and has always been, entirely up to you.**`;
 }

@@ -19,6 +19,19 @@ interface Reading extends ReadingSetup {
 
 type Language = "EN" | "VI" | "ZH";
 
+interface AdminUser {
+  id: string;
+  email: string;
+  joinDate: string;
+  status: string;
+}
+
+interface Analytics {
+  totalVisits: number;
+  totalReadings: number;
+  readingTrends: { day: string; count: number }[];
+}
+
 interface AppState {
   isAuthenticated: boolean;
   user: User | null;
@@ -26,6 +39,8 @@ interface AppState {
   selectedCards: TarotCard[];
   language: Language;
   history: Reading[];
+  adminUsers: AdminUser[];
+  analytics: Analytics;
 
   login: (email: string, password: string) => void;
   signup: (email: string, password: string, dob: string) => void;
@@ -35,17 +50,20 @@ interface AppState {
   addReadingToHistory: (reading: Omit<Reading, "id" | "timestamp">) => void;
   resetReading: () => void;
   setLanguage: (lang: Language) => void;
+  banUser: (id: string) => void;
 }
 
 const AppContext = createContext<AppState | null>(null);
 
-const DB = {
+import { DB } from "../lib/db";
+
+const DB_LOCAL = {
   getHistory: (email: string): Reading[] => {
     const data = localStorage.getItem(`history_${email}`);
     return data ? JSON.parse(data) : [];
   },
   saveHistory: (email: string, reading: Reading) => {
-    const current = DB.getHistory(email);
+    const current = DB_LOCAL.getHistory(email);
     localStorage.setItem(`history_${email}`, JSON.stringify([reading, ...current]));
   }
 };
@@ -59,8 +77,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [history, setHistory] = useState<Reading[]>([]);
 
   useEffect(() => {
+    DB.recordVisit();
     if (user) {
-      setHistory(DB.getHistory(user.email));
+      setHistory(DB_LOCAL.getHistory(user.email));
     } else {
       setHistory([]);
     }
@@ -83,10 +102,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSelectedCardsState([]);
   };
 
+  const [adminUsers, setAdminUsers] = useState(DB.getUsers());
+  const [analytics] = useState({
+    totalVisits: 12540,
+    totalReadings: 8420,
+    readingTrends: []
+  });
+
+  const banUser = (id: string) => {
+    DB.banUser(id);
+    setAdminUsers(DB.getUsers());
+  };
+
   const setReadingSetup = (setup: ReadingSetup) => setReadingSetupState(setup);
   const setSelectedCards = (cards: TarotCard[]) => setSelectedCardsState(cards);
   const setLanguage = (lang: Language) => setLanguageState(lang);
-  
+
   const addReadingToHistory = (readingData: Omit<Reading, "id" | "timestamp">) => {
     if (!user) return;
     const newReading: Reading = {
@@ -94,7 +125,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       id: Math.random().toString(36).substr(2, 9),
       timestamp: Date.now(),
     };
-    DB.saveHistory(user.email, newReading);
+    DB_LOCAL.saveHistory(user.email, newReading);
+    DB.addReading(user.email, readingData.category || 'general');
     setHistory(prev => [newReading, ...prev]);
   };
 
@@ -107,6 +139,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider
       value={{
         isAuthenticated, user, readingSetup, selectedCards, language, history,
+        adminUsers, analytics, banUser,
         login, signup, logout, setReadingSetup, setSelectedCards, addReadingToHistory, resetReading, setLanguage,
       }}
     >
