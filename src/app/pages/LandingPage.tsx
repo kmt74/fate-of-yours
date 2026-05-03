@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import { Shield, Sparkles } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { AuthModule, AdminModal } from "../components/auth/AuthModal";
@@ -65,12 +65,8 @@ export default function LandingPage() {
   const { isAuthenticated, user, language, setLanguage } = useApp();
   const [adminOpen, setAdminOpen] = useState(false);
   const locale = useLocale();
+  const navigate = useNavigate();
   const t = locale.landing;
-
-  if (isAuthenticated) {
-    if (user?.isAdmin) return <Navigate to="/admin" replace />;
-    return <Navigate to="/setup" replace />;
-  }
 
   const lang = language as Lang;
 
@@ -250,7 +246,6 @@ export default function LandingPage() {
             </GlassPanel>
           </section>
 
-          {/* Auth Section */}
           <section id="Auth-Section" style={{ 
             minHeight: "100vh", 
             display: "flex", 
@@ -260,7 +255,18 @@ export default function LandingPage() {
             scrollSnapAlign: "start",
             padding: "40px 24px"
           }}>
-            <AuthModule c={t.auth} />
+            {isAuthenticated ? (
+              <div style={{ textAlign: "center", padding: "48px 30px", background: "linear-gradient(160deg, rgba(16,14,30,0.94) 0%, rgba(10,10,20,0.96) 100%)", borderRadius: "22px", border: "1px solid rgba(201,168,76,0.18)", maxWidth: "440px", width: "100%", boxShadow: "0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+                 <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "linear-gradient(135deg,rgba(201,168,76,0.2),rgba(139,92,246,0.2))", border: "1.5px solid rgba(201,168,76,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", boxShadow: "0 0 14px rgba(139,92,246,0.2)", margin: "0 auto 20px" }}>✦</div>
+                 <h2 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "1.8rem", marginBottom: "10px", letterSpacing: "0.04em" }}>Welcome Back</h2>
+                 <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "0.9rem", marginBottom: "30px" }}>Your destiny awaits. Ready for another reading?</p>
+                 <button onClick={() => navigate(user?.isAdmin ? "/admin" : "/setup")} style={{ background: "linear-gradient(135deg,#C9A84C,#A8873A)", border: "none", borderRadius: "10px", padding: "14px 28px", color: "#0A0A12", fontFamily: "'Raleway',sans-serif", fontSize: "0.92rem", fontWeight: 700, letterSpacing: "0.06em", cursor: "pointer", boxShadow: "0 4px 20px rgba(201,168,76,0.3)", width: "100%" }}>
+                   Continue Journey
+                 </button>
+              </div>
+            ) : (
+              <AuthModule c={t.auth} />
+            )}
           </section>
 
           {/* Footer CTA */}

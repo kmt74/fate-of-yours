@@ -1,18 +1,27 @@
 import React, { useState, useMemo } from "react";
-import { Users, BarChart3, ShieldAlert, TrendingUp, Search, UserMinus, UserCheck, Activity, Calendar, PieChart as PieIcon, LogOut } from "lucide-react";
+import { Users, BarChart3, ShieldAlert, TrendingUp, Search, UserMinus, UserCheck, Activity, Calendar, PieChart as PieIcon, LogOut, Trash2 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { DB } from "../lib/db";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 import { useNavigate } from "react-router";
+import { CATEGORIES } from "../data/tarot-data";
 
 export default function AdminPage() {
-  const { adminUsers, banUser } = useApp();
+  const { adminUsers, banUser, deleteUser } = useApp();
   const [activeTab, setActiveTab] = useState<"overview" | "users">("overview");
   const [timeframe, setTimeframe] = useState<"7d" | "30d" | "1y">("7d");
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const readings = useMemo(() => DB.getReadings(), []);
+  const [allReadings, setAllReadings] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    fetch("http://localhost:5000/api/readings")
+      .then(res => res.json())
+      .then(data => setAllReadings(data))
+      .catch(err => console.error("Failed to fetch all readings", err));
+  }, [adminUsers]); // Refetch readings when adminUsers changes (e.g., someone gets deleted)
+
   const visits = useMemo(() => DB.getVisits(), []);
 
   // --- Data Processing for Charts ---
@@ -25,7 +34,7 @@ export default function AdminPage() {
     const trendData: Record<string, number> = {};
     
     // Group readings by day/month
-    readings.forEach(r => {
+    allReadings.forEach(r => {
       if (r.timestamp >= cutoff) {
         const date = new Date(r.timestamp);
         const key = timeframe === "1y" ? date.toLocaleString('default', { month: 'short' }) : date.toLocaleDateString();
@@ -34,17 +43,48 @@ export default function AdminPage() {
     });
 
     return Object.entries(trendData).map(([name, count]) => ({ name, count })).slice(-days);
-  }, [timeframe, readings]);
+  }, [timeframe, allReadings]);
 
   const categoryStats = useMemo(() => {
     const stats: Record<string, number> = {};
-    readings.forEach(r => {
-      stats[r.category] = (stats[r.category] || 0) + 1;
+    
+    // Initialize all categories with 0
+    CATEGORIES.forEach(cat => {
+      stats[cat.id] = 0;
     });
-    return Object.entries(stats).map(([name, value]) => ({ name: name.toUpperCase(), value }));
-  }, [readings]);
 
-  const COLORS = ['#C9A84C', '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B'];
+    // Count readings
+    allReadings.forEach(r => {
+      if (stats[r.category] !== undefined) {
+        stats[r.category] += 1;
+      }
+    });
+
+    const hasData = allReadings.length > 0;
+
+    return Object.entries(stats).map(([id, value]) => {
+      const cat = CATEGORIES.find(c => c.id === id);
+      return { 
+        name: (cat?.label || id).toUpperCase(), 
+        // If no data at all, show equal slices. 
+        // If there is data, give 0-value items a tiny value so they render with minAngle.
+        value: hasData ? (value || 0.1) : 1,
+        realValue: value,
+        isPlaceholder: !hasData
+      };
+    });
+  }, [allReadings]);
+
+  const COLORS = [
+    '#C9A84C', // Gold (Career/General)
+    '#E27B82', // Rose (Love)
+    '#7EA8E0', // Sky (Friendship)
+    '#8B5CF6', // Violet (General)
+    '#4ECDA4', // Emerald (Finance)
+    '#E88A5A', // Orange (Health)
+    '#C084FC', // Purple (Spiritual)
+    '#60A5FA', // Blue (Family)
+  ];
 
   const filteredUsers = adminUsers.filter(u => u.email.toLowerCase().includes(searchQuery.toLowerCase()));
 
@@ -114,14 +154,18 @@ export default function AdminPage() {
 
           {activeTab === "overview" ? (
             <div className="space-y-10 animate-fade-in">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                  {[
                    { label: "Total Visits", value: visits.length.toLocaleString(), icon: Activity, color: "#8B5CF6" },
-                   { label: "Total Readings", value: readings.length.toLocaleString(), icon: TrendingUp, color: "#C9A84C" },
-                   { label: "Active Souls", value: adminUsers.length.toString(), icon: Users, color: "#3B82F6" },
+                   { label: "Total Readings", value: allReadings.length.toLocaleString(), icon: TrendingUp, color: "#C9A84C" },
+                   { label: "Active Souls", value: adminUsers.length.toString(), icon: Users, color: "#3B82F6", action: () => setActiveTab("users") },
                    { label: "Avg Depth", value: "4.2", icon: BarChart3, color: "#10B981" }
                  ].map((stat, i) => (
-                   <div key={i} className="bg-white/[0.03] border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+                   <div 
+                     key={i} 
+                     onClick={stat.action}
+                     className={`bg-white/[0.03] border border-white/5 rounded-2xl p-6 backdrop-blur-md ${stat.action ? 'cursor-pointer hover:bg-white/[0.06] transition-colors' : ''}`}
+                   >
                       <div className="text-[0.65rem] uppercase tracking-[0.2em] text-[rgba(240,230,211,0.4)] mb-3 font-bold">{stat.label}</div>
                       <div className="text-xl font-bold flex items-center justify-between" style={{ color: "#F0E6D3" }}>
                         {stat.value}
@@ -161,7 +205,7 @@ export default function AdminPage() {
                 {/* Category Stats */}
                 <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-xl">
                    <h3 className="text-lg mb-8" style={{ fontFamily: "'Cinzel', serif", color: "#8B5CF6" }}>Fated Spheres</h3>
-                   <div className="h-[300px] w-full">
+                    <div className="h-[300px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
@@ -170,16 +214,46 @@ export default function AdminPage() {
                             cy="50%"
                             innerRadius={60}
                             outerRadius={80}
-                            paddingAngle={8}
+                            paddingAngle={5}
                             dataKey="value"
+                            nameKey="name"
+                            minAngle={15}
+                            label={({ name, percent }) => percent > 0.05 ? name : ""}
+                            labelLine={false}
                           >
-                            {categoryStats.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
+                            {categoryStats.map((entry: any, index) => (
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={COLORS[index % COLORS.length]} 
+                                stroke="none"
+                                fillOpacity={1}
+                                className="transition-all duration-300 outline-none"
+                              />
                             ))}
                           </Pie>
                           <Tooltip 
-                            contentStyle={{ backgroundColor: '#0F0F1A', border: '1px solid rgba(139,92,246,0.3)', borderRadius: '12px' }}
-                            itemStyle={{ color: '#8B5CF6' }}
+                            content={({ active, payload }) => {
+                              if (active && payload && payload.length) {
+                                const data = payload[0].payload;
+                                const color = payload[0].color || payload[0].payload.fill;
+                                return (
+                                  <div style={{
+                                    backgroundColor: color,
+                                    borderRadius: '12px',
+                                    boxShadow: `0 10px 25px ${color}60`,
+                                    padding: '10px 16px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                  }}>
+                                    <span style={{ color: '#FFFFFF', fontFamily: 'Raleway', fontSize: '13px', fontWeight: 700, textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+                                      {data.name}: {data.realValue} readings
+                                    </span>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            }}
                           />
                         </PieChart>
                       </ResponsiveContainer>
@@ -227,11 +301,26 @@ export default function AdminPage() {
                              <span className="text-[0.85rem] font-medium text-[rgba(240,230,211,0.8)]">{user.email}</span>
                           </td>
                           <td className="p-6">
-                            <span className={`text-[0.6rem] font-bold uppercase tracking-widest ${user.status === "active" ? "text-green-400" : "text-red-400"}`}>{user.status}</span>
+                            <span className={`text-[0.6rem] font-bold uppercase tracking-widest ${user.status === "banned" ? "text-red-500" : user.status === "active" ? "text-green-400" : "text-[rgba(240,230,211,0.5)]"}`}>{user.status}</span>
                           </td>
-                          <td className="p-6 text-right">
-                            <button onClick={() => banUser(user.id)} className={`p-2 rounded-xl transition-all ${user.status === "active" ? "hover:bg-red-500/10 text-red-500/50 hover:text-red-500" : "hover:bg-green-500/10 text-green-500/50 hover:text-green-500"}`}>
-                              {user.status === "active" ? <UserMinus size={18} /> : <UserCheck size={18} />}
+                          <td className="p-6 text-right flex justify-end gap-2">
+                            <button 
+                              onClick={() => banUser(user.id)} 
+                              title={user.status === "banned" ? "Unban User" : "Ban User"}
+                              className={`p-2 rounded-xl transition-all ${user.status === "banned" ? "hover:bg-green-500/10 text-green-500/50 hover:text-green-500" : "hover:bg-red-500/10 text-red-500/50 hover:text-red-500"}`}
+                            >
+                              {user.status === "banned" ? <UserCheck size={18} /> : <UserMinus size={18} />}
+                            </button>
+                            <button 
+                              onClick={() => {
+                                if (window.confirm("Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này không?")) {
+                                  deleteUser(user.id);
+                                }
+                              }} 
+                              title="Delete User"
+                              className="p-2 rounded-xl transition-all hover:bg-red-500/10 text-red-500/50 hover:text-red-500"
+                            >
+                              <Trash2 size={18} />
                             </button>
                           </td>
                         </tr>

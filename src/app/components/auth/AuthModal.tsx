@@ -63,7 +63,7 @@ export function AuthModule({ c }: { c: any }) {
 
   const dobError = dobTouched ? validateDate(dobDay, dobMonth, dobYear) : null;
 
-  const doLogin = (e: React.FormEvent) => {
+  const doLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: Record<string, string> = {};
     if (!loginEmail) errs.email = "Email is required";
@@ -73,14 +73,31 @@ export function AuthModule({ c }: { c: any }) {
     if (Object.keys(errs).length) return;
     
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: loginEmail, password: loginPass })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setLoginErrs({ auth: data.message });
+      } else {
+        login(data.user);
+        if (data.user.isAdmin) {
+          navigate("/admin");
+        } else {
+          navigate("/setup");
+        }
+      }
+    } catch (error) {
+      setLoginErrs({ auth: "Server is unreachable. Please try again later." });
+    } finally {
       setLoading(false);
-      login(loginEmail, loginPass);
-      navigate("/setup");
-    }, 400);
+    }
   };
 
-  const doSignup = (e: React.FormEvent) => {
+  const doSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setDobTouched(true);
     const errs: Record<string, string> = {};
@@ -95,11 +112,27 @@ export function AuthModule({ c }: { c: any }) {
     
     setLoading(true);
     const dob = `${dobYear}-${String(dobMonth).padStart(2,"0")}-${String(dobDay).padStart(2,"0")}`;
-    setTimeout(() => {
+    
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: signEmail, password: signPass, dateOfBirth: dob })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSignErrs({ auth: data.message });
+      } else {
+        // Automatically login after successful registration or require login?
+        // Let's log them in. The user object is not returned on register, but we can set it.
+        signup({ email: signEmail, dob: dob, status: 'offline' });
+        navigate("/setup");
+      }
+    } catch (error) {
+      setSignErrs({ auth: "Server is unreachable. Please try again later." });
+    } finally {
       setLoading(false);
-      signup(signEmail, signPass, dob);
-      navigate("/setup");
-    }, 400);
+    }
   };
 
   const inputStyle = (hasErr?: boolean, focused?: boolean): React.CSSProperties => ({

@@ -1,0 +1,18 @@
+[
+  {
+    "_id": "1777788071368",
+    "username": "t1@gmail.com",
+    "password": "$2b$10$BC0u2cQiORHm7LCJI.lZneobKzJY7qnAIXhPSvBQg7voM34gPC/ey",
+    "dateOfBirth": "2004-01-01",
+    "status": "offline",
+    "createdAt": "2026-05-03T06:01:11.368Z"
+  },
+  {
+    "_id": "1777789083454",
+    "username": "t3@gmail.com",
+    "password": "$2b$10$NZWUn9kVxnLF9OzFWkehkuECkwYRks8RCcQZhZDhsKCOu1uwnwgnu",
+    "dateOfBirth": "1990-08-13",
+    "status": "active",
+    "createdAt": "2026-05-03T06:18:03.454Z"
+  }
+]

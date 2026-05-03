@@ -2,8 +2,11 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { TarotCard } from "../data/tarot-data";
 
 interface User {
+  id?: string;
   email: string;
-  dob: string;
+  dob?: string;
+  status?: string;
+  isAdmin?: boolean;
 }
 
 interface ReadingSetup {
@@ -42,8 +45,8 @@ interface AppState {
   adminUsers: AdminUser[];
   analytics: Analytics;
 
-  login: (email: string, password: string) => void;
-  signup: (email: string, password: string, dob: string) => void;
+  login: (user: User) => void;
+  signup: (user: User) => void;
   logout: () => void;
   setReadingSetup: (setup: ReadingSetup) => void;
   setSelectedCards: (cards: TarotCard[]) => void;
@@ -51,22 +54,12 @@ interface AppState {
   resetReading: () => void;
   setLanguage: (lang: Language) => void;
   banUser: (id: string) => void;
+  deleteUser: (id: string) => void;
 }
 
 const AppContext = createContext<AppState | null>(null);
 
 import { DB } from "../lib/db";
-
-const DB_LOCAL = {
-  getHistory: (email: string): Reading[] => {
-    const data = localStorage.getItem(`history_${email}`);
-    return data ? JSON.parse(data) : [];
-  },
-  saveHistory: (email: string, reading: Reading) => {
-    const current = DB_LOCAL.getHistory(email);
-    localStorage.setItem(`history_${email}`, JSON.stringify([reading, ...current]));
-  }
-};
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -79,26 +72,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     DB.recordVisit();
     if (user) {
-      setHistory(DB_LOCAL.getHistory(user.email));
+      fetch(`http://localhost:5000/api/readings/${user.email}`)
+        .then(res => res.json())
+        .then(data => setHistory(data))
+        .catch(err => {
+          console.error("Failed to fetch history", err);
+          setHistory([]);
+        });
     } else {
       setHistory([]);
     }
   }, [user]);
 
-  const ADMIN_EMAIL = "admin@fate-of-yours.com";
-
-  const login = (email: string, _password: string) => {
+  const login = (userData: User) => {
     setIsAuthenticated(true);
-    if (email === ADMIN_EMAIL) {
-      setUser({ email, dob: "1990-01-01", isAdmin: true });
-    } else {
-      setUser({ email, dob: "" });
-    }
+    setUser(userData);
   };
 
-  const signup = (email: string, _password: string, dob: string) => {
+  const signup = (userData: User) => {
     setIsAuthenticated(true);
-    setUser({ email, dob });
+    setUser(userData);
   };
 
   const logout = () => {
@@ -108,32 +101,73 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSelectedCardsState([]);
   };
 
-  const [adminUsers, setAdminUsers] = useState(DB.getUsers());
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/auth/users")
+      .then(res => res.json())
+      .then(data => setAdminUsers(data))
+      .catch(err => console.error("Failed to fetch users", err));
+  }, [isAuthenticated]); // Refetch when someone logs in/registers so admin sees it if they navigate
+
   const [analytics] = useState({
     totalVisits: 12540,
-    totalReadings: 8420,
+    totalReadings: 0,
     readingTrends: []
   });
 
-  const banUser = (id: string) => {
-    DB.banUser(id);
-    setAdminUsers(DB.getUsers());
+  const banUser = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/auth/users/${id}/ban`, { method: 'PUT' });
+      if (res.ok) {
+        const fetchRes = await fetch("http://localhost:5000/api/auth/users");
+        const data = await fetchRes.json();
+        setAdminUsers(data);
+      }
+    } catch (err) {
+      console.error("Failed to ban user", err);
+    }
+  };
+
+  const deleteUser = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/auth/users/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setAdminUsers(prev => prev.filter(u => u.id !== id));
+      }
+    } catch (err) {
+      console.error("Failed to delete user", err);
+    }
   };
 
   const setReadingSetup = (setup: ReadingSetup) => setReadingSetupState(setup);
   const setSelectedCards = (cards: TarotCard[]) => setSelectedCardsState(cards);
   const setLanguage = (lang: Language) => setLanguageState(lang);
 
-  const addReadingToHistory = (readingData: Omit<Reading, "id" | "timestamp">) => {
+  const addReadingToHistory = async (readingData: Omit<Reading, "id" | "timestamp">) => {
     if (!user) return;
-    const newReading: Reading = {
-      ...readingData,
-      id: Math.random().toString(36).substr(2, 9),
-      timestamp: Date.now(),
-    };
-    DB_LOCAL.saveHistory(user.email, newReading);
-    DB.addReading(user.email, readingData.category || 'general');
-    setHistory(prev => [newReading, ...prev]);
+    try {
+      const payload = {
+        email: user.email,
+        category: readingData.category,
+        question: readingData.question,
+        cards: readingData.cards,
+        summary: readingData.summary
+      };
+      
+      const res = await fetch("http://localhost:5000/api/readings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setHistory(prev => [data.reading, ...prev]);
+      }
+    } catch (error) {
+      console.error("Failed to save reading", error);
+    }
   };
 
   const resetReading = () => {
@@ -145,7 +179,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider
       value={{
         isAuthenticated, user, readingSetup, selectedCards, language, history,
-        adminUsers, analytics, banUser,
+        adminUsers, analytics, banUser, deleteUser,
         login, signup, logout, setReadingSetup, setSelectedCards, addReadingToHistory, resetReading, setLanguage,
       }}
     >

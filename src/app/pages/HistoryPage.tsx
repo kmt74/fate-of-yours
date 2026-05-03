@@ -100,8 +100,8 @@ function hexToRgb(hex: string) {
   return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
 }
 
-function formatDate(isoString: string) {
-  const d = new Date(isoString);
+function formatDate(value: string | number) {
+  const d = new Date(value);
   const dateStr = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
   const timeStr = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   return { date: dateStr, time: timeStr };
@@ -125,11 +125,11 @@ function MiniCard({ symbol, suit }: { symbol: string; suit: string }) {
 }
 
 // ─── History Item ─────────────────────────────────────────────────────────────
-function HistoryItem({ reading }: { reading: typeof MOCK_HISTORY[0] }) {
+function HistoryItem({ reading }: { reading: any }) {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const category = CATEGORIES.find((c) => c.id === reading.categoryId);
-  const { date, time } = formatDate(reading.date);
+  const category = CATEGORIES.find((c) => c.id === reading.category);
+  const { date, time } = formatDate(reading.timestamp);
   const rgb = category ? hexToRgb(category.accentColor) : "201,168,76";
   const [hov, setHov] = useState(false);
 
@@ -157,7 +157,7 @@ function HistoryItem({ reading }: { reading: typeof MOCK_HISTORY[0] }) {
           color: category?.accentColor ?? "#C9A84C",
           marginTop: "2px",
         }}>
-          {ICON_MAP[reading.categoryId]}
+          {ICON_MAP[reading.category]}
         </div>
 
         {/* Main content */}
@@ -330,22 +330,22 @@ type SortKey = "date_desc" | "date_asc" | "category";
 type FilterKey = "all" | "love" | "career" | "finance" | "health" | "spiritual" | "family" | "friendship" | "general";
 
 export default function HistoryPage() {
-  const { user } = useApp();
+  const { user, history } = useApp();
+  const navigate = useNavigate();
   const [sort, setSort] = useState<SortKey>("date_desc");
   const [filter, setFilter] = useState<FilterKey>("all");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
 
-  // Use mock data — in production this would come from Supabase
-  const readings = MOCK_HISTORY;
+  const readings = history;
 
   const filtered = useMemo(() => {
     let arr = [...readings];
-    if (filter !== "all") arr = arr.filter((r) => r.categoryId === filter);
+    if (filter !== "all") arr = arr.filter((r) => r.category === filter);
     arr.sort((a, b) => {
-      if (sort === "date_desc") return new Date(b.date).getTime() - new Date(a.date).getTime();
-      if (sort === "date_asc") return new Date(a.date).getTime() - new Date(b.date).getTime();
-      return a.categoryId.localeCompare(b.categoryId);
+      if (sort === "date_desc") return b.timestamp - a.timestamp;
+      if (sort === "date_asc") return a.timestamp - b.timestamp;
+      return (a.category || "").localeCompare(b.category || "");
     });
     return arr;
   }, [readings, sort, filter]);
@@ -380,7 +380,7 @@ export default function HistoryPage() {
               <div style={{ display: "flex", gap: "10px" }}>
                 {[
                   { label: "Total Reads", value: String(readings.length) },
-                  { label: "This Month", value: String(readings.filter((r) => new Date(r.date) > new Date("2026-04-01")).length) },
+                  { label: "This Month", value: String(readings.filter((r) => r.timestamp > Date.now() - 30*24*60*60*1000).length) },
                 ].map(({ label, value }) => (
                   <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(240,230,211,0.08)", borderRadius: "12px", padding: "10px 18px", textAlign: "center" }}>
                     <div style={{ fontFamily: "'Cinzel',serif", color: "#C9A84C", fontSize: "1.3rem", fontWeight: 600 }}>{value}</div>
@@ -507,7 +507,7 @@ export default function HistoryPage() {
 
       {/* ─── Global Nav Bar ─────────────────────────────────────────────── */}
       <GlobalNavBar
-        onBack={() => navigate("/setup")}
+        onBack={() => navigate(-1)}
         onNext={() => navigate("/setup")}
         nextLabel="New Reading"
         helperText={`${filtered.length} reading${filtered.length !== 1 ? "s" : ""} in your archive`}
