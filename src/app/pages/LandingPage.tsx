@@ -69,6 +69,7 @@ export default function LandingPage() {
   const t = locale.landing;
 
   const lang = language as Lang;
+  const HEADING_FONT = lang === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
   return (
     <div id="Landing-Page" style={{ backgroundColor: "#070710", minHeight: "100vh" }}>
@@ -87,9 +88,16 @@ export default function LandingPage() {
 
       <nav id="Nav-Bar" style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 100, backgroundColor: "rgba(7,7,16,0.8)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,168,76,0.06)" }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 24px", height: "60px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div id="Nav-Logo" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div 
+            id="Nav-Logo" 
+            onClick={() => navigate(isAuthenticated ? "/setup" : "/")}
+            style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
+          >
             <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "linear-gradient(135deg,#C9A84C,#8B5CF6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px" }}>✦</div>
-            <span style={{ fontFamily: "'Cinzel',serif", color: "#C9A84C", fontSize: "0.9rem", letterSpacing: "0.06em" }}>Fate of yours</span>
+            <span style={{ 
+              fontFamily: HEADING_FONT, color: "#C9A84C", fontSize: "1rem", 
+              letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 
+            }}>Fate of Yours</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <LanguageToggle lang={lang} setLang={(l) => setLanguage(l)} />
@@ -137,7 +145,7 @@ export default function LandingPage() {
               <div style={{ height: "1px", width: "40px", background: "linear-gradient(to left,transparent,rgba(201,168,76,0.4))" }} />
             </div>
             <h1 style={{
-              fontFamily: "'Cinzel',serif", fontSize: "clamp(2.5rem, 8vw, 6rem)",
+              fontFamily: HEADING_FONT, fontSize: "clamp(2.5rem, 8vw, 6rem)",
               fontWeight: 700, lineHeight: 1.1, letterSpacing: "0.04em", maxWidth: "900px",
               background: "linear-gradient(135deg, #FACC15 0%, #C9A84C 30%, #8B5CF6 70%, #D8B4FE 100%)",
               backgroundSize: "200% auto",
@@ -146,14 +154,14 @@ export default function LandingPage() {
               backgroundClip: "text",
               animation: "glimmer 4s linear infinite"
             }}>{t.title}</h1>
-            <p style={{ fontFamily: "'Cinzel',serif", color: "#C9A84C", fontSize: "clamp(1rem, 2.5vw, 1.25rem)", letterSpacing: "0.1em" }}>{t.subtitle}</p>
+            <p style={{ fontFamily: HEADING_FONT, color: "#C9A84C", fontSize: "clamp(1rem, 2.5vw, 1.25rem)", letterSpacing: "0.1em" }}>{t.subtitle}</p>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <div style={{ height: "1px", width: "60px", background: "linear-gradient(to right,transparent,rgba(139,92,246,0.3))" }} />
               <Sparkles size={14} color="rgba(139,92,246,0.4)" />
               <div style={{ height: "1px", width: "60px", background: "linear-gradient(to left,transparent,rgba(139,92,246,0.3))" }} />
             </div>
             <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "clamp(0.85rem, 1.8vw, 1rem)", lineHeight: 1.8, fontStyle: "italic", maxWidth: "560px" }}>{t.quote}</p>
-            <button onClick={() => document.getElementById("Auth-Section")?.scrollIntoView({ behavior: "smooth" })} style={{ marginTop: "20px", background: "linear-gradient(135deg, rgba(201,168,76,0.1), transparent)", border: "1.5px solid rgba(201,168,76,0.25)", borderRadius: "50px", padding: "14px 32px", color: "#C9A84C", fontFamily: "'Cinzel', serif", fontSize: "0.85rem", fontWeight: 600, letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.3s" }}>Reveal Your Destiny</button>
+            <button onClick={() => document.getElementById("Auth-Section")?.scrollIntoView({ behavior: "smooth" })} style={{ marginTop: "20px", background: "linear-gradient(135deg, rgba(201,168,76,0.1), transparent)", border: "1.5px solid rgba(201,168,76,0.25)", borderRadius: "50px", padding: "14px 32px", color: "#C9A84C", fontFamily: HEADING_FONT, fontSize: "0.85rem", fontWeight: 600, letterSpacing: "0.1em", cursor: "pointer", transition: "all 0.3s" }}>{t.cta}</button>
           </section>
 
           {/* Intro to Tarot */}
@@ -169,7 +177,7 @@ export default function LandingPage() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "60px", alignItems: "center" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                   <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(201,168,76,0.6)", fontSize: "0.7rem", letterSpacing: "0.25em", fontWeight: 600 }}>{t.introBadge}</span>
-                  <h2 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "clamp(1.8rem,4vw,2.5rem)", fontWeight: 600, letterSpacing: "0.04em", lineHeight: 1.3 }}>{t.introHeadline}<br /><span style={{ color: "#C9A84C" }}>{t.introHeadline2}</span></h2>
+                  <h2 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "clamp(1.8rem,4vw,2.5rem)", fontWeight: 600, letterSpacing: "0.04em", lineHeight: 1.3 }}>{t.introHeadline}<br /><span style={{ color: "#C9A84C" }}>{t.introHeadline2}</span></h2>
                   <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.55)", fontSize: "1rem", lineHeight: 1.8 }}>{t.introP1}</p>
                   <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "0.95rem", lineHeight: 1.8 }}>{t.introP2}</p>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -184,7 +192,7 @@ export default function LandingPage() {
                 <div style={{ position: "relative", borderRadius: "16px", overflow: "hidden", aspectRatio: "4/5", boxShadow: "0 20px 50px rgba(0,0,0,0.6)" }}>
                   <img src="https://images.unsplash.com/photo-1603162496424-afdc5011767a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800" alt="Ancient esoteric library" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.6) saturate(0.8)" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(10,10,25,0.9) 0%, transparent 60%)" }} />
-                  <div style={{ position: "absolute", bottom: "30px", left: "30px", right: "30px", fontFamily: "'Cinzel',serif", color: "#C9A84C", fontSize: "0.85rem", letterSpacing: "0.15em", textAlign: "center", fontStyle: "italic" }}>{t.introPullQuote}</div>
+                  <div style={{ position: "absolute", bottom: "30px", left: "30px", right: "30px", fontFamily: HEADING_FONT, color: "#C9A84C", fontSize: "0.85rem", letterSpacing: "0.15em", textAlign: "center", fontStyle: "italic" }}>{t.introPullQuote}</div>
                 </div>
               </div>
             </GlassPanel>
@@ -202,7 +210,7 @@ export default function LandingPage() {
             <GlassPanel>
               <div style={{ textAlign: "center", marginBottom: "50px" }}>
                 <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(201,168,76,0.6)", fontSize: "0.7rem", letterSpacing: "0.25em", fontWeight: 600, display: "block", marginBottom: "12px" }}>{t.benefitsBadge}</span>
-                <h2 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "clamp(1.8rem,4vw,2.5rem)", fontWeight: 600, letterSpacing: "0.04em" }}>{t.benefitsTitle} <span style={{ color: "#C9A84C" }}>{t.benefitsTitleAccent}</span></h2>
+                <h2 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "clamp(1.8rem,4vw,2.5rem)", fontWeight: 600, letterSpacing: "0.04em" }}>{t.benefitsTitle} <span style={{ color: "#C9A84C" }}>{t.benefitsTitleAccent}</span></h2>
                 <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "1rem", maxWidth: "560px", margin: "16px auto 0", lineHeight: 1.7 }}>{t.benefitsSub}</p>
               </div>
               <div className="benefits-grid" style={{ display: "grid", gap: "32px" }}>
@@ -236,7 +244,7 @@ export default function LandingPage() {
                         color: c.accent 
                       }}>✦</div>
                       <div>
-                        <h3 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "0.95rem", fontWeight: 600, marginBottom: "8px" }}>{b.title}</h3>
+                        <h3 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "0.95rem", fontWeight: 600, marginBottom: "8px" }}>{b.title}</h3>
                         <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.4)", fontSize: "0.85rem", lineHeight: 1.7 }}>{b.desc}</p>
                       </div>
                     </div>
@@ -258,10 +266,10 @@ export default function LandingPage() {
             {isAuthenticated ? (
               <div style={{ textAlign: "center", padding: "48px 30px", background: "linear-gradient(160deg, rgba(16,14,30,0.94) 0%, rgba(10,10,20,0.96) 100%)", borderRadius: "22px", border: "1px solid rgba(201,168,76,0.18)", maxWidth: "440px", width: "100%", boxShadow: "0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
                  <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "linear-gradient(135deg,rgba(201,168,76,0.2),rgba(139,92,246,0.2))", border: "1.5px solid rgba(201,168,76,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", boxShadow: "0 0 14px rgba(139,92,246,0.2)", margin: "0 auto 20px" }}>✦</div>
-                 <h2 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "1.8rem", marginBottom: "10px", letterSpacing: "0.04em" }}>Welcome Back</h2>
-                 <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "0.9rem", marginBottom: "30px" }}>Your destiny awaits. Ready for another reading?</p>
-                 <button onClick={() => navigate(user?.isAdmin ? "/admin" : "/setup")} style={{ background: "linear-gradient(135deg,#C9A84C,#A8873A)", border: "none", borderRadius: "10px", padding: "14px 28px", color: "#0A0A12", fontFamily: "'Raleway',sans-serif", fontSize: "0.92rem", fontWeight: 700, letterSpacing: "0.06em", cursor: "pointer", boxShadow: "0 4px 20px rgba(201,168,76,0.3)", width: "100%" }}>
-                   Continue Journey
+                 <h2 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "1.8rem", marginBottom: "10px", letterSpacing: "0.04em" }}>{t.welcomeBack}</h2>
+                 <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "0.9rem", marginBottom: "30px" }}>{t.welcomeSub}</p>
+                 <button onClick={() => navigate(user?.isAdmin ? "/admin" : "/setup")} style={{ background: "linear-gradient(135deg,#C9A84C,#A8873A)", border: "none", borderRadius: "10px", padding: "14px 28px", color: "#0A0A12", fontFamily: HEADING_FONT, fontSize: "0.92rem", fontWeight: 700, letterSpacing: "0.06em", cursor: "pointer", boxShadow: "0 4px 20px rgba(201,168,76,0.3)", width: "100%" }}>
+                   {t.continueBtn}
                  </button>
               </div>
             ) : (
@@ -297,7 +305,7 @@ export default function LandingPage() {
               animation: "frameEntrance 1s ease-out"
             }}>
               <div style={{ fontSize: "20px", letterSpacing: "10px", color: "rgba(201,168,76,0.4)" }}>✦ ✦ ✦</div>
-              <h2 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "clamp(1.5rem,4vw,2.2rem)", fontWeight: 600, letterSpacing: "0.06em" }}>{t.footerTitle}</h2>
+              <h2 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "clamp(1.5rem,4vw,2.2rem)", fontWeight: 600, letterSpacing: "0.06em" }}>{t.footerTitle}</h2>
               <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "1rem", maxWidth: "460px", lineHeight: 1.8 }}>{t.footerSub}</p>
               <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "rgba(201,168,76,0.3)", fontSize: "0.75rem", fontFamily: "'Raleway',sans-serif", letterSpacing: "0.2em", fontWeight: 600 }}>
                 {t.footerTags.map((tag: string, i: number) => (

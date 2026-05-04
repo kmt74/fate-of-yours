@@ -86,6 +86,7 @@ export function Layout({ children, step }: LayoutProps) {
   const navigate = useNavigate();
   const [adminOpen, setAdminOpen] = useState(false);
 
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
   const handleLogout = () => { logout(); navigate("/"); };
 
   return (
@@ -116,7 +117,7 @@ export function Layout({ children, step }: LayoutProps) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
             <button
               id="Header-Brand"
-              onClick={() => navigate("/")}
+              onClick={() => navigate(user ? "/setup" : "/")}
               style={{
                 background: "none", border: "none", cursor: "pointer",
                 display: "flex", alignItems: "center", gap: "12px", padding: 0,
@@ -131,11 +132,12 @@ export function Layout({ children, step }: LayoutProps) {
                 <Sparkles size={14} color="white" />
               </div>
               <span style={{
-                fontFamily: "'Cinzel', serif", color: "#C9A84C",
-                fontSize: "1rem", letterSpacing: "0.08em", whiteSpace: "nowrap",
-                fontWeight: 600
+                fontFamily: HEADING_FONT, color: "#C9A84C",
+                fontSize: "1.1rem", letterSpacing: "0.06em", whiteSpace: "nowrap",
+                fontWeight: 600,
+                textTransform: "uppercase"
               }}>
-                Fate of yours
+                Fate of Yours
               </span>
             </button>
           </div>
@@ -158,7 +160,7 @@ export function Layout({ children, step }: LayoutProps) {
                         background: step > s.n ? "linear-gradient(135deg,#C9A84C,#A8873A)" : "transparent",
                         border: step === s.n ? "1.5px solid #C9A84C" : step > s.n ? "none" : "1.5px solid rgba(240,230,211,0.2)",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: "0.68rem", fontFamily: "'Cinzel', serif",
+                        fontSize: "0.68rem", fontFamily: HEADING_FONT,
                         color: step > s.n ? "#0A0A12" : step === s.n ? "#C9A84C" : "rgba(240,230,211,0.35)",
                         fontWeight: 700,
                       }}>

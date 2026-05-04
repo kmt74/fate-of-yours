@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, RotateCcw } from "lucide-react";
 
 // ─── Context & Data ───────────────────────────────────────────────────────────
 import { useApp } from "../context/AppContext";
-import { CATEGORIES, generateInterpretation } from "../data/tarot-data";
-import { getTarotReading, offlineReading, RateLimitError } from "../../lib/ai";
+import { CATEGORIES, TAROT_DECK } from "../data/tarot-data";
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 import { Layout } from "../components/Layout";
@@ -13,100 +12,73 @@ import { GlobalNavBar } from "../components/GlobalNavBar";
 
 // ─── Shared UI Primitives ─────────────────────────────────────────────────────
 import { SectionTag } from "../components/ui/SectionTag";
+import { useLocale } from "../../hooks/useLocale";
 
-// ─── Reading Sub-Components ───────────────────────────────────────────────────
+// ─── Reading Sub-Components ──────────────────────────────────────────────────
 import { RevealedTarotCard } from "../components/reading/RevealedTarotCard";
-import { ReadingContextCard } from "../components/reading/ReadingContextCard";
 import { AiInterpretationPanel } from "../components/reading/AiInterpretationPanel";
+import { ReadingContextCard } from "../components/reading/ReadingContextCard";
+import { RateLimitError } from "../../lib/ai";
 
-// ─── Custom Hooks ─────────────────────────────────────────────────────────────
-import { useTypewriter } from "../hooks/useTypewriter";
-import { useCardReveal } from "../hooks/useCardReveal";
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-import { POSITIONS } from "../lib/theme";
-import type { Position } from "../lib/theme";
-
-// ─── Reading Page ─────────────────────────────────────────────────────────────
-// Figma Layer Hierarchy:
-//   Layout (step=3)
-//     └─ Reading-Page
-//         ├─ Reading-Header (SectionTag + ReadingContextCard)
-//         ├─ Card-Reveal-Section (3x RevealedTarotCard)
-//         ├─ AI-Interpretation-Section (AiInterpretationPanel)
-//         └─ Reading-Actions (New Reading button)
-//     └─ GlobalNavBar
+const POSITIONS = ["past", "present", "future"];
 
 export default function ReadingPage() {
-  const { readingSetup, selectedCards, resetReading, language, addReadingToHistory } = useApp();
+  const { selectedCards, readingSetup, aiInterpretation, language, fetchAiInterpretation } = useApp();
   const navigate = useNavigate();
+  const t = useLocale();
 
-  // ─── Derived Data ─────────────────────────────────────────────────────────
-  const category = readingSetup?.category ?? "general";
-  const question = readingSetup?.question ?? "What does my journey hold?";
-  const categoryObj = CATEGORIES.find((c) => c.id === category);
-
-  // Static fallback (used while AI is loading)
-  const staticText =
-    selectedCards.length === 3
-      ? generateInterpretation(selectedCards, category, question)
-      : "";
-
-  // ─── State ────────────────────────────────────────────────────────────────
-  const [fullText, setFullText] = useState(staticText);
-  const [aiLoading, setAiLoading] = useState(true);
+  const [cardsRevealed, setCardsRevealed] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
+  const [typingDone, setTypingDone] = useState(false);
   const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
 
-  // ─── Card reveal animation ────────────────────────────────────────────────
-  const cardsRevealed = useCardReveal(400);
+  const categoryObj = CATEGORIES.find((c) => c.id === readingSetup?.category);
+  const question = readingSetup?.question ?? "";
+  const fullText = aiInterpretation?.interpretation ?? "";
+  const aiLoading = !fullText && !rateLimitMsg;
 
-  // ─── Fetch AI reading after cards are revealed ────────────────────────────
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
+  // ─── Effects ──────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (!cardsRevealed || selectedCards.length < 3) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        const aiText = await getTarotReading(selectedCards, category, question, language);
-        setFullText(aiText);
-        setRateLimitMsg(null);
-        addReadingToHistory({ category, question, cards: selectedCards, summary: aiText });
-      } catch (err) {
-        console.error("[ReadingPage] AI failed:", err);
-        if (err instanceof RateLimitError) {
-          if (err.limitType === "rpd") {
-            setRateLimitMsg(language === "VI"
-              ? "⚠️ AI đã hết lượt gọi hôm nay. Bài đọc dưới đây là bản offline."
-              : "⚠️ Daily AI quota reached. Showing offline reading.");
-          } else {
-            const s = Math.ceil(err.retryAfterMs / 1000);
-            setRateLimitMsg(language === "VI"
-              ? `⏳ API đang bận (chờ ${s}s). Đã dùng bản offline.`
-              : `⏳ API busy (${s}s). Showing offline reading.`);
-          }
-        }
-        const fallbackText = offlineReading(selectedCards, category, question, language);
-        setFullText(fallbackText);
-        addReadingToHistory({ category, question, cards: selectedCards, summary: fallbackText });
-      } finally {
-        setAiLoading(false);
-      }
-    }, 2400);
-
+    const timer = setTimeout(() => setCardsRevealed(true), 500);
     return () => clearTimeout(timer);
-  }, [cardsRevealed, selectedCards, category, question, language]);
+  }, []);
 
-  const { displayedText, isDone: typingDone } = useTypewriter({
-    text: fullText,
-    speed: 12,
-    enabled: !aiLoading,
-  });
+  useEffect(() => {
+    const run = async () => {
+      try {
+        await fetchAiInterpretation();
+      } catch (err) {
+        if (err instanceof RateLimitError) {
+          setRateLimitMsg(err.message);
+        } else {
+          setRateLimitMsg("The Oracle is silent. Please try again later.");
+        }
+      }
+    };
+    run();
+  }, [fetchAiInterpretation]);
 
-  // ─── Handlers ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (fullText && cardsRevealed) {
+      let i = 0;
+      const interval = setInterval(() => {
+        setDisplayedText(fullText.slice(0, i));
+        i += 3;
+        if (i > fullText.length) {
+          setDisplayedText(fullText);
+          setTypingDone(true);
+          clearInterval(interval);
+        }
+      }, 20);
+      return () => clearInterval(interval);
+    }
+  }, [fullText, cardsRevealed]);
+
   const handleNewReading = () => {
-    resetReading();
     navigate("/setup");
   };
-
 
   // ─── Guard: not enough cards ──────────────────────────────────────────────
   if (selectedCards.length < 3) {
@@ -117,14 +89,14 @@ export default function ReadingPage() {
             onClick={() => navigate("/deck")}
             className="rounded-[10px] px-6 py-3"
             style={{
-              fontFamily: "'Raleway', sans-serif",
+              fontFamily: HEADING_FONT,
               background: "none",
               border: "1px solid rgba(201,168,76,0.3)",
               color: "#C9A84C",
               cursor: "pointer",
             }}
           >
-            Return to Deck
+            {t.reading.returnBtn}
           </button>
         </div>
       </Layout>
@@ -150,7 +122,7 @@ export default function ReadingPage() {
             id="Reading-Header"
             className="flex flex-col items-center text-center gap-5"
           >
-            <SectionTag text="STEP 3 OF 3 · YOUR READING" centered={true} />
+            <SectionTag text={t.reading.step} centered={true} />
             {categoryObj && (
               <div className="w-full max-w-[600px]">
                 <ReadingContextCard
@@ -169,11 +141,11 @@ export default function ReadingPage() {
             <h2
               className="text-[0.78rem] font-semibold tracking-[0.2em]"
               style={{
-                fontFamily: "'Cinzel', serif",
+                fontFamily: HEADING_FONT,
                 color: "rgba(201,168,76,0.7)",
               }}
             >
-              YOUR THREE CARDS
+              {t.reading.heading}
             </h2>
 
             <div
@@ -184,7 +156,7 @@ export default function ReadingPage() {
                 <RevealedTarotCard
                   key={card.id}
                   card={card}
-                  position={POSITIONS[i] as Position}
+                  position={POSITIONS[i] as any}
                   positionIndex={i}
                   revealed={cardsRevealed}
                   delay={i * 300}
@@ -232,12 +204,12 @@ export default function ReadingPage() {
                   background: "transparent",
                   border: "1.5px solid rgba(201,168,76,0.35)",
                   color: "#C9A84C",
-                  fontFamily: "'Cinzel', serif",
+                  fontFamily: HEADING_FONT,
                   cursor: "pointer",
                 }}
               >
                 <RefreshCw size={14} />
-                New Reading
+                {t.reading.newReading}
               </button>
             </div>
           )}
@@ -249,9 +221,9 @@ export default function ReadingPage() {
         onBack={() => navigate("/deck")}
         onNext={typingDone ? handleNewReading : undefined}
         nextDisabled={!typingDone}
-        nextLabel="New Reading"
+        nextLabel={t.reading.newReading}
         helperText={
-          !typingDone ? "Your reading is being revealed..." : undefined
+          !typingDone ? t.reading.loading : undefined
         }
       />
     </Layout>

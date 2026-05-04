@@ -1,6 +1,8 @@
 import React from "react";
 import { PositionLabel } from "../ui/PositionLabel";
 import { POSITION_COLORS } from "../../lib/theme";
+import { useApp } from "../../context/AppContext";
+import { useLocale } from "../../../hooks/useLocale";
 import type { TarotCard } from "../../data/tarot-data";
 import type { Position } from "../../lib/theme";
 
@@ -19,7 +21,19 @@ export function RevealedTarotCard({
   revealed,
   delay,
 }: RevealedTarotCardProps) {
+  const { language } = useApp();
+  const t = useLocale();
   const color = POSITION_COLORS[position];
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
+  const getLocalizedName = (card: TarotCard) => {
+    return card.name;
+  };
+
+  const localizedPosition = 
+    position === "past" ? t.deck.past :
+    position === "present" ? t.deck.present :
+    t.deck.future;
 
   return (
     <div
@@ -27,7 +41,7 @@ export function RevealedTarotCard({
       className="flex flex-1 flex-col items-center gap-4"
       style={{ minWidth: "140px", maxWidth: "240px" }}
     >
-      <PositionLabel label={position.toUpperCase()} color={color} />
+      <PositionLabel label={localizedPosition.toUpperCase()} color={color} />
 
       <div style={{ perspective: "1000px" }} className="w-full">
         <div
@@ -75,7 +89,7 @@ export function RevealedTarotCard({
             className="absolute inset-0 flex flex-col items-center justify-between overflow-hidden rounded-xl"
             style={{
               backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
+              WebkitBackdropFilter: "blur(18px)",
               transform: "rotateY(180deg)",
               background: "#0F0F1A",
               border: `1.5px solid ${color}66`,
@@ -112,12 +126,12 @@ export function RevealedTarotCard({
               <span
                 className="text-[0.6rem] tracking-[0.25em] font-medium"
                 style={{ 
-                  fontFamily: "'Cinzel', serif", 
+                  fontFamily: HEADING_FONT, 
                   color: card.orientation === "reversed" ? "#ef4444" : "#C9A84C",
                   textShadow: "0 2px 4px rgba(0,0,0,0.5)"
                 }}
               >
-                ✦ {card.orientation === "reversed" ? "REVERSED" : "UPRIGHT"} ✦
+                ✦ {card.orientation === "reversed" ? t.reading.reversed : t.reading.upright} ✦
               </span>
             </div>
 
@@ -126,12 +140,12 @@ export function RevealedTarotCard({
               <span
                 className="text-center text-[0.85rem] font-bold tracking-[0.06em]"
                 style={{ 
-                  fontFamily: "'Cinzel', serif", 
+                  fontFamily: HEADING_FONT, 
                   color: "#F0E6D3",
                   textShadow: "0 2px 8px rgba(0,0,0,0.8)"
                 }}
               >
-                {card.name.toUpperCase()}
+                {getLocalizedName(card).toUpperCase()}
               </span>
               <div className="h-0.5 w-8 rounded-full" style={{ background: color }} />
             </div>

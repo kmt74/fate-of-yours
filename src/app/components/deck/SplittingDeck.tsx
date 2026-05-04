@@ -1,4 +1,6 @@
 import React from "react";
+import { useLocale } from "../../../hooks/useLocale";
+import { useApp } from "../../context/AppContext";
 
 interface PileStackProps {
   id: string;
@@ -7,6 +9,7 @@ interface PileStackProps {
   animClass: string;
   delay: number;
   cards: number;
+  headingFont: string;
 }
 
 const CARD_W = 82;
@@ -14,7 +17,7 @@ const CARD_H = 128;
 const VISIBLE_STRIP = 12;
 const MARGIN_TOP = -(CARD_H - VISIBLE_STRIP);
 
-function PileStack({ id, label, subLabel, animClass, delay, cards }: PileStackProps) {
+function PileStack({ id, label, subLabel, animClass, delay, cards, headingFont }: PileStackProps) {
   return (
     <div id={id} className="flex flex-col items-center gap-4 opacity-0" style={{ animation: `${animClass} 0.55s cubic-bezier(0.16,1,0.3,1) ${delay}ms forwards` }}>
       <div id={`${id}-Stack`} className="flex flex-col items-center" style={{ width: `${CARD_W}px` }}>
@@ -36,7 +39,7 @@ function PileStack({ id, label, subLabel, animClass, delay, cards }: PileStackPr
         })}
       </div>
       <div className="flex flex-col items-center gap-0.5">
-        <span style={{ fontFamily: "'Cinzel', serif", color: "rgba(201,168,76,0.65)", fontSize: "0.82rem", letterSpacing: "0.12em" }}>{label}</span>
+        <span style={{ fontFamily: headingFont, color: "rgba(201,168,76,0.65)", fontSize: "0.82rem", letterSpacing: "0.12em" }}>{label}</span>
         <span style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.22)", fontSize: "0.63rem", letterSpacing: "0.04em" }}>{subLabel}</span>
       </div>
     </div>
@@ -44,19 +47,23 @@ function PileStack({ id, label, subLabel, animClass, delay, cards }: PileStackPr
 }
 
 const PILE_DEFS = [
-  { id: "Pile-Left", label: "I", subLabel: "26 cards", animClass: "splitLeft", delay: 0 },
-  { id: "Pile-Center", label: "II", subLabel: "26 cards", animClass: "splitUp", delay: 90 },
-  { id: "Pile-Right", label: "III", subLabel: "26 cards", animClass: "splitRight", delay: 45 },
+  { id: "Pile-Left", label: "I", animClass: "splitLeft", delay: 0 },
+  { id: "Pile-Center", label: "II", animClass: "splitUp", delay: 90 },
+  { id: "Pile-Right", label: "III", animClass: "splitRight", delay: 45 },
 ] as const;
 
 export function SplittingDeck() {
+  const t = useLocale();
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   return (
     <div id="Deck-State-Splitting" className="flex min-h-[480px] flex-col items-center justify-center gap-12" style={{ animation: "fadeIn 0.4s ease" }}>
-      <p style={{ fontFamily: "'Cinzel', serif", color: "rgba(201,168,76,0.6)", fontSize: "0.8rem", letterSpacing: "0.2em" }}>─ CUTTING THE DECK ─</p>
+      <p style={{ fontFamily: HEADING_FONT, color: "rgba(201,168,76,0.6)", fontSize: "0.8rem", letterSpacing: "0.2em" }}>─ {t.deck.splitting.toUpperCase()} ─</p>
       <div id="Spread-Container" className="flex flex-row items-start justify-center gap-[120px] overflow-visible">
-        {PILE_DEFS.map((p) => <PileStack key={p.id} id={p.id} label={p.label} subLabel={p.subLabel} animClass={p.animClass} delay={p.delay} cards={26} />)}
+        {PILE_DEFS.map((p) => <PileStack key={p.id} id={p.id} label={p.label} subLabel="26 cards" animClass={p.animClass} delay={p.delay} cards={26} headingFont={HEADING_FONT} />)}
       </div>
-      <p style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.3)", fontSize: "0.78rem", animation: "pulse 1s ease infinite alternate", letterSpacing: "0.06em" }}>Shuffling and splitting...</p>
+      <p style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.3)", fontSize: "0.78rem", animation: "pulse 1s ease infinite alternate", letterSpacing: "0.06em" }}>{t.deck.splitting}</p>
     </div>
   );
 }

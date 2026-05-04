@@ -105,7 +105,7 @@ export function CategoryCard({
 
       <div style={{ display: "flex", flexDirection: "column", gap: "5px", flex: 1 }}>
         <span style={{
-          fontFamily: "'Cinzel', serif",
+          fontFamily: lang === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif",
           color: selected ? category.accentColor : hovered ? "#F0E6D3" : "rgba(240,230,211,0.85)",
           fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.04em",
           transition: "color 0.2s",

@@ -39,6 +39,8 @@ export function GlobalNavBar({
   const lang = (language as Lang) || "EN";
   const L = NAV_LABELS[lang];
 
+  const HEADING_FONT = lang === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   const [backHov, setBackHov] = useState(false);
   const [nextHov, setNextHov] = useState(false);
 
@@ -147,7 +149,7 @@ export function GlobalNavBar({
             padding: "12px 28px",
             color: nextDisabled ? "rgba(201,168,76,0.35)" : "#0A0A12",
             cursor: nextActive ? "pointer" : "not-allowed",
-            fontFamily: "'Cinzel', serif",
+            fontFamily: HEADING_FONT,
             fontSize: "0.88rem",
             fontWeight: 600,
             letterSpacing: "0.07em",

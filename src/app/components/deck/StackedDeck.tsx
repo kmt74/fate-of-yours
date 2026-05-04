@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Sparkles } from "lucide-react";
+import { useLocale } from "../../../hooks/useLocale";
+import { useApp } from "../../context/AppContext";
 
 export interface StackedDeckProps {
   onBegin: () => void;
@@ -7,6 +9,9 @@ export interface StackedDeckProps {
 
 export function StackedDeck({ onBegin }: StackedDeckProps) {
   const [hoverBtn, setHoverBtn] = useState(false);
+  const t = useLocale();
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
   return (
     <div
@@ -22,7 +27,7 @@ export function StackedDeck({ onBegin }: StackedDeckProps) {
             color: "rgba(240,230,211,0.3)",
           }}
         >
-          ─ 78 CARDS AWAIT ─
+          ─ {t.deck.cardsAwait} ─
         </p>
 
         <div className="relative" style={{ width: "110px", height: "170px" }}>
@@ -79,8 +84,8 @@ export function StackedDeck({ onBegin }: StackedDeckProps) {
           })}
         </div>
 
-        <p className="mt-7 text-[0.75rem] tracking-[0.12em]" style={{ fontFamily: "'Cinzel', serif", color: "rgba(201,168,76,0.5)" }}>
-          The full tarot deck, unified and waiting
+        <p className="mt-7 text-[0.75rem] tracking-[0.12em]" style={{ fontFamily: HEADING_FONT, color: "rgba(201,168,76,0.5)" }}>
+          {t.deck.deckDesc}
         </p>
       </div>
 
@@ -96,7 +101,7 @@ export function StackedDeck({ onBegin }: StackedDeckProps) {
               ? "linear-gradient(135deg, #D4B85C, #B8942A)"
               : "linear-gradient(135deg, #C9A84C, #A8873A)",
             color: "#0A0A12",
-            fontFamily: "'Cinzel', serif",
+            fontFamily: HEADING_FONT,
             cursor: "pointer",
             transition: "all 0.25s ease",
             boxShadow: hoverBtn
@@ -107,10 +112,10 @@ export function StackedDeck({ onBegin }: StackedDeckProps) {
           }}
         >
           <Sparkles size={18} />
-          Begin Your Draw
+          {t.deck.beginBtn}
         </button>
         <p className="text-[0.75rem] tracking-[0.06em]" style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.25)" }}>
-          The deck will be split for you to draw from
+          {t.deck.readyHint}
         </p>
       </div>
     </div>
