@@ -85,7 +85,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("EN");
   const [history, setHistory] = useState<Reading[]>([]);
   const [aiInterpretation, setAiInterpretation] = useState<AiInterpretation | null>(null);
-  const [lastLanguage, setLastLanguage] = useState<Language | null>(null);
   const [isFetchingAi, setIsFetchingAi] = useState(false);
 
   useEffect(() => {
@@ -199,17 +198,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setAiInterpretation(null);
   }, []);
 
+  // Track the inputs of the last successful reading to avoid unnecessary re-fetches
+  const [lastReadingInputs, setLastReadingInputs] = useState<{
+    cardsKey: string;
+    question: string;
+    category: string;
+    language: string;
+  } | null>(null);
+
   const fetchAiInterpretation = useCallback(async () => {
     if (!readingSetup || selectedCards.length < 3 || isFetchingAi) return;
     
-    // If we already have a reading for THIS language, don't re-fetch
-    if (aiInterpretation && lastLanguage === language) return;
+    const cardsKey = selectedCards.map(c => c.id).sort().join(",");
+    const currentInputs = {
+      cardsKey,
+      question: readingSetup.question,
+      category: readingSetup.category,
+      language: language
+    };
+
+    // If inputs are identical to last successful reading, skip re-fetch
+    if (
+      aiInterpretation && 
+      lastReadingInputs &&
+      lastReadingInputs.cardsKey === currentInputs.cardsKey &&
+      lastReadingInputs.question === currentInputs.question &&
+      lastReadingInputs.category === currentInputs.category &&
+      lastReadingInputs.language === currentInputs.language
+    ) {
+      return;
+    }
     
     setIsFetchingAi(true);
+    // Clear old interpretation immediately so UI shows loading/skeleton instead of previous answer
+    setAiInterpretation(null); 
+    
     try {
       const text = await getTarotReading(selectedCards, readingSetup.category, readingSetup.question, language);
       setAiInterpretation({ interpretation: text });
-      setLastLanguage(language);
+      setLastReadingInputs(currentInputs);
       
       // Save to history automatically
       if (user) {
@@ -226,7 +253,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsFetchingAi(false);
     }
-  }, [readingSetup, selectedCards, isFetchingAi, aiInterpretation, lastLanguage, language, user, addReadingToHistory]);
+  }, [readingSetup, selectedCards, isFetchingAi, aiInterpretation, lastReadingInputs, language, user, addReadingToHistory]);
 
   return (
     <AppContext.Provider

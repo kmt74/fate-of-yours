@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 // src/lib/supabase.ts
 import { createClient } from '@supabase/supabase-js';
 
@@ -91,7 +92,7 @@ export async function getCardDetails(cardKey: string): Promise<TarotCardDB | nul
     .eq('card_key', cardKey)
     .single();
   if (error) { console.warn('[Supabase] getCardDetails error:', error.message); return null; }
-  return data;
+  return data as TarotCardDB;
 }
 
 // ─── Fetch category-specific meaning for a card ───────────────────────────────
@@ -112,7 +113,7 @@ export async function getCardCategoryMeaning(
     .single();
 
   if (error || !data) return null;
-  return (data as Record<string, string | null>)[field] || data.meaning_short;
+  return (data as unknown as Record<string, string | null>)[field] || (data as any).meaning_short;
 }
 
 // ─── Fetch details for multiple cards (batch) ─────────────────────────────────
@@ -125,7 +126,7 @@ export async function getMultipleCardDetails(
     .select('*')
     .in('card_key', cardKeys);
   if (error || !data) return {};
-  return Object.fromEntries(data.map(card => [card.card_key, card]));
+  return Object.fromEntries((data as TarotCardDB[]).map(card => [card.card_key, card]));
 }
 
 // ─── Check if Supabase is available ──────────────────────────────────────────

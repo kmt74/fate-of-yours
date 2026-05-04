@@ -1,6 +1,6 @@
 {
   "landing": {
-    "eyebrow": "ANCIENT WISDOM, DIGITAL SOUL",
+    "eyebrow": "ANCIENT WISDOM, MODERN SOUL",
     "navTitle": "Fate of yours",
     "title": "FATE OF YOURS",
     "subtitle": "Unveil Your Path",
@@ -15,17 +15,6 @@
       { "sym": "◎", "text": "Private, intentional, deeply personal" }
     ],
     "scrollHint": "SCROLL TO EXPLORE",
-    "introBadge": "INTRODUCTION TO TAROT",
-    "introHeadline": "An Ancient Oracle,",
-    "introHeadline2": "Reimagined",
-    "introP1": "Tarot has guided seekers for over five centuries. Originating in 15th-century Europe as a card game, these 78 illustrated archetypes evolved into one of humanity's most enduring tools for self-reflection and spiritual inquiry.",
-    "introP2": "Each card in the deck holds a mirror to the psyche — not to predict a fixed fate, but to illuminate patterns already present within you. The cards don't speak of what must happen, but of what energies surround your current path.",
-    "introBullets": ["78 unique archetypal symbols", "The Major & Minor Arcana", "Centuries of collective wisdom"],
-    "introPullQuote": "\"Know thyself through the cards\"",
-    "benefitsBadge": "WHY CHOOSE US",
-    "benefitsTitle": "Benefits of our",
-    "benefitsTitleAccent": "Readings",
-    "benefitsSub": "Every reading is a journey inward. Here is what the experience of consulting the cards can offer you.",
     "introBadge": "THE ART OF TAROT",
     "introHeadline": "Wisdom Beyond",
     "introHeadline2": "The Seen World",

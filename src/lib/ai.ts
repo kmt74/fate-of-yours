@@ -1,5 +1,6 @@
-import { GoogleGenAI } from "@google/genai";
-import { TarotCard } from "../data/tarot-data";
+/// <reference types="vite/client" />
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { TarotCard } from "../app/data/tarot-data";
 import { getMultipleCardDetails, nameToCardKey, TarotCardDB } from "./supabase";
 
 // ─── Rate limit error types (exported for UI feedback) ────────────────────────
@@ -16,9 +17,9 @@ export class RateLimitError extends Error {
 }
 
 
-// ─── Init — using new @google/genai SDK ──────────────────────────────────────
+// ─── Init — using new @google/generative-ai SDK ──────────────────────────────
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY ?? "";
-const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
+const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
 // Debug visible in browser console
 if (API_KEY) {
@@ -65,7 +66,7 @@ function cardBlock(
   const f = db ? getDbFields(category, isReversed) : null;
 
   const pull = (field: string) =>
-    db ? ((db as Record<string, unknown>)[field] as string | null) ?? null : null;
+    db ? ((db as unknown as Record<string, unknown>)[field] as string | null) ?? null : null;
 
   const primary = f ? (pull(f.primary) ?? pull(f.general)) : null;
   const feelings = f ? pull(f.feelings) : null;
@@ -117,7 +118,7 @@ export async function getTarotReading(
   language: string = "EN"
 ): Promise<string> {
   // ── Offline mode ──
-  if (!ai) {
+  if (!genAI) {
     console.warn("[AI] No AI client — returning offline reading.");
     return offlineReading(cards, category, question, language);
   }
@@ -164,42 +165,47 @@ THE THREE CARDS
 ${cardSection}
 
 ═══════════════════════════════════════
-HOW TO WRITE THIS READING
+STRICT OUTPUT FORMAT (MARKDOWN)
 ═══════════════════════════════════════
+You MUST follow this exact structure. DO NOT add "Section 1" or "1." labels. Use exactly these headers:
 
-**1. OPENING — The Unspoken Layer** (2-3 sentences, no card names yet)
-Before naming any card, name the emotional truth beneath the question.
-What is the seeker REALLY asking? What fear or hope lives underneath "${question}"?
-Speak as if you sense what they haven't said aloud.
+# YOUR TAROT READING
 
-**2. THE PAST — [name the first card]**
-Don't describe the card. Describe what its energy did IN THIS PERSON'S ${category} HISTORY.
-Specifically: how did the energy described in the card's meaning above shape the situation that led to this question?
-Use the card's keywords and meaning, but reframe them as lived experience, not definitions.
-What did this energy cost them? What did it give them?
+*Your question: "${question}"*
 
-**3. THE PRESENT — [name the second card]**
-This is the crux. This card is the answer to "what is actually happening right now?"
-Use the "feelings" and "actions" meaning from above to show them what this energy FEELS like from the inside.
-What is this card placing directly in front of the seeker?
-What might they be avoiding, not seeing, or not yet ready to claim?
-**Bold the single most important insight here.**
+---
 
-**4. THE FUTURE — [name the third card]**
-This is a trajectory if nothing changes — AND what could shift it.
-Use the card's meaning to describe WHERE the current energy leads if the seeker stays on the same path.
-Then: what one specific thing — one shift in perspective, one action, one truth — could change this trajectory?
-Frame this as empowerment, not prediction. They are not a passenger.
+[Insert Opening paragraph: Name the emotional truth beneath the question. 2-3 sentences.]
 
-**5. THE SYNTHESIS — One Story**
-Read all three cards as a single sentence of cause → present reality → possible future.
-Name the core theme running through all three.
-Give ONE clear, concrete, actionable insight — something they can actually DO or SEE differently starting today.
-This insight must connect directly to "${question}".
+---
 
-**6. CLOSING** (2-3 sentences maximum)
-Like a trusted friend ending a conversation: genuine warmth, briefly personal, no clichés.
-Do not summarise what you already said. Just close the space with humanity.
+### THE PAST — [CARD NAME IN ALL CAPS]
+
+[Insert Past paragraph: Describe what this energy did in their history. Bold the card name when first mentioned.]
+
+---
+
+### THE PRESENT — [CARD NAME IN ALL CAPS]
+
+[Insert Present paragraph: The answer to what is happening right now. Bold the card name. Italicize the core reality.]
+
+---
+
+### THE FUTURE — [CARD NAME IN ALL CAPS]
+
+[Insert Future paragraph: The trajectory and the shift needed. Bold the card name.]
+
+---
+
+### THE STORY OF THREE CARDS
+
+[Insert Story paragraph: Synthesis of all three. Name the core theme.]
+
+**Core insight:** [One clear, concrete, actionable insight.]
+
+---
+
+[Insert Closing sentences: Warm, personal, 2 sentences max.]
 
 ═══════════════════════════════════════
 NON-NEGOTIABLE STYLE RULES
@@ -208,21 +214,19 @@ NON-NEGOTIABLE STYLE RULES
 • Vary sentence rhythm: short punches followed by longer flowing lines
 • Use em-dashes (—) for natural pauses, not for decoration
 • *Italics* for poetic asides or the seeker's inner voice
-• **Bold** for the single most important insight per section (not for every phrase)
+• **Bold** for emphasis and card names
 • NEVER write: "In conclusion", "It is worth noting", "This card traditionally represents", "The universe wants you to", "Remember that"
 • NEVER quote the question word-for-word mid-paragraph. Reference it indirectly.
-• NEVER use these clichés: "hành trình này là của bạn", "tin vào bản thân", "đúng không?", "người bạn thân yêu", "bạn thân mến", "this is your journey", "trust yourself"
-• DO NOT use rhetorical "đúng không?" questions — they are condescending.
-• NEVER be vague. Every sentence must earn its place.
+• NEVER use những từ sáo rỗng: "hành trình này là của bạn", "tin vào bản thân", "đúng không?", "người bạn thân yêu", "bạn thân mến", "this is your journey", "trust yourself"
 • Target: 700–900 words. Rich, dense, specific. No filler.
 `.trim();
 
     // ── Model cascade — active models from Google AI Studio ───────────────────
     const MODEL_CASCADE = [
-      "gemini-2.5-flash",          // 1. Stable 2.5 Flash (Mid-size, 1M context)
-      "gemini-2.0-flash-lite",     // 2. Fallback to 2.0 Lite (Usually has highest free quota limit)
-      "gemini-flash-latest",       // 3. Fallback alias
-      "gemini-3-flash-preview",    // 4. Fallback to Preview model
+      "gemini-2.5-flash",
+      "gemini-2.0-flash-lite",
+      "gemini-flash-latest",
+      "gemini-3-flash-preview",
     ];
 
     // ── Error classification helpers ──────────────────────────────────────────
@@ -232,8 +236,6 @@ NON-NEGOTIABLE STYLE RULES
       return match ? parseInt(match[1], 10) * 1000 : 5000;
     };
 
-    // RPD = daily limit hit (limit: 0 in the violation, mentions RPD quota ID)
-    // RPM = per-minute throttle (temporary, server says retry in Ns)
     const classifyRateLimit = (err: unknown): RateLimitType => {
       const msg = String(err);
       if (msg.includes("PerDay") || msg.includes("per_day") || msg.includes("RPD")) return "rpd";
@@ -247,96 +249,84 @@ NON-NEGOTIABLE STYLE RULES
       String(err).includes("404") || String(err).includes("NOT_FOUND");
 
     let lastError: unknown;
-    let rpdExhausted = false; // Once a model hits RPD, track it
+    let rpdExhausted = false;
 
-    for (const model of MODEL_CASCADE) {
-      if (rpdExhausted) {
-        // Don't even try — all models share the same project quota for RPD
-        console.warn(`[AI] Skipping ${model} — daily quota already confirmed exhausted.`);
-        continue;
-      }
+    // ─── AI Generation with 60s Timeout ───────────────────────────────────────
+    try {
+      const aiResponse = await Promise.race([
+        (async () => {
+          for (const model of MODEL_CASCADE) {
+            if (rpdExhausted) continue;
 
-      // Retry the SAME model up to 2 times for RPM (temporary throttle)
-      // before cascading to the next model
-      let retriesLeft = 2;
-      while (retriesLeft >= 0) {
-        try {
-          console.log(`[AI] Trying model: ${model}${retriesLeft < 2 ? ` (retry ${2 - retriesLeft}/2)` : ""}...`);
-          const response = await ai.models.generateContent({
-            model,
-            contents: prompt,
-            config: {
-              temperature: 0.92,
-              topP: 0.95,
-              maxOutputTokens: 8192,
-              thinkingConfig: { thinkingBudget: 0 },
-            },
-          });
-          const text = response.text ?? "";
-          console.log(`[AI] ✅ ${model} succeeded. Length: ${text.length} chars.`);
-          return text;
+            let retriesLeft = 2;
+            while (retriesLeft >= 0) {
+              try {
+                console.log(`[AI] Trying model: ${model}${retriesLeft < 2 ? ` (retry ${2 - retriesLeft}/2)` : ""}...`);
+                const generativeModel = genAI.getGenerativeModel({
+                  model,
+                  generationConfig: {
+                    temperature: 0.92,
+                    topP: 0.95,
+                    maxOutputTokens: 8192,
+                  },
+                });
 
-        } catch (err) {
-          lastError = err;
+                const result = await generativeModel.generateContent(prompt);
+                const text = result.response.text();
+                console.log(`[AI] ✅ ${model} succeeded. Length: ${text.length} chars.`);
+                return text;
 
-          if (is404(err)) {
-            // Model doesn't exist — skip immediately, no retries
-            console.warn(`[AI] ${model} → 404 (model not found). Skipping.`);
-            break; // break while → continue for
-          }
-
-          if (is429(err)) {
-            const limitType = classifyRateLimit(err);
-            const delayMs = parseRetryAfterMs(err);
-
-            if (limitType === "rpd") {
-              // Daily quota exhausted — no point retrying any model today
-              rpdExhausted = true;
-              console.error(`[AI] ${model} → Daily quota (RPD) exhausted. No further retries.`);
-              break; // break while → continue for (but rpdExhausted will skip remaining)
-            }
-
-            // RPM throttle — wait then retry same model
-            if (retriesLeft > 0) {
-              const waitMs = Math.min(delayMs, 15000); // cap at 15s
-              console.warn(`[AI] ${model} → RPM limit. Waiting ${waitMs}ms then retrying (${retriesLeft} left)...`);
-              await new Promise(r => setTimeout(r, waitMs));
-              retriesLeft--;
-              continue; // retry same model
-            } else {
-              // Retries exhausted for this model — cascade to next
-              console.warn(`[AI] ${model} → RPM retries exhausted. Moving to next model.`);
-              break;
+              } catch (err) {
+                lastError = err;
+                if (is404(err)) break;
+                if (is429(err)) {
+                  const limitType = classifyRateLimit(err);
+                  if (limitType === "rpd") {
+                    rpdExhausted = true;
+                    break;
+                  }
+                  if (retriesLeft > 0) {
+                    const waitMs = Math.min(parseRetryAfterMs(err), 15000);
+                    await new Promise(r => setTimeout(r, waitMs));
+                    retriesLeft--;
+                    continue;
+                  } else break;
+                }
+                console.error(`[AI] ${model} failed:`, err);
+                break;
+              }
             }
           }
 
-          // Unexpected error — stop cascade entirely
-          console.error(`[AI] ${model} failed with unexpected error:`, err);
-          throw err;
-        }
-      }
-    }
+          if (rpdExhausted) {
+            throw new RateLimitError("rpd", 24 * 60 * 60 * 1000,
+              "Daily API quota exhausted. The reading will reset tomorrow.");
+          }
+          throw new RateLimitError("rpm", 60000,
+            "API is busy. Please try again in a moment.");
+        })(),
+        new Promise<string>((_, reject) =>
+          setTimeout(() => reject(new Error("AI_TIMEOUT")), 60000)
+        )
+      ]);
+      return aiResponse;
 
-    // All models tried — determine why and throw informative error
-    if (rpdExhausted) {
-      throw new RateLimitError("rpd", 24 * 60 * 60 * 1000,
-        "Daily API quota exhausted. The reading will reset tomorrow.");
+    } catch (err) {
+      if (err instanceof Error && err.message === "AI_TIMEOUT") {
+        console.warn("[AI] 60s timeout reached. Falling back to offline reading.");
+        return offlineReading(cards, category, question, language);
+      }
+      throw err;
     }
-    console.error("[AI] All models exhausted (RPM):", lastError);
-    throw new RateLimitError("rpm", 60000,
-      "API is busy. Please try again in a moment.");
 
   } catch (err) {
-    // RateLimitError is expected control-flow — already logged above, just re-throw
     if (err instanceof RateLimitError) throw err;
-    // Unexpected errors (network failure, bad response shape, etc.)
-    console.error("[AI] Gemini API unexpected error:", err);
-    throw err;
+    console.error("[AI] Final catch — returning offline fallback:", err);
+    return offlineReading(cards, category, question, language);
   }
 }
 
 // ─── Offline / Error Fallback ─────────────────────────────────────────────────
-// This is only used when genAI = null (no API key) or when ReadingPage catches the throw
 export function offlineReading(
   cards: TarotCard[],
   category: string,
@@ -346,89 +336,100 @@ export function offlineReading(
   const [past, present, future] = cards;
 
   if (language === "VI") {
-    return `## Bài Đọc Tarot Của Bạn
+    return `# YOUR TAROT READING
 
 *Câu hỏi của bạn: "${question}"*
 
 ---
 
-### Quá Khứ — ${past.name}
+### THE PAST — ${past.name.toUpperCase()}
 
-${past.meaning}. Nhìn lại hành trình ${category} của bạn, lá bài này nói lên nền tảng bạn đã xây dựng — dù muốn hay không. Có điều gì trong năng lượng này mà bạn vẫn đang mang theo vào thời điểm hiện tại?
+*${past.meaning}*. Nhìn lại hành trình ${category} của bạn, lá bài **${past.name}** nói lên nền tảng bạn đã xây dựng — dù muốn hay không. Có điều gì trong năng lượng này mà bạn vẫn đang mang theo vào thời điểm hiện tại?
 
-### Hiện Tại — ${present.name}
+---
+
+### THE PRESENT — ${present.name.toUpperCase()}
 
 Đây là trọng tâm. **${present.name}** đặt thẳng vào tay bạn câu trả lời cho "${question}": *${present.meaning.toLowerCase()}*. Trong lĩnh vực ${category}, năng lượng này đang hiện diện — bạn có đang chú ý đến nó không?
 
 Có điều gì bạn đang né tránh không thừa nhận? Hay có điều gì bạn chưa sẵn sàng nhận lấy?
 
-### Tương Lai — ${future.name}
+---
+
+### THE FUTURE — ${future.name.toUpperCase()}
 
 Nếu bạn tiếp tục theo hướng hiện tại, **${future.name}** là quỹ đạo đang hình thành — *${future.meaning.toLowerCase()}*. Đây không phải số phận cố định. Một sự thay đổi nhỏ trong cách bạn tiếp cận "${question}" có thể thay đổi hoàn toàn điểm đến này.
 
 ---
 
-### Câu Chuyện Của Ba Lá Bài
+### THE STORY OF THREE CARDS
 
 Từ *${past.meaning.toLowerCase()}* qua *${present.meaning.toLowerCase()}* đến *${future.meaning.toLowerCase()}* — có một sợi chỉ đỏ chạy xuyên suốt ba lá này.
 
-**Thông điệp cốt lõi:** Câu trả lời cho "${question}" không nằm bên ngoài bạn. Nó nằm ở mức độ bạn sẵn sàng thành thật với chính mình về điều đang thực sự diễn ra trong ${category}.`;
+**Core insight:** Câu trả lời cho "${question}" không nằm bên ngoài bạn. Nó nằm ở mức độ bạn sẵn sàng thành thật với chính mình về điều đang thực sự diễn ra trong ${category}.`;
   }
 
   if (language === "ZH") {
-    return `## 你的塔罗牌解读
+    return `# YOUR TAROT READING
 
 *你的问题: "${question}"*
 
 ---
 
-### 过去 — ${past.name}
+### THE PAST — ${past.name.toUpperCase()}
 
-${past.meaning}。回望你在${category}领域的历程，这张牌揭示了你所建立的基础——无论你是否愿意承认。这股能量中，有什么是你仍在带入当下的？
-
-### 现在 — ${present.name}
-
-这是核心。**${present.name}**将答案直接放到你手中：*${present.meaning.toLowerCase()}*。在${category}的领域里，这股能量正在运作——你注意到了吗？
-
-你是否在回避什么不想承认的事？还是有什么你还没准备好接受？
-
-### 未来 — ${future.name}
-
-如果你沿着当前方向继续，**${future.name}**就是正在成形的轨迹——*${future.meaning.toLowerCase()}*。这不是固定的命运。对"${question}"方式的细微改变，可能会彻底改变你的方向。
+*${past.meaning}*。回望你在${category}领域的历程，这张 **${past.name}** 牌揭示了你所建立的基础——无论你是否愿意承认。这股能量中，有什么是你仍在带入当下的？
 
 ---
 
-### 三张牌的故事
+### THE PRESENT — ${present.name.toUpperCase()}
 
-从*${past.meaning.toLowerCase()}*经由*${present.meaning.toLowerCase()}*走向*${future.meaning.toLowerCase()}*——一根红线贯穿这三张牌。
+这是核心。**${present.name}** 将答案直接放到你手中：*${present.meaning.toLowerCase()}*。在${category}的领域里，这股能量正在运作——你注意到了吗？
 
-**核心洞见：** "${question}"的答案不在外部。它取决于你愿意对${category}中正在发生的事情诚实到什么程度。`;
+你是否在回避什么不想承认的事？还是有什么你还没准备好接受？
+
+---
+
+### THE FUTURE — ${future.name.toUpperCase()}
+
+如果你沿着当前方向继续，**${future.name}** 就是正在成形的轨迹——*${future.meaning.toLowerCase()}*。这不是固定的命运。对"${question}"方式的细微改变，可能会彻底改变你的方向。
+
+---
+
+### THE STORY OF THREE CARDS
+
+从 *${past.meaning.toLowerCase()}* 经由 *${present.meaning.toLowerCase()}* 走向 *${future.meaning.toLowerCase()}* —— 一根红线贯穿这三张牌。
+
+**Core insight:** "${question}"的答案不在外部。It depends on how honest you are with yourself.`;
   }
 
-  // English
-  return `## Your Tarot Reading
+  return `# YOUR TAROT READING
 
 *Your question: "${question}"*
 
 ---
 
-### The Past — ${past.name}
+### THE PAST — ${past.name.toUpperCase()}
 
-${past.meaning}. Looking back at your ${category} journey, this card names the energy that laid your foundation — whether you chose it or not. Something in this pattern is still with you now, shaping how you approach this question without you necessarily realising it.
+*${past.meaning}*. Looking back at your ${category} journey, the **${past.name}** card names the energy that laid your foundation — whether you chose it or not. Something in this pattern is still with you now, shaping how you approach this question without you necessarily realising it.
 
-### The Present — ${present.name}
+---
+
+### THE PRESENT — ${present.name.toUpperCase()}
 
 This is the centre. **${present.name}** places the answer to "${question}" directly in your hands: *${present.meaning.toLowerCase()}*. In the realm of ${category}, this energy is active right now. The question isn't whether it's here — it's whether you're paying attention to it.
 
 What are you avoiding acknowledging? What haven't you fully claimed yet?
 
-### The Future — ${future.name}
+---
+
+### THE FUTURE — ${future.name.toUpperCase()}
 
 If you continue on your current path, **${future.name}** is the trajectory forming — *${future.meaning.toLowerCase()}*. This is not a fixed fate. One honest shift in how you're holding "${question}" could change this destination entirely.
 
 ---
 
-### The Story of Three Cards
+### THE STORY OF THREE CARDS
 
 From *${past.meaning.toLowerCase()}* through *${present.meaning.toLowerCase()}* toward *${future.meaning.toLowerCase()}* — there is a single thread running through all three.
 

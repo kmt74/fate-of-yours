@@ -146,7 +146,10 @@ export default function LandingPage() {
             </div>
             <h1 style={{
               fontFamily: HEADING_FONT, fontSize: "clamp(2.5rem, 8vw, 6rem)",
-              fontWeight: 700, lineHeight: 1.1, letterSpacing: "0.04em", maxWidth: "900px",
+              fontWeight: 700, lineHeight: 1.2, letterSpacing: "0.04em", maxWidth: "100%",
+              whiteSpace: "nowrap",
+              padding: "0.1em 0", // Extra space for accents/hooks
+              overflow: "visible",
               background: "linear-gradient(135deg, #FACC15 0%, #C9A84C 30%, #8B5CF6 70%, #D8B4FE 100%)",
               backgroundSize: "200% auto",
               WebkitBackgroundClip: "text",
