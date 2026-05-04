@@ -1,8 +1,13 @@
 {
   "landing": {
-    "eyebrow": "AN ANCIENT ART · A MODERN JOURNEY",
+    "eyebrow": "ANCIENT WISDOM, DIGITAL SOUL",
+    "navTitle": "Fate of yours",
     "title": "FATE OF YOURS",
     "subtitle": "Unveil Your Path",
+    "cta": "Reveal Your Path",
+    "welcomeBack": "Welcome Back",
+    "welcomeSub": "Destiny awaits. Are you ready for a new reading?",
+    "continueBtn": "Continue Your Journey",
     "quote": "\"The cards do not tell you what will happen — they illuminate what already is within you.\"",
     "features": [
       { "sym": "☽", "text": "78 archetypal cards, 5 centuries of wisdom" },
@@ -21,17 +26,32 @@
     "benefitsTitle": "Benefits of our",
     "benefitsTitleAccent": "Readings",
     "benefitsSub": "Every reading is a journey inward. Here is what the experience of consulting the cards can offer you.",
-    "footerTitle": "Your reading awaits",
-    "footerSub": "Sign in or create an account above to begin your journey into the ancient wisdom of the cards.",
-    "footerTags": ["PRIVATE", "PERSONAL", "PROFOUND"],
-    "benefits": [
-      { "title": "Personal Clarity", "desc": "Gain deep insight into your emotions, patterns, and subconscious drives. The cards reveal what your conscious mind may be avoiding." },
-      { "title": "Guided Direction", "desc": "When life presents crossroads, a reading helps you weigh energies and possibilities — a compass for your intuition, not a prophecy." },
-      { "title": "Deep Reflection", "desc": "Each spread creates a structured moment of stillness. Tarot invites you to slow down and listen to what matters most." },
-      { "title": "Empowered Choices", "desc": "Understanding the archetypal energies around a situation helps you act with greater awareness and less reactivity." },
-      { "title": "Shadow Work", "desc": "The cards bravely illuminate the parts of yourself you may have hidden. Growth begins in the places we least want to look." },
-      { "title": "Daily Ritual", "desc": "A single-card pull each morning anchors your intention for the day — a powerful mindfulness practice requiring only moments." }
+    "introBadge": "THE ART OF TAROT",
+    "introHeadline": "Wisdom Beyond",
+    "introHeadline2": "The Seen World",
+    "introP1": "Tarot is a language of symbols, a mirror for the subconscious. It doesn't predict a fixed future, but reveals the hidden currents and potential paths shaped by your current energy.",
+    "introP2": "Our AI synthesis bridges ancient archetypal wisdom with modern psychological insight, offering a profound reflection on your deepest questions.",
+    "introBullets": [
+      "Archetypal Mirroring",
+      "Subconscious Mapping",
+      "Strategic Foresight"
     ],
+    "introPullQuote": "\"The cards are a map, not a destination.\"",
+    "benefitsBadge": "WHY SEEK INSIGHT?",
+    "benefitsTitle": "Pathways to",
+    "benefitsTitleAccent": "Clarity",
+    "benefitsSub": "Discover how the wisdom of the deck can illuminate every facet of your existence.",
+    "benefits": [
+      { "title": "Emotional Resonance", "desc": "Connect with your inner emotional landscape and find healing through symbolic reflection." },
+      { "title": "Strategic Pathing", "desc": "Identify hidden obstacles and opportunities in your career and creative pursuits." },
+      { "title": "Relational Depth", "desc": "Gain perspective on the dynamics of love, family, and social connection." },
+      { "title": "Financial Wisdom", "desc": "Understand the energy behind your material world and prosperity." },
+      { "title": "Spiritual Alignment", "desc": "Reconnect with your higher purpose and the universal flow." },
+      { "title": "Daily Guidance", "desc": "Navigate the small moments with mindfulness and intentionality." }
+    ],
+    "footerTitle": "Ready to Begin?",
+    "footerSub": "Your journey of self-discovery is only a card away. Step into the circle and let the oracle speak.",
+    "footerTags": ["WISDOM", "DESTINY", "CLARITY"],
     "auth": {
       "loginHead": "Welcome Back",
       "loginSub": "The cards await your return",
@@ -52,13 +72,75 @@
     }
   },
   "setup": {
-    "step": "STEP 1 OF 3 · SET YOUR INTENTION",
-    "heading": "Choose Your Realm",
-    "sub": "Before the cards speak, you must first speak to them. Select the domain of life you seek clarity in.",
-    "sectionLabel": "READING DOMAINS",
-    "sectionSub": "Select one domain to focus your reading energy",
+    "step": "STEP 1 OF 3 · CHOOSE YOUR FOCUS",
+    "heading": "What is your heart seeking?",
+    "sub": "Select the domain of your inquiry and refine it with a specific question. The more focused your intent, the clearer the revelation.",
+    "sectionLabel": "SELECT A DOMAIN",
+    "sectionSub": "Each suit speaks to a different aspect of the human experience.",
     "questionHeading": "YOUR QUESTION",
-    "proceedBtn": "Proceed to the Deck",
+    "customPlaceholder": "Or type your own question...",
+    "proceedBtn": "Proceed to Deck",
     "chooseHint": "Please select a domain and a question"
+  },
+  "deck": {
+    "step": "STEP 2 OF 3 · DRAW YOUR CARDS",
+    "heading": "Select Your Three Cards",
+    "readingFor": "Reading for:",
+    "restart": "Restart Draw",
+    "cardsAwait": "78 CARDS AWAIT",
+    "deckDesc": "THE FULL TAROT DECK. UNIFIED AND WAITING",
+    "beginBtn": "BEGIN YOUR DRAW",
+    "splitting": "Splitting the deck...",
+    "spreading": "Spreading the energy...",
+    "selectedHeader": "SELECTED CARDS",
+    "guide": "Let your intuition guide you — hover and click to select.",
+    "chooseMore": "Choose {n} more cards",
+    "chooseOne": "Choose 1 more card",
+    "revealBtn": "✦ Reveal My Fate",
+    "readyHint": "Your three cards are chosen — the veil is ready to lift",
+    "past": "PAST",
+    "present": "PRESENT",
+    "future": "FUTURE"
+  },
+  "reading": {
+    "step": "STEP 3 OF 3 · YOUR READING",
+    "heading": "YOUR THREE CARDS",
+    "aiSummary": "AI READING SUMMARY",
+    "newReading": "New Reading",
+    "upright": "UPRIGHT",
+    "reversed": "REVERSED",
+    "loading": "Your reading is being revealed...",
+    "returnBtn": "Return to Deck"
+  },
+  "history": {
+    "step": "YOUR ARCHIVE",
+    "heading": "Reading History",
+    "welcome": "Welcome back, {name}",
+    "count": "{n} readings in your archive",
+    "stats": {
+      "total": "Total Reads",
+      "month": "This Month"
+    },
+    "filters": {
+      "all": "All Categories",
+      "clear": "× Clear filter",
+      "noMatch": "No readings match the selected filter.",
+      "showAll": "Show all readings"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "category": "By Category"
+    },
+    "actions": {
+      "view": "View Reading",
+      "collapse": "Collapse",
+      "close": "Close"
+    },
+    "empty": {
+      "title": "No readings yet",
+      "desc": "You haven't drawn any cards yet. When you do, your readings will appear here so you can reflect on them over time.",
+      "btn": "Start Your Journey"
+    }
   }
 }

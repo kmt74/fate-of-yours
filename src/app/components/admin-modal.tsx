@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Shield, KeyRound, ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useApp } from "../context/AppContext";
 
 interface AdminModalProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ export function AdminModal({ isOpen, onClose }: AdminModalProps) {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
   if (!isOpen) return null;
 
@@ -57,8 +60,8 @@ export function AdminModal({ isOpen, onClose }: AdminModalProps) {
             <div className="w-12 h-12 rounded-xl bg-rgba(139,92,246,0.1) border border-[rgba(139,92,246,0.2)] flex items-center justify-center">
               <Shield size={22} className="text-[#A78BFA]" />
             </div>
-            <div>
-              <h2 className="font-cinzel text-[#F0E6D3] text-xl tracking-wider">Oracle Portal</h2>
+             <div>
+              <h2 className="text-[#F0E6D3] text-xl tracking-wider" style={{ fontFamily: HEADING_FONT }}>Oracle Portal</h2>
               <p className="font-raleway text-[rgba(240,230,211,0.4)] text-[0.75rem]">Administrative Sanctuary</p>
             </div>
           </div>
@@ -96,8 +99,8 @@ export function AdminModal({ isOpen, onClose }: AdminModalProps) {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full group bg-[#F0E6D3] hover:bg-white text-[#070710] py-4 rounded-2xl font-bold tracking-[0.1em] transition-all flex items-center justify-center gap-3 relative overflow-hidden"
-            style={{ fontFamily: "'Cinzel', serif" }}
+             className="w-full group bg-[#F0E6D3] hover:bg-white text-[#070710] py-4 rounded-2xl font-bold tracking-[0.1em] transition-all flex items-center justify-center gap-3 relative overflow-hidden"
+            style={{ fontFamily: HEADING_FONT }}
           >
             {loading ? "Decrypting..." : "Unveil Insights"}
             {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
@@ -111,8 +114,7 @@ export function AdminModal({ isOpen, onClose }: AdminModalProps) {
       </div>
 
       <style>{`
-        .font-cinzel { font-family: 'Cinzel', serif; }
-        .font-raleway { font-family: 'Raleway', sans-serif; }
+         .font-raleway { font-family: 'Raleway', sans-serif; }
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }

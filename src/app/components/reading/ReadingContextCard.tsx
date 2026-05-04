@@ -1,6 +1,7 @@
 import React from "react";
 import { CategoryBadge } from "../ui/CategoryBadge";
 import type { Category } from "../../data/tarot-data";
+import { useApp } from "../../context/AppContext";
 
 export interface ReadingContextCardProps {
   category: Category;
@@ -11,6 +12,9 @@ export function ReadingContextCard({
   category,
   question,
 }: ReadingContextCardProps) {
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   return (
     <div
       id="Reading-Context-Card"
@@ -31,7 +35,7 @@ export function ReadingContextCard({
       <p
         className="text-[clamp(1.1rem,3vw,1.4rem)] font-medium leading-relaxed tracking-[0.02em]"
         style={{ 
-          fontFamily: "'Cinzel', serif", 
+          fontFamily: HEADING_FONT, 
           color: "#F0E6D3",
           maxWidth: "100%"
         }}

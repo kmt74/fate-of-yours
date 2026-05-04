@@ -3,88 +3,16 @@ import { useNavigate } from "react-router";
 import { useApp } from "../context/AppContext";
 import { Layout } from "../components/Layout";
 import { GlobalNavBar } from "../components/GlobalNavBar";
-import { CATEGORIES } from "../data/tarot-data";
+import { CATEGORIES, CATEGORY_VI, CATEGORY_ZH } from "../data/tarot-data";
 import {
   Briefcase, Heart, Users, BookOpen, Coins, Leaf, Star, Home,
   Calendar, ChevronDown, ChevronUp, Filter, ArrowUpDown, Sparkles,
 } from "lucide-react";
+import { MarkdownRenderer } from "../components/reading/MarkdownRenderer";
+import { useLocale } from "../../hooks/useLocale";
+import type { TarotCard } from "../data/tarot-data";
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-const MOCK_HISTORY = [
-  {
-    id: "r1",
-    date: "2026-04-28T14:32:00",
-    categoryId: "love",
-    question: "Will I find true love this year?",
-    cards: [
-      { id: 3, name: "The Empress", symbol: "❋", suit: "major" },
-      { id: 17, name: "The Star", symbol: "✧", suit: "major" },
-      { id: 6, name: "The Lovers", symbol: "♡", suit: "major" },
-    ],
-    summary: "The Empress opens with abundance and nurturing energy, suggesting fertile ground for love. The Star brings hope and divine timing. The Lovers calls you toward authentic choice.",
-  },
-  {
-    id: "r2",
-    date: "2026-04-21T09:15:00",
-    categoryId: "career",
-    question: "Should I accept the new job offer?",
-    cards: [
-      { id: 7, name: "The Chariot", symbol: "◇", suit: "major" },
-      { id: 22, name: "Ace of Wands", symbol: "✤", suit: "wands" },
-      { id: 1, name: "The Magician", symbol: "✦", suit: "major" },
-    ],
-    summary: "The Chariot signals victory through determined action. The Ace of Wands ignites a powerful new creative spark. The Magician urges you to trust your full skill set.",
-  },
-  {
-    id: "r3",
-    date: "2026-04-14T19:48:00",
-    categoryId: "finance",
-    question: "How can I attract more prosperity?",
-    cards: [
-      { id: 10, name: "Wheel of Fortune", symbol: "⊛", suit: "major" },
-      { id: 64, name: "Ace of Pentacles", symbol: "✡", suit: "pentacles" },
-      { id: 74, name: "Nine of Pentacles", symbol: "✡", suit: "pentacles" },
-    ],
-    summary: "The Wheel of Fortune marks a turning point in your financial cycle. The Ace of Pentacles opens a door to new abundance. Nine of Pentacles rewards self-sufficiency.",
-  },
-  {
-    id: "r4",
-    date: "2026-04-08T11:20:00",
-    categoryId: "spiritual",
-    question: "What is my soul's true purpose?",
-    cards: [
-      { id: 2, name: "The High Priestess", symbol: "☽", suit: "major" },
-      { id: 9, name: "The Hermit", symbol: "✵", suit: "major" },
-      { id: 20, name: "Judgement", symbol: "⊙", suit: "major" },
-    ],
-    summary: "The High Priestess calls you to trust your intuition above all. The Hermit invites profound solitude and inner work. Judgement heralds a spiritual awakening and rebirth.",
-  },
-  {
-    id: "r5",
-    date: "2026-03-30T16:02:00",
-    categoryId: "health",
-    question: "What do I need to heal within myself?",
-    cards: [
-      { id: 14, name: "Temperance", symbol: "≋", suit: "major" },
-      { id: 8, name: "Strength", symbol: "♾", suit: "major" },
-      { id: 19, name: "The Sun", symbol: "☀", suit: "major" },
-    ],
-    summary: "Temperance calls for balance and healing integration. Strength affirms your inner courage is more than sufficient. The Sun promises vitality and renewed clarity.",
-  },
-  {
-    id: "r6",
-    date: "2026-03-18T20:35:00",
-    categoryId: "family",
-    question: "How can I strengthen family bonds?",
-    cards: [
-      { id: 5, name: "The Hierophant", symbol: "✝", suit: "major" },
-      { id: 36, name: "Ace of Cups", symbol: "◉", suit: "cups" },
-      { id: 4, name: "The Emperor", symbol: "◈", suit: "major" },
-    ],
-    summary: "The Hierophant highlights the importance of tradition and shared values. The Ace of Cups opens a new flow of emotional connection. The Emperor grounds your role with stability.",
-  },
-];
-
+// ─── Shared UI Helpers ────────────────────────────────────────────────────────
 const ICON_MAP: Record<string, React.ReactNode> = {
   career: <Briefcase size={15} />,
   love: <Heart size={15} />,
@@ -100,38 +28,86 @@ function hexToRgb(hex: string) {
   return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
 }
 
-function formatDate(value: string | number) {
+function formatDate(value: string | number, locale: string) {
   const d = new Date(value);
-  const dateStr = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-  const timeStr = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  const dateStr = d.toLocaleDateString(locale === "VI" ? "vi-VN" : locale === "ZH" ? "zh-CN" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
+  const timeStr = d.toLocaleTimeString(locale === "VI" ? "vi-VN" : locale === "ZH" ? "zh-CN" : "en-GB", { hour: "2-digit", minute: "2-digit" });
   return { date: dateStr, time: timeStr };
 }
 
 // ─── Mini Card Thumbnail ──────────────────────────────────────────────────────
-function MiniCard({ symbol, suit }: { symbol: string; suit: string }) {
-  const isGold = suit === "major";
+function MiniCard({ card, index, language, t }: { card: any; index: number; language: string; t: any }) {
+  const isGold = card.suit === "major";
+  const isReversed = card.orientation === "reversed";
+  const positions = [t.deck.past, t.deck.present, t.deck.future];
+  const barColor = isReversed ? "#ef4444" : "#C9A84C";
+
+  const getLocalizedName = (card: any) => {
+    return card.name;
+  };
+  
   return (
-    <div style={{
-      width: "34px", height: "52px", borderRadius: "5px",
-      background: "linear-gradient(145deg,#1A1430,#130F22)",
-      border: `1px solid ${isGold ? "rgba(201,168,76,0.25)" : "rgba(139,92,246,0.25)"}`,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      fontSize: "14px", boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-      flexShrink: 0,
-    }}>
-      {symbol}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", flexShrink: 0 }}>
+      <div style={{
+        width: "44px", height: "66px", borderRadius: "4px",
+        background: "linear-gradient(145deg,#1A1430,#130F22)",
+        border: `1px solid ${isGold ? "rgba(201,168,76,0.3)" : "rgba(139,92,246,0.3)"}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        overflow: "hidden", position: "relative",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
+      }}>
+        {card.image ? (
+          <img 
+            src={card.image} 
+            alt={card.name}
+            style={{
+              width: "100%", height: "100%", objectFit: "cover",
+              transform: isReversed ? "rotate(180deg)" : "none",
+              filter: "brightness(0.9) contrast(1.1)"
+            }}
+          />
+        ) : (
+          <span style={{ fontSize: "14px" }}>{card.symbol}</span>
+        )}
+        
+        {/* Tooltip for hover */}
+        <div 
+          title={`${positions[index]}: ${getLocalizedName(card)} (${isReversed ? t.reading.reversed : t.reading.upright})`}
+          style={{ position: "absolute", inset: 0, cursor: "help" }}
+        />
+      </div>
+
+      <div style={{ 
+        width: "20px",
+        height: "2.5px", 
+        borderRadius: "10px",
+        background: barColor,
+        boxShadow: `0 0 8px ${barColor}66`,
+        transition: "all 0.3s ease"
+      }} />
     </div>
   );
 }
 
 // ─── History Item ─────────────────────────────────────────────────────────────
-function HistoryItem({ reading }: { reading: any }) {
+function HistoryItem({ reading, language, t }: { reading: any; language: string; t: any }) {
   const [expanded, setExpanded] = useState(false);
-  const navigate = useNavigate();
   const category = CATEGORIES.find((c) => c.id === reading.category);
-  const { date, time } = formatDate(reading.timestamp);
+  const { date, time } = formatDate(reading.timestamp, language);
   const rgb = category ? hexToRgb(category.accentColor) : "201,168,76";
   const [hov, setHov] = useState(false);
+
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
+  const getLocalizedCategory = (id: string) => {
+    if (language === "VI") return CATEGORY_VI[id]?.label || id;
+    if (language === "ZH") return CATEGORY_ZH[id]?.label || id;
+    return CATEGORIES.find(c => c.id === id)?.label || id;
+  };
+
+  const getLocalizedCardName = (card: any) => {
+    return card.name;
+  };
 
   return (
     <div
@@ -148,7 +124,6 @@ function HistoryItem({ reading }: { reading: any }) {
     >
       {/* ── Main Row ── */}
       <div style={{ padding: "18px 22px", display: "flex", gap: "16px", alignItems: "flex-start" }}>
-        {/* Category icon badge */}
         <div style={{
           width: "40px", height: "40px", borderRadius: "11px", flexShrink: 0,
           background: `rgba(${rgb},0.1)`,
@@ -160,11 +135,9 @@ function HistoryItem({ reading }: { reading: any }) {
           {ICON_MAP[reading.category]}
         </div>
 
-        {/* Main content */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-              {/* Category + Date */}
               <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                 <span style={{
                   fontFamily: "'Raleway',sans-serif", fontSize: "0.66rem", fontWeight: 700,
@@ -173,7 +146,7 @@ function HistoryItem({ reading }: { reading: any }) {
                   border: `1px solid rgba(${rgb},0.2)`,
                   borderRadius: "20px", padding: "2px 10px",
                 }}>
-                  {category?.label.toUpperCase() ?? "GENERAL"}
+                  {getLocalizedCategory(reading.category).toUpperCase()}
                 </span>
                 <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "rgba(240,230,211,0.3)" }}>
                   <Calendar size={11} />
@@ -181,9 +154,8 @@ function HistoryItem({ reading }: { reading: any }) {
                 </div>
               </div>
 
-              {/* Question */}
               <p style={{
-                fontFamily: "'Cinzel',serif", color: "rgba(240,230,211,0.82)",
+                fontFamily: HEADING_FONT, color: "rgba(240,230,211,0.82)",
                 fontSize: "0.88rem", letterSpacing: "0.02em", lineHeight: 1.5,
                 maxWidth: "480px",
               }}>
@@ -191,23 +163,21 @@ function HistoryItem({ reading }: { reading: any }) {
               </p>
             </div>
 
-            {/* Card thumbnails */}
             <div id="Card-Thumbnails" style={{ display: "flex", gap: "5px", flexShrink: 0 }}>
-              {reading.cards.map((card) => (
-                <MiniCard key={card.id} symbol={card.symbol} suit={card.suit} />
+              {reading.cards.map((card: any, i: number) => (
+                <MiniCard key={card.id} card={card} index={i} language={language} t={t} />
               ))}
             </div>
           </div>
 
-          {/* Card names (compact) */}
           <div style={{ display: "flex", gap: "6px", marginTop: "10px", flexWrap: "wrap" }}>
-            {reading.cards.map((card, i) => {
+            {reading.cards.map((card: any, i: number) => {
               const COLORS = ["rgba(167,139,250,0.7)", "#C9A84C", "rgba(126,168,224,0.7)"];
-              const POSITIONS = ["Past", "Present", "Future"];
+              const POS_LABELS = [t.deck.past, t.deck.present, t.deck.future];
               return (
                 <div key={card.id} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <span style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.63rem", letterSpacing: "0.1em", color: COLORS[i], fontWeight: 600 }}>{POSITIONS[i]}</span>
-                  <span style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.7rem", color: "rgba(240,230,211,0.38)" }}>{card.name}</span>
+                  <span style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.63rem", letterSpacing: "0.1em", color: COLORS[i], fontWeight: 600 }}>{POS_LABELS[i]}</span>
+                  <span style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.7rem", color: "rgba(240,230,211,0.38)" }}>{getLocalizedCardName(card)}</span>
                   {i < 2 && <span style={{ color: "rgba(240,230,211,0.15)", fontSize: "10px" }}>·</span>}
                 </div>
               );
@@ -215,10 +185,8 @@ function HistoryItem({ reading }: { reading: any }) {
           </div>
         </div>
 
-        {/* Actions */}
         <div style={{ display: "flex", flexDirection: "column", gap: "8px", flexShrink: 0, alignItems: "flex-end" }}>
           <button
-            id={`View-Reading-${reading.id}`}
             onClick={() => setExpanded(!expanded)}
             style={{
               display: "flex", alignItems: "center", gap: "6px",
@@ -232,13 +200,12 @@ function HistoryItem({ reading }: { reading: any }) {
             }}
           >
             <Sparkles size={12} />
-            {expanded ? "Collapse" : "View Reading"}
+            {expanded ? t.history.actions.collapse : t.history.actions.view}
             {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
         </div>
       </div>
 
-      {/* ── Expanded Detail Panel ── */}
       {expanded && (
         <div style={{
           padding: "0 22px 20px",
@@ -246,7 +213,6 @@ function HistoryItem({ reading }: { reading: any }) {
         }}>
           <div style={{ height: "1px", background: `linear-gradient(to right, rgba(${rgb},0.3), transparent)`, marginBottom: "18px" }} />
 
-          {/* Summary */}
           <div style={{
             background: `rgba(${rgb},0.05)`,
             border: `1px solid rgba(${rgb},0.14)`,
@@ -257,31 +223,16 @@ function HistoryItem({ reading }: { reading: any }) {
               <div style={{ width: "24px", height: "24px", borderRadius: "7px", background: `rgba(${rgb},0.12)`, border: `1px solid rgba(${rgb},0.25)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <Sparkles size={12} color={category?.accentColor ?? "#C9A84C"} />
               </div>
-              <span style={{ fontFamily: "'Cinzel',serif", color: category?.accentColor ?? "#C9A84C", fontSize: "0.72rem", letterSpacing: "0.12em" }}>AI READING SUMMARY</span>
+              <span style={{ fontFamily: HEADING_FONT, color: category?.accentColor ?? "#C9A84C", fontSize: "0.72rem", letterSpacing: "0.12em" }}>{t.reading.aiSummary}</span>
             </div>
-            <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.6)", fontSize: "0.87rem", lineHeight: 1.8 }}>
-              {reading.summary}
-            </p>
+            <div style={{ padding: "0 10px" }}>
+              <MarkdownRenderer text={reading.summary} />
+            </div>
           </div>
 
-          {/* Full reading button */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
             <button onClick={() => setExpanded(false)} style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.78rem", background: "none", border: "none", color: "rgba(240,230,211,0.28)", cursor: "pointer", letterSpacing: "0.04em" }}>
-              Close
-            </button>
-            <button
-              id={`Full-Reading-${reading.id}`}
-              onClick={() => navigate("/reading")}
-              style={{
-                display: "flex", alignItems: "center", gap: "7px",
-                background: `linear-gradient(135deg, ${category?.accentColor ?? "#C9A84C"}, rgba(${rgb},0.7))`,
-                border: "none", borderRadius: "8px", padding: "9px 18px",
-                color: "#0A0A12", fontFamily: "'Cinzel',serif", fontSize: "0.78rem",
-                fontWeight: 600, letterSpacing: "0.06em", cursor: "pointer",
-                boxShadow: `0 4px 16px rgba(${rgb},0.25)`,
-              }}
-            >
-              View Full Reading <Sparkles size={11} />
+              {t.history.actions.close}
             </button>
           </div>
         </div>
@@ -291,8 +242,10 @@ function HistoryItem({ reading }: { reading: any }) {
 }
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
-function EmptyState() {
+function EmptyState({ language, t }: { language: string; t: any }) {
   const navigate = useNavigate();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   return (
     <div id="Empty-State" style={{
       display: "flex", flexDirection: "column", alignItems: "center",
@@ -305,21 +258,21 @@ function EmptyState() {
         display: "flex", alignItems: "center", justifyContent: "center",
         fontSize: "28px", boxShadow: "0 0 30px rgba(139,92,246,0.12)",
       }}>◌</div>
-      <h3 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "1.2rem", fontWeight: 600, letterSpacing: "0.04em" }}>
-        No readings yet
+      <h3 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "1.2rem", fontWeight: 600, letterSpacing: "0.04em" }}>
+        {t.history.empty.title}
       </h3>
       <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.4)", fontSize: "0.9rem", lineHeight: 1.8, maxWidth: "360px" }}>
-        You haven't drawn any cards yet. When you do, your readings will appear here so you can reflect on them over time.
+        {t.history.empty.desc}
       </p>
       <button onClick={() => navigate("/setup")} style={{
         display: "flex", alignItems: "center", gap: "8px",
         background: "linear-gradient(135deg,#C9A84C,#A8873A)",
         border: "none", borderRadius: "50px", padding: "13px 28px",
-        color: "#0A0A12", fontFamily: "'Cinzel',serif", fontSize: "0.88rem",
+        color: "#0A0A12", fontFamily: HEADING_FONT, fontSize: "0.88rem",
         fontWeight: 600, letterSpacing: "0.08em", cursor: "pointer",
         boxShadow: "0 4px 20px rgba(201,168,76,0.28)",
       }}>
-        <Sparkles size={15} /> Start Your Journey
+        <Sparkles size={15} /> {t.history.empty.btn}
       </button>
     </div>
   );
@@ -330,12 +283,16 @@ type SortKey = "date_desc" | "date_asc" | "category";
 type FilterKey = "all" | "love" | "career" | "finance" | "health" | "spiritual" | "family" | "friendship" | "general";
 
 export default function HistoryPage() {
-  const { user, history } = useApp();
+  const { user, history, language } = useApp();
   const navigate = useNavigate();
+  const t = useLocale();
+
   const [sort, setSort] = useState<SortKey>("date_desc");
   const [filter, setFilter] = useState<FilterKey>("all");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
+
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
   const readings = history;
 
@@ -350,8 +307,17 @@ export default function HistoryPage() {
     return arr;
   }, [readings, sort, filter]);
 
-  const sortLabels: Record<SortKey, string> = { date_desc: "Newest First", date_asc: "Oldest First", category: "By Category" };
-  const filterCategories = ["all", ...CATEGORIES.map((c) => c.id)] as FilterKey[];
+  const sortLabels: Record<SortKey, string> = { 
+    date_desc: t.history.sort.newest, 
+    date_asc: t.history.sort.oldest, 
+    category: t.history.sort.category 
+  };
+
+  const getLocalizedCategory = (id: string) => {
+    if (language === "VI") return CATEGORY_VI[id]?.label || id;
+    if (language === "ZH") return CATEGORY_ZH[id]?.label || id;
+    return CATEGORIES.find(c => c.id === id)?.label || id;
+  };
 
   return (
     <Layout>
@@ -362,28 +328,28 @@ export default function HistoryPage() {
           <div id="History-Header" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <div style={{ height: "1px", width: "32px", background: "linear-gradient(to right,transparent,rgba(201,168,76,0.5))" }} />
-              <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(201,168,76,0.6)", fontSize: "0.67rem", letterSpacing: "0.22em", fontWeight: 600 }}>YOUR ARCHIVE</span>
+              <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(201,168,76,0.6)", fontSize: "0.67rem", letterSpacing: "0.22em", fontWeight: 600 }}>{t.history.step}</span>
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
               <div>
-                <h1 style={{ fontFamily: "'Cinzel',serif", color: "#F0E6D3", fontSize: "clamp(1.5rem,4vw,2.2rem)", fontWeight: 600, letterSpacing: "0.04em", marginBottom: "6px" }}>
-                  Reading History
+                <h1 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "clamp(1.5rem,4vw,2.2rem)", fontWeight: 600, letterSpacing: "0.04em", marginBottom: "6px" }}>
+                  {t.history.heading}
                 </h1>
                 <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.38)", fontSize: "0.85rem" }}>
-                  Welcome back, <span style={{ color: "rgba(201,168,76,0.65)" }}>{user?.email?.split("@")[0] ?? "Seeker"}</span>
+                  {t.history.welcome.replace("{name}", user?.email?.split("@")[0] ?? "Seeker")}
                   {" · "}
-                  <span style={{ color: "rgba(240,230,211,0.45)" }}>{readings.length} readings in your archive</span>
+                  <span style={{ color: "rgba(240,230,211,0.45)" }}>{t.history.count.replace("{n}", String(readings.length))}</span>
                 </p>
               </div>
 
               {/* Stats row */}
               <div style={{ display: "flex", gap: "10px" }}>
                 {[
-                  { label: "Total Reads", value: String(readings.length) },
-                  { label: "This Month", value: String(readings.filter((r) => r.timestamp > Date.now() - 30*24*60*60*1000).length) },
+                  { label: t.history.stats.total, value: String(readings.length) },
+                  { label: t.history.stats.month, value: String(readings.filter((r) => r.timestamp > Date.now() - 30*24*60*60*1000).length) },
                 ].map(({ label, value }) => (
                   <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(240,230,211,0.08)", borderRadius: "12px", padding: "10px 18px", textAlign: "center" }}>
-                    <div style={{ fontFamily: "'Cinzel',serif", color: "#C9A84C", fontSize: "1.3rem", fontWeight: 600 }}>{value}</div>
+                    <div style={{ fontFamily: HEADING_FONT, color: "#C9A84C", fontSize: "1.3rem", fontWeight: 600 }}>{value}</div>
                     <div style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.3)", fontSize: "0.65rem", letterSpacing: "0.1em", marginTop: "2px" }}>{label}</div>
                   </div>
                 ))}
@@ -393,7 +359,6 @@ export default function HistoryPage() {
 
           {/* ── Filter & Sort Bar ── */}
           <div id="Filter-Sort-Bar" style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
-            {/* Filter by category */}
             <div style={{ position: "relative" }}>
               <button onClick={() => { setShowFilterMenu(!showFilterMenu); setShowSortMenu(false); }} style={{
                 display: "flex", alignItems: "center", gap: "6px",
@@ -406,7 +371,7 @@ export default function HistoryPage() {
                 transition: "all 0.2s",
               }}>
                 <Filter size={12} />
-                {filter === "all" ? "All Categories" : (CATEGORIES.find((c) => c.id === filter)?.label ?? "Filter")}
+                {filter === "all" ? t.history.filters.all : getLocalizedCategory(filter)}
                 <ChevronDown size={11} style={{ transform: showFilterMenu ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
               </button>
               {showFilterMenu && (
@@ -417,30 +382,26 @@ export default function HistoryPage() {
                   boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
                   animation: "menuOpen 0.15s ease",
                 }}>
-                  {(["all", ...CATEGORIES.map((c) => c.id)] as FilterKey[]).map((id) => {
-                    const cat = CATEGORIES.find((c) => c.id === id);
-                    return (
-                      <button key={id} onClick={() => { setFilter(id); setShowFilterMenu(false); }} style={{
-                        width: "100%", display: "flex", alignItems: "center", gap: "8px",
-                        background: filter === id ? "rgba(139,92,246,0.1)" : "transparent",
-                        border: "none", borderRadius: "7px", padding: "8px 11px",
-                        cursor: "pointer", fontFamily: "'Raleway',sans-serif",
-                        fontSize: "0.8rem", color: filter === id ? "#A78BFA" : "rgba(240,230,211,0.5)",
-                        transition: "all 0.15s", textAlign: "left",
-                      }}>
-                        {id === "all" ? (
-                          <><span style={{ fontSize: "12px" }}>◎</span> All Categories</>
-                        ) : (
-                          <><span style={{ color: cat?.accentColor, fontSize: "12px" }}>{ICON_MAP[id]}</span> {cat?.label}</>
-                        )}
-                      </button>
-                    );
-                  })}
+                  {(["all", ...CATEGORIES.map((c) => c.id)] as FilterKey[]).map((id) => (
+                    <button key={id} onClick={() => { setFilter(id); setShowFilterMenu(false); }} style={{
+                      width: "100%", display: "flex", alignItems: "center", gap: "8px",
+                      background: filter === id ? "rgba(139,92,246,0.1)" : "transparent",
+                      border: "none", borderRadius: "7px", padding: "8px 11px",
+                      cursor: "pointer", fontFamily: "'Raleway',sans-serif",
+                      fontSize: "0.8rem", color: filter === id ? "#A78BFA" : "rgba(240,230,211,0.5)",
+                      transition: "all 0.15s", textAlign: "left",
+                    }}>
+                      {id === "all" ? (
+                        <><span style={{ fontSize: "12px" }}>◎</span> {t.history.filters.all}</>
+                      ) : (
+                        <><span style={{ color: CATEGORIES.find(c => c.id === id)?.accentColor, fontSize: "12px" }}>{ICON_MAP[id]}</span> {getLocalizedCategory(id)}</>
+                      )}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Sort */}
             <div style={{ position: "relative" }}>
               <button onClick={() => { setShowSortMenu(!showSortMenu); setShowFilterMenu(false); }} style={{
                 display: "flex", alignItems: "center", gap: "6px",
@@ -478,39 +439,37 @@ export default function HistoryPage() {
               )}
             </div>
 
-            {/* Result count */}
             <span style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.25)", fontSize: "0.75rem", marginLeft: "4px" }}>
-              {filtered.length} result{filtered.length !== 1 ? "s" : ""}
+              {filtered.length} {t.history.filters.all.toLowerCase()}
             </span>
 
-            {/* Clear filters */}
             {filter !== "all" && (
               <button onClick={() => { setFilter("all"); setSort("date_desc"); }} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Raleway',sans-serif", fontSize: "0.73rem", color: "rgba(226,100,100,0.55)", letterSpacing: "0.04em", transition: "color 0.2s" }}>
-                × Clear filter
+                {t.history.filters.clear}
               </button>
             )}
           </div>
 
-          {/* ── Readings List ── */}
           <div id="Readings-List" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {filtered.length === 0 ? (
               <div style={{ textAlign: "center", padding: "48px 24px" }}>
-                <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.3)", fontSize: "0.9rem" }}>No readings match the selected filter.</p>
-                <button onClick={() => setFilter("all")} style={{ marginTop: "12px", background: "none", border: "none", cursor: "pointer", color: "#C9A84C", fontFamily: "'Raleway',sans-serif", fontSize: "0.82rem" }}>Show all readings</button>
+                <p style={{ fontFamily: "'Raleway',sans-serif", color: "rgba(240,230,211,0.3)", fontSize: "0.9rem" }}>{t.history.filters.noMatch}</p>
+                <button onClick={() => setFilter("all")} style={{ marginTop: "12px", background: "none", border: "none", cursor: "pointer", color: "#C9A84C", fontFamily: "'Raleway',sans-serif", fontSize: "0.82rem" }}>{t.history.filters.showAll}</button>
               </div>
             ) : (
-              filtered.map((r) => <HistoryItem key={r.id} reading={r} />)
+              filtered.map((r) => <HistoryItem key={r.id} reading={r} language={language} t={t} />)
             )}
           </div>
+
+          {readings.length === 0 && <EmptyState language={language} t={t} />}
         </div>
       </div>
 
-      {/* ─── Global Nav Bar ─────────────────────────────────────────────── */}
       <GlobalNavBar
         onBack={() => navigate(-1)}
         onNext={() => navigate("/setup")}
-        nextLabel="New Reading"
-        helperText={`${filtered.length} reading${filtered.length !== 1 ? "s" : ""} in your archive`}
+        nextLabel={t.reading.newReading}
+        helperText={t.history.count.replace("{n}", String(filtered.length))}
       />
 
       <style>{`

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CardBack } from "./CardBack";
 import type { TarotCard } from "../../data/tarot-data";
+import { useLocale } from "../../../hooks/useLocale";
 
 interface ArcCardProps {
   card: TarotCard;
@@ -30,6 +31,7 @@ export interface CurvedSpreadProps {
 }
 
 export function CurvedSpread({ deck, selectedIds, onToggle }: CurvedSpreadProps) {
+  const t = useLocale();
   const allSelected = selectedIds.length >= 3;
   const rows = [deck.slice(0, 26), deck.slice(26, 52), deck.slice(52, 78)];
   const getArcOffset = (i: number, n: number, amplitude: number) => {
@@ -62,7 +64,7 @@ export function CurvedSpread({ deck, selectedIds, onToggle }: CurvedSpreadProps)
         }}
       >
         <p className="text-center text-[0.77rem] tracking-[0.04em]" style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.32)", marginBottom: "-20px" }}>
-          Let your intuition guide you — hover and click to select. <span style={{ color: "rgba(201,168,76,0.5)" }}> Choose 3 cards.</span>
+          {t.deck.guide} <span style={{ color: "rgba(201,168,76,0.5)" }}> {allSelected ? "" : (selectedIds.length === 2 ? t.deck.chooseOne : t.deck.chooseMore.replace("{n}", (3 - selectedIds.length).toString()))}.</span>
         </p>
         {rows.map((row, rowIndex) => {
           const amplitude = ARC_AMPLITUDES[rowIndex];

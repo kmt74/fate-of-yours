@@ -12,6 +12,7 @@ import { GlobalNavBar } from "../components/GlobalNavBar";
 
 // ─── Shared UI Primitives ─────────────────────────────────────────────────────
 import { SectionTag } from "../components/ui/SectionTag";
+import { useLocale } from "../../hooks/useLocale";
 
 // ─── Deck Sub-Components ──────────────────────────────────────────────────────
 import { StackedDeck } from "../components/deck/StackedDeck";
@@ -26,8 +27,11 @@ const REQUIRED = 3;
 type DeckState = "stacked" | "splitting" | "spreading" | "interactive";
 
 export default function DeckPage() {
-  const { readingSetup, setSelectedCards } = useApp();
+  const { readingSetup, setSelectedCards, language } = useApp();
   const navigate = useNavigate();
+  const t = useLocale();
+
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
   // ─── State ──────────────────────────────────────────────────────────────────
   const [deckState, setDeckState] = useState<DeckState>("stacked");
@@ -110,12 +114,12 @@ export default function DeckPage() {
         >
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <div className="flex flex-col items-center gap-2">
-              <SectionTag text="STEP 2 OF 3 · DRAW YOUR CARDS" centered={true} />
+              <SectionTag text={t.deck.step} centered={true} />
               <h1
                 className="text-[clamp(1.6rem,4vw,2.4rem)] font-semibold tracking-[0.04em]"
-                style={{ fontFamily: "'Cinzel', serif", color: "#F0E6D3" }}
+                style={{ fontFamily: HEADING_FONT, color: "#F0E6D3" }}
               >
-                Select Your Three Cards
+                {t.deck.heading}
               </h1>
               {readingSetup && (
                 <p
@@ -125,7 +129,7 @@ export default function DeckPage() {
                     color: "rgba(240,230,211,0.35)",
                   }}
                 >
-                  Reading for:{" "}
+                  {t.deck.readingFor}{" "}
                   <span style={{ color: "rgba(201,168,76,0.6)" }}>
                     "{readingSetup.question}"
                   </span>
@@ -157,11 +161,12 @@ export default function DeckPage() {
                 }}
               >
                 <RotateCcw size={13} />
-                Restart Draw
+                {t.deck.restart}
               </button>
             )}
           </div>
         </header>
+
 
         {/* ── Selected Cards Tray ── */}
         {deckState === "interactive" && (
@@ -198,14 +203,14 @@ export default function DeckPage() {
             nextDisabled={!allSelected}
             nextLabel={
               allSelected
-                ? "✦ Reveal My Fate"
-                : `Choose ${REQUIRED - selectedIds.length} more card${
-                    REQUIRED - selectedIds.length !== 1 ? "s" : ""
-                  }`
+                ? t.deck.revealBtn
+                : selectedIds.length === 2 
+                  ? t.deck.chooseOne 
+                  : t.deck.chooseMore.replace("{n}", String(REQUIRED - selectedIds.length))
             }
             helperText={
               allSelected
-                ? "Your three cards are chosen — the veil is ready to lift"
+                ? t.deck.readyHint
                 : undefined
             }
           />

@@ -133,6 +133,108 @@ export const CATEGORY_ZH: Record<string, { label: string; description: string }>
   family:     { label: "家庭",   description: "根源、关系与传承" },
 };
 
+export const QUESTIONS_VI: Record<string, string[]> = {
+  career: [
+    "Tôi có được thăng tiến không?",
+    "Tôi có nên chuyển nghề không?",
+    "Những cơ hội nào đang chờ đợi phía trước?",
+    "Tôi có đang làm đúng công việc của mình không?",
+  ],
+  love: [
+    "Tôi có tìm thấy tình yêu đích thực không?",
+    "Làm sao để cải thiện mối quan hệ hiện tại?",
+    "Người này có phù hợp với tôi không?",
+    "Khi nào tôi sẽ gặp được tri kỷ?",
+  ],
+  friendship: [
+    "Ai là những đồng minh thực sự của tôi?",
+    "Làm sao để giải quyết mâu thuẫn này?",
+    "Tôi có nên tha thứ cho người này không?",
+    "Tôi có đang là một người bạn tốt không?",
+  ],
+  general: [
+    "Tôi nên tập trung vào điều gì lúc này?",
+    "Điều gì đang cản trở sự tiến bộ của tôi?",
+    "Bài học nào tôi cần phải học?",
+    "Tương lai gần của tôi sẽ như thế nào?",
+  ],
+  finance: [
+    "Tình hình tài chính của tôi có cải thiện không?",
+    "Tôi có nên thực hiện khoản đầu tư này không?",
+    "Điều gì đang cản trở sự thịnh vượng của tôi?",
+    "Làm sao để thu hút nhiều tài lộc hơn?",
+  ],
+  health: [
+    "Năng lượng của tôi nói gì về sức khỏe?",
+    "Tôi cần chữa lành điều gì bên trong mình?",
+    "Làm sao để cải thiện thể trạng?",
+    "Thói quen nào phục vụ tốt nhất cho tôi?",
+  ],
+  spiritual: [
+    "Mục đích linh hồn của tôi là gì?",
+    "Làm sao để thực hành tâm linh sâu sắc hơn?",
+    "Những nguồn năng lượng nào đang dẫn dắt tôi?",
+    "Sự thật nào tôi đã sẵn sàng đón nhận?",
+  ],
+  family: [
+    "Làm sao để thắt chặt tình cảm gia đình?",
+    "Gia đình tôi cần được chữa lành điều gì?",
+    "Làm sao để vượt qua mâu thuẫn gia đình này?",
+    "Năng lượng tổ tiên nào đang bao quanh tôi?",
+  ],
+};
+
+export const QUESTIONS_ZH: Record<string, string[]> = {
+  career: [
+    "我会升职吗？",
+    "我应该换工作吗？",
+    "前方有什么机遇？",
+    "我从事的是正确的职业吗？",
+  ],
+  love: [
+    "我会找到真爱吗？",
+    "我该如何改善我的关系？",
+    "这个人适合我吗？",
+    "我什么时候能遇到我的灵魂伴侣？",
+  ],
+  friendship: [
+    "谁是我真正的盟友？",
+    "我该如何解决这个冲突？",
+    "我应该原谅这个人吗？",
+    "我是一个好朋友吗？",
+  ],
+  general: [
+    "我现在应该关注什么？",
+    "什么在阻碍我的进步？",
+    "我应该学习什么教训？",
+    "我的近未来会怎样？",
+  ],
+  finance: [
+    "我的财务状况会改善吗？",
+    "我应该进行这项投资吗？",
+    "什么在阻碍我的丰盛？",
+    "我该如何吸引更多的繁荣？",
+  ],
+  health: [
+    "我的能量揭示了我的健康状况？",
+    "我需要治愈内心的什么？",
+    "我该如何改善我的健康？",
+    "什么习惯对我有益？",
+  ],
+  spiritual: [
+    "我的灵魂目标是什么？",
+    "我该如何深化我的灵性实践？",
+    "现在是什么能量在指引我？",
+    "我已经准备好接受什么真理？",
+  ],
+  family: [
+    "我该如何加强家庭纽带？",
+    "我的家庭需要什么治愈？",
+    "我该如何处理这个家庭冲突？",
+    "什么样的祖先能量围绕着我？",
+  ],
+};
+
 // --- Categories ---
 export interface Category {
   id: string;

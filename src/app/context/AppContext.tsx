@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
 import { TarotCard } from "../data/tarot-data";
 
 interface User {
@@ -18,6 +18,10 @@ interface Reading extends ReadingSetup {
   id: string;
   cards: TarotCard[];
   timestamp: number;
+}
+
+interface AiInterpretation {
+  interpretation: string;
 }
 
 type Language = "EN" | "VI" | "ZH";
@@ -44,6 +48,7 @@ interface AppState {
   history: Reading[];
   adminUsers: AdminUser[];
   analytics: Analytics;
+  aiInterpretation: AiInterpretation | null;
 
   login: (user: User) => void;
   signup: (user: User) => void;
@@ -55,19 +60,33 @@ interface AppState {
   setLanguage: (lang: Language) => void;
   banUser: (id: string) => void;
   deleteUser: (id: string) => void;
+  fetchAiInterpretation: () => Promise<void>;
 }
 
 const AppContext = createContext<AppState | null>(null);
 
 import { DB } from "../lib/db";
+import { getTarotReading } from "../../lib/ai";
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    try {
+      const saved = localStorage.getItem("fate_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem("fate_user");
+  });
   const [readingSetup, setReadingSetupState] = useState<ReadingSetup | null>(null);
   const [selectedCards, setSelectedCardsState] = useState<TarotCard[]>([]);
   const [language, setLanguageState] = useState<Language>("EN");
   const [history, setHistory] = useState<Reading[]>([]);
+  const [aiInterpretation, setAiInterpretation] = useState<AiInterpretation | null>(null);
+  const [lastLanguage, setLastLanguage] = useState<Language | null>(null);
+  const [isFetchingAi, setIsFetchingAi] = useState(false);
 
   useEffect(() => {
     DB.recordVisit();
@@ -87,11 +106,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const login = (userData: User) => {
     setIsAuthenticated(true);
     setUser(userData);
+    localStorage.setItem("fate_user", JSON.stringify(userData));
   };
 
   const signup = (userData: User) => {
     setIsAuthenticated(true);
     setUser(userData);
+    localStorage.setItem("fate_user", JSON.stringify(userData));
   };
 
   const logout = () => {
@@ -99,6 +120,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setReadingSetupState(null);
     setSelectedCardsState([]);
+    localStorage.removeItem("fate_user");
+    sessionStorage.removeItem("isAdminAuthenticated");
   };
 
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
@@ -144,7 +167,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setSelectedCards = (cards: TarotCard[]) => setSelectedCardsState(cards);
   const setLanguage = (lang: Language) => setLanguageState(lang);
 
-  const addReadingToHistory = async (readingData: Omit<Reading, "id" | "timestamp">) => {
+  const addReadingToHistory = useCallback(async (readingData: Omit<Reading, "id" | "timestamp">) => {
     if (!user) return;
     try {
       const payload = {
@@ -168,12 +191,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to save reading", error);
     }
-  };
+  }, [user]);
 
-  const resetReading = () => {
+  const resetReading = useCallback(() => {
     setReadingSetupState(null);
     setSelectedCardsState([]);
-  };
+    setAiInterpretation(null);
+  }, []);
+
+  const fetchAiInterpretation = useCallback(async () => {
+    if (!readingSetup || selectedCards.length < 3 || isFetchingAi) return;
+    
+    // If we already have a reading for THIS language, don't re-fetch
+    if (aiInterpretation && lastLanguage === language) return;
+    
+    setIsFetchingAi(true);
+    try {
+      const text = await getTarotReading(selectedCards, readingSetup.category, readingSetup.question, language);
+      setAiInterpretation({ interpretation: text });
+      setLastLanguage(language);
+      
+      // Save to history automatically
+      if (user) {
+        await addReadingToHistory({
+          category: readingSetup.category,
+          question: readingSetup.question,
+          cards: selectedCards,
+          summary: text
+        });
+      }
+    } catch (err) {
+      console.error("AI Fetch Error:", err);
+      throw err;
+    } finally {
+      setIsFetchingAi(false);
+    }
+  }, [readingSetup, selectedCards, isFetchingAi, aiInterpretation, lastLanguage, language, user, addReadingToHistory]);
 
   return (
     <AppContext.Provider
@@ -181,6 +234,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isAuthenticated, user, readingSetup, selectedCards, language, history,
         adminUsers, analytics, banUser, deleteUser,
         login, signup, logout, setReadingSetup, setSelectedCards, addReadingToHistory, resetReading, setLanguage,
+        aiInterpretation, fetchAiInterpretation
       }}
     >
       {children}
