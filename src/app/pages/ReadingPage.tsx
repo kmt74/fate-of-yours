@@ -38,7 +38,7 @@ import type { Position } from "../lib/theme";
 //     └─ GlobalNavBar
 
 export default function ReadingPage() {
-  const { readingSetup, selectedCards, resetReading, language } = useApp();
+  const { readingSetup, selectedCards, resetReading, language, addReadingToHistory } = useApp();
   const navigate = useNavigate();
 
   // ─── Derived Data ─────────────────────────────────────────────────────────
@@ -69,6 +69,7 @@ export default function ReadingPage() {
         const aiText = await getTarotReading(selectedCards, category, question, language);
         setFullText(aiText);
         setRateLimitMsg(null);
+        addReadingToHistory({ category, question, cards: selectedCards, summary: aiText });
       } catch (err) {
         console.error("[ReadingPage] AI failed:", err);
         if (err instanceof RateLimitError) {
@@ -83,7 +84,9 @@ export default function ReadingPage() {
               : `⏳ API busy (${s}s). Showing offline reading.`);
           }
         }
-        setFullText(offlineReading(selectedCards, category, question, language));
+        const fallbackText = offlineReading(selectedCards, category, question, language);
+        setFullText(fallbackText);
+        addReadingToHistory({ category, question, cards: selectedCards, summary: fallbackText });
       } finally {
         setAiLoading(false);
       }

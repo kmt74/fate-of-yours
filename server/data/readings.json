@@ -1,0 +1,76 @@
+[
+  {
+    "id": "1777789649472",
+    "email": "t3@gmail.com",
+    "category": "career",
+    "question": "Will I get a promotion?",
+    "cards": [
+      {
+        "id": 1,
+        "name": "The Magician",
+        "suit": "major",
+        "symbol": "✦",
+        "meaning": "Willpower, skill & manifestation",
+        "image": "/assets/cards/card_1.jpg",
+        "orientation": "upright"
+      },
+      {
+        "id": 73,
+        "name": "Ten of Pentacles",
+        "suit": "pentacles",
+        "symbol": "✡",
+        "meaning": "Wealth, legacy & financial abundance",
+        "image": "/assets/cards/card_73.jpg",
+        "orientation": "reversed"
+      },
+      {
+        "id": 19,
+        "name": "The Sun",
+        "suit": "major",
+        "symbol": "☀",
+        "meaning": "Joy, clarity, success & vital energy",
+        "image": "/assets/cards/card_19.jpg",
+        "orientation": "upright"
+      }
+    ],
+    "summary": "## Your Tarot Reading\n\n*Your question: \"Will I get a promotion?\"*\n\n---\n\n### The Past — The Magician\n\nWillpower, skill & manifestation. Looking back at your career journey, this card names the energy that laid your foundation — whether you chose it or not. Something in this pattern is still with you now, shaping how you approach this question without you necessarily realising it.\n\n### The Present — Ten of Pentacles\n\nThis is the centre. **Ten of Pentacles** places the answer to \"Will I get a promotion?\" directly in your hands: *wealth, legacy & financial abundance*. In the realm of career, this energy is active right now. The question isn't whether it's here — it's whether you're paying attention to it.\n\nWhat are you avoiding acknowledging? What haven't you fully claimed yet?\n\n### The Future — The Sun\n\nIf you continue on your current path, **The Sun** is the trajectory forming — *joy, clarity, success & vital energy*. This is not a fixed fate. One honest shift in how you're holding \"Will I get a promotion?\" could change this destination entirely.\n\n---\n\n### The Story of Three Cards\n\nFrom *willpower, skill & manifestation* through *wealth, legacy & financial abundance* toward *joy, clarity, success & vital energy* — there is a single thread running through all three.\n\n**Core insight:** The answer to \"Will I get a promotion?\" doesn't live outside you. It lives in the degree to which you're willing to be honest with yourself about what is actually happening in your career life right now.",
+    "timestamp": 1777789649472
+  },
+  {
+    "id": "1777790350995",
+    "email": "t3@gmail.com",
+    "category": "career",
+    "question": "Will I get a promotion?",
+    "cards": [
+      {
+        "id": 3,
+        "name": "The Empress",
+        "suit": "major",
+        "symbol": "❋",
+        "meaning": "Fertility, abundance & nurturing energy",
+        "image": "/assets/cards/card_3.jpg",
+        "orientation": "reversed"
+      },
+      {
+        "id": 44,
+        "name": "Nine of Cups",
+        "suit": "cups",
+        "symbol": "◉",
+        "meaning": "Contentment & deep satisfaction",
+        "image": "/assets/cards/card_44.jpg",
+        "orientation": "upright"
+      },
+      {
+        "id": 58,
+        "name": "Nine of Swords",
+        "suit": "swords",
+        "symbol": "✕",
+        "meaning": "Anxiety, self-doubt & fear",
+        "image": "/assets/cards/card_58.jpg",
+        "orientation": "upright"
+      }
+    ],
+    "summary": "## Your Tarot Reading\n\n*Your question: \"Will I get a promotion?\"*\n\n---\n\n### The Past — The Empress\n\nFertility, abundance & nurturing energy. Looking back at your career journey, this card names the energy that laid your foundation — whether you chose it or not. Something in this pattern is still with you now, shaping how you approach this question without you necessarily realising it.\n\n### The Present — Nine of Cups\n\nThis is the centre. **Nine of Cups** places the answer to \"Will I get a promotion?\" directly in your hands: *contentment & deep satisfaction*. In the realm of career, this energy is active right now. The question isn't whether it's here — it's whether you're paying attention to it.\n\nWhat are you avoiding acknowledging? What haven't you fully claimed yet?\n\n### The Future — Nine of Swords\n\nIf you continue on your current path, **Nine of Swords** is the trajectory forming — *anxiety, self-doubt & fear*. This is not a fixed fate. One honest shift in how you're holding \"Will I get a promotion?\" could change this destination entirely.\n\n---\n\n### The Story of Three Cards\n\nFrom *fertility, abundance & nurturing energy* through *contentment & deep satisfaction* toward *anxiety, self-doubt & fear* — there is a single thread running through all three.\n\n**Core insight:** The answer to \"Will I get a promotion?\" doesn't live outside you. It lives in the degree to which you're willing to be honest with yourself about what is actually happening in your career life right now.",
+    "timestamp": 1777790350995
+  }
+]
