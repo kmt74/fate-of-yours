@@ -38,7 +38,7 @@ import type { Position } from "../lib/theme";
 //     └─ GlobalNavBar
 
 export default function ReadingPage() {
-  const { readingSetup, selectedCards, resetReading, language } = useApp();
+  const { readingSetup, selectedCards, resetReading, language, user } = useApp();
   const navigate = useNavigate();
 
   // ─── Derived Data ─────────────────────────────────────────────────────────
@@ -82,6 +82,10 @@ export default function ReadingPage() {
               ? `⏳ API đang bận (chờ ${s}s). Đã dùng bản offline.`
               : `⏳ API busy (${s}s). Showing offline reading.`);
           }
+        } else {
+          setRateLimitMsg(language === "VI"
+            ? "⚠️ Không thể kết nối với máy chủ AI. Đã dùng bản offline."
+            : "⚠️ Cannot connect to AI server. Showing offline reading.");
         }
         setFullText(offlineReading(selectedCards, category, question, language));
       } finally {
@@ -156,6 +160,26 @@ export default function ReadingPage() {
             )}
           </header>
 
+          {/* ── Rate Limit / Server Error Notice (always visible at top, ADMIN ONLY) ── */}
+          {rateLimitMsg && user?.isAdmin && (
+            <div style={{
+              position: "sticky",
+              top: "72px",
+              zIndex: 50,
+              padding: "10px 16px",
+              borderRadius: "8px",
+              background: "rgba(201,168,76,0.12)",
+              border: "1px solid rgba(201,168,76,0.4)",
+              color: "rgba(201,168,76,0.95)",
+              fontSize: "0.85rem",
+              fontFamily: "'Raleway', sans-serif",
+              letterSpacing: "0.02em",
+              textAlign: "center",
+            }}>
+              {rateLimitMsg}
+            </div>
+          )}
+
           {/* ── Card Reveal Section ── */}
           <section
             id="Card-Reveal-Section"
@@ -188,21 +212,7 @@ export default function ReadingPage() {
             </div>
           </section>
 
-          {/* ── Rate Limit Notice ── */}
-          {rateLimitMsg && (
-            <div style={{
-              padding: "10px 16px",
-              borderRadius: "8px",
-              background: "rgba(201,168,76,0.08)",
-              border: "1px solid rgba(201,168,76,0.25)",
-              color: "rgba(201,168,76,0.85)",
-              fontSize: "0.82rem",
-              fontFamily: "'Raleway', sans-serif",
-              letterSpacing: "0.02em",
-            }}>
-              {rateLimitMsg}
-            </div>
-          )}
+
 
           {/* ── AI Interpretation ── */}
           <AiInterpretationPanel

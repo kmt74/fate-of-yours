@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Eye, EyeOff, Shield } from "lucide-react";
 import { useApp } from "../../context/AppContext";
+import { supabase } from "../../../lib/supabase";
 
 // ─── Dev-only admin credentials ───────────────────────────────────────────────
 const ADMIN_EMAIL = "admin@fate-of-yours.com";
@@ -63,7 +64,7 @@ export function AuthModule({ c }: { c: any }) {
 
   const dobError = dobTouched ? validateDate(dobDay, dobMonth, dobYear) : null;
 
-  const doLogin = (e: React.FormEvent) => {
+  const doLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: Record<string, string> = {};
     if (!loginEmail) errs.email = "Email is required";
@@ -71,16 +72,28 @@ export function AuthModule({ c }: { c: any }) {
     if (!loginPass) errs.pass = "Password is required";
     setLoginErrs(errs);
     if (Object.keys(errs).length) return;
-    
+
     setLoading(true);
-    setTimeout(() => {
+    try {
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: loginPass,
+      });
+      if (error) {
+        setLoginErrs({ auth: error.message === "Invalid login credentials" ? "Wrong email or password." : error.message });
+      } else if (data.user) {
+        login(data.user);
+        navigate("/setup");
+      }
+    } catch (error: any) {
+      setLoginErrs({ auth: "Cannot connect to server. Check your internet connection." });
+    } finally {
       setLoading(false);
-      login(loginEmail, loginPass);
-      navigate("/setup");
-    }, 400);
+    }
   };
 
-  const doSignup = (e: React.FormEvent) => {
+  const doSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setDobTouched(true);
     const errs: Record<string, string> = {};
@@ -92,14 +105,34 @@ export function AuthModule({ c }: { c: any }) {
     if (dobErr) errs.dob = dobErr;
     setSignErrs(errs);
     if (Object.keys(errs).length) return;
-    
+
     setLoading(true);
     const dob = `${dobYear}-${String(dobMonth).padStart(2,"0")}-${String(dobDay).padStart(2,"0")}`;
-    setTimeout(() => {
+
+    try {
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase.auth.signUp({
+        email: signEmail,
+        password: signPass,
+        options: { data: { date_of_birth: dob } },
+      });
+      if (error) {
+        setSignErrs({ auth: error.message });
+      } else if (data.user) {
+        // Supabase may require email confirmation — if so, user.identities will be empty
+        const needsConfirm = data.user.identities?.length === 0;
+        if (needsConfirm) {
+          setSignErrs({ auth: "This email is already registered. Please sign in instead." });
+        } else {
+          signup(data.user);
+          navigate("/setup");
+        }
+      }
+    } catch (error: any) {
+      setSignErrs({ auth: "Cannot connect to server. Check your internet connection." });
+    } finally {
       setLoading(false);
-      signup(signEmail, signPass, dob);
-      navigate("/setup");
-    }, 400);
+    }
   };
 
   const inputStyle = (hasErr?: boolean, focused?: boolean): React.CSSProperties => ({

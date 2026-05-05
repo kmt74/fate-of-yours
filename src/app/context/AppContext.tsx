@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { TarotCard } from "../data/tarot-data";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
 interface User {
+  id?: string;
   email: string;
-  dob: string;
+  dob?: string;
+  isAdmin?: boolean;
 }
 
 interface ReadingSetup {
@@ -14,6 +17,7 @@ interface ReadingSetup {
 interface Reading extends ReadingSetup {
   id: string;
   cards: TarotCard[];
+  summary: string;
   timestamp: number;
 }
 
@@ -27,8 +31,8 @@ interface AppState {
   language: Language;
   history: Reading[];
 
-  login: (email: string, password: string) => void;
-  signup: (email: string, password: string, dob: string) => void;
+  login: (userData: any) => void;
+  signup: (userData: any) => void;
   logout: () => void;
   setReadingSetup: (setup: ReadingSetup) => void;
   setSelectedCards: (cards: TarotCard[]) => void;
@@ -39,17 +43,27 @@ interface AppState {
 
 const AppContext = createContext<AppState | null>(null);
 
+// ─── LocalStorage DB ─────────────────────────────────────────────────────────
 const DB = {
   getHistory: (email: string): Reading[] => {
-    const data = localStorage.getItem(`history_${email}`);
-    return data ? JSON.parse(data) : [];
+    try {
+      const data = localStorage.getItem(`history_${email}`);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
   },
   saveHistory: (email: string, reading: Reading) => {
-    const current = DB.getHistory(email);
-    localStorage.setItem(`history_${email}`, JSON.stringify([reading, ...current]));
-  }
+    try {
+      const current = DB.getHistory(email);
+      localStorage.setItem(`history_${email}`, JSON.stringify([reading, ...current].slice(0, 50)));
+    } catch {
+      // silently fail if localStorage is unavailable
+    }
+  },
 };
 
+// ─── Provider ─────────────────────────────────────────────────────────────────
 export function AppProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -58,28 +72,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("EN");
   const [history, setHistory] = useState<Reading[]>([]);
 
+  // Load history from localStorage when user changes
   useEffect(() => {
-    if (user) {
+    if (user?.email) {
       setHistory(DB.getHistory(user.email));
     } else {
       setHistory([]);
     }
   }, [user]);
 
-  const ADMIN_EMAIL = "admin@fate-of-yours.com";
-
-  const login = (email: string, _password: string) => {
+  const login = (userData: any) => {
     setIsAuthenticated(true);
-    if (email === ADMIN_EMAIL) {
-      setUser({ email, dob: "1990-01-01", isAdmin: true });
-    } else {
-      setUser({ email, dob: "" });
-    }
+    setUser({
+      id: userData.id,
+      email: userData.email,
+      dob: userData.user_metadata?.date_of_birth || userData.dob,
+      isAdmin: userData.email === "admin@fate-of-yours.com",
+    });
   };
 
-  const signup = (email: string, _password: string, dob: string) => {
+  const signup = (userData: any) => {
     setIsAuthenticated(true);
-    setUser({ email, dob });
+    setUser({
+      id: userData.id,
+      email: userData.email,
+      dob: userData.user_metadata?.date_of_birth || userData.dob,
+    });
   };
 
   const logout = () => {
@@ -92,16 +110,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setReadingSetup = (setup: ReadingSetup) => setReadingSetupState(setup);
   const setSelectedCards = (cards: TarotCard[]) => setSelectedCardsState(cards);
   const setLanguage = (lang: Language) => setLanguageState(lang);
-  
+
   const addReadingToHistory = (readingData: Omit<Reading, "id" | "timestamp">) => {
-    if (!user) return;
+    if (!user?.email) return;
     const newReading: Reading = {
       ...readingData,
       id: Math.random().toString(36).substr(2, 9),
       timestamp: Date.now(),
     };
     DB.saveHistory(user.email, newReading);
-    setHistory(prev => [newReading, ...prev]);
+    setHistory((prev) => [newReading, ...prev]);
   };
 
   const resetReading = () => {
@@ -113,7 +131,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider
       value={{
         isAuthenticated, user, readingSetup, selectedCards, language, history,
-        login, signup, logout, setReadingSetup, setSelectedCards, addReadingToHistory, resetReading, setLanguage,
+        login, signup, logout, setReadingSetup, setSelectedCards,
+        addReadingToHistory, resetReading, setLanguage,
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import { GlobalNavBar } from "../components/GlobalNavBar";
 import { CATEGORIES, Category } from "../data/tarot-data";
 import { CategoryCard, QuestionChip } from "../components/tarot/CategoryCard";
 import { useLocale } from "../../hooks/useLocale";
+import { QuestionWarningModal, type FilterViolation, type ViolationCategory } from "../components/QuestionWarningModal";
 
 type Lang = "EN" | "VI" | "ZH";
 
@@ -21,6 +22,10 @@ export default function SetupPage() {
   const [customQuestion, setCustomQuestion] = useState("");
   const [textFocused, setTextFocused] = useState(false);
   const questionRef = useRef<HTMLDivElement>(null);
+
+  const [violation, setViolation] = useState<FilterViolation | null>(null);
+  const [warningAcknowledged, setWarningAcknowledged] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
 
   const activeCategory = CATEGORIES.find((c) => c.id === selectedCategory);
   const accentColor = activeCategory?.accentColor ?? "#C9A84C";
@@ -38,10 +43,67 @@ export default function SetupPage() {
   const finalQuestion = customQuestion.trim() || selectedQuestion || "";
   const canProceed = !!selectedCategory && !!finalQuestion;
 
-  const handleProceed = () => {
+  const handleCustomQuestionChange = (value: string) => {
+    setCustomQuestion(value);
+    setSelectedQuestion(null);
+    setWarningAcknowledged(false);
+    if (violation) setViolation(null);
+  };
+
+  const handleProceed = async () => {
     if (!canProceed) return;
+
+    if (warningAcknowledged) {
+      setReadingSetup({ category: selectedCategory!, question: finalQuestion });
+      navigate("/deck");
+      return;
+    }
+
+    setIsChecking(true);
+    try {
+      const res = await fetch("/api/moderate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: finalQuestion }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        
+        if (data.safe === false && data.category) {
+          const category = data.category as any;
+          const severity = ["self_harm", "violence", "minor_safety", "extremism", "sexual", "irrelevant"].includes(category) 
+            ? "block" 
+            : "warn";
+            
+          setViolation({
+            severity,
+            category,
+            messageKey: category,
+          });
+          setIsChecking(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Moderation check failed:", err);
+    }
+    
+    setIsChecking(false);
     setReadingSetup({ category: selectedCategory!, question: finalQuestion });
     navigate("/deck");
+  };
+
+  const handleWarningDismiss = () => {
+    setViolation(null);
+    setWarningAcknowledged(true);
+    setReadingSetup({ category: selectedCategory!, question: finalQuestion });
+    navigate("/deck");
+  };
+
+  const handleWarningClose = () => {
+    setViolation(null);
+    setWarningAcknowledged(false);
   };
 
   return (
@@ -124,7 +186,7 @@ export default function SetupPage() {
                   id="Custom-Question-Input"
                   placeholder={lang === "VI" ? "Hoặc nhập câu hỏi của riêng bạn..." : lang === "ZH" ? "或者输入您自己的问题..." : "Or type your own question..."}
                   value={customQuestion}
-                  onChange={(e) => { setCustomQuestion(e.target.value); setSelectedQuestion(null); }}
+                  onChange={(e) => handleCustomQuestionChange(e.target.value)}
                   onFocus={() => setTextFocused(true)}
                   onBlur={() => setTextFocused(false)}
                   rows={3}
@@ -150,9 +212,17 @@ export default function SetupPage() {
       <GlobalNavBar
         onBack={() => navigate("/")}
         onNext={handleProceed}
-        nextDisabled={!canProceed}
-        nextLabel={L.proceedBtn}
+        nextDisabled={!canProceed || isChecking}
+        nextLabel={isChecking ? (lang === "VI" ? "Đang kiểm tra..." : "Checking...") : L.proceedBtn}
         helperText={!canProceed ? L.chooseHint : undefined}
+      />
+
+      {/* ── Question Safety Warning Modal ── */}
+      <QuestionWarningModal
+        violation={violation}
+        lang={lang}
+        onDismiss={handleWarningDismiss}
+        onClose={handleWarningClose}
       />
 
       <style>{`
