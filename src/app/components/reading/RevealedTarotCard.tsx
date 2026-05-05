@@ -31,8 +31,8 @@ export function RevealedTarotCard({
   };
 
   const localizedPosition = 
-    position === "past" ? t.deck.past :
-    position === "present" ? t.deck.present :
+    position === "Past" ? t.deck.past :
+    position === "Present" ? t.deck.present :
     t.deck.future;
 
   return (
