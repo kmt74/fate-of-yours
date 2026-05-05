@@ -1,6 +1,8 @@
 import React from "react";
 import { PositionLabel } from "../ui/PositionLabel";
 import { POSITION_COLORS } from "../../lib/theme";
+import { useApp } from "../../context/AppContext";
+import { useLocale } from "../../../hooks/useLocale";
 import type { TarotCard } from "../../data/tarot-data";
 import type { Position } from "../../lib/theme";
 
@@ -19,7 +21,19 @@ export function RevealedTarotCard({
   revealed,
   delay,
 }: RevealedTarotCardProps) {
+  const { language } = useApp();
+  const t = useLocale();
   const color = POSITION_COLORS[position];
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
+  const getLocalizedName = (card: TarotCard) => {
+    return card.name;
+  };
+
+  const localizedPosition = 
+    position === "past" ? t.deck.past :
+    position === "present" ? t.deck.present :
+    t.deck.future;
 
   return (
     <div
@@ -27,7 +41,7 @@ export function RevealedTarotCard({
       className="flex flex-1 flex-col items-center gap-4"
       style={{ minWidth: "140px", maxWidth: "240px" }}
     >
-      <PositionLabel label={position.toUpperCase()} color={color} />
+      <PositionLabel label={localizedPosition.toUpperCase()} color={color} />
 
       <div style={{ perspective: "1000px" }} className="w-full">
         <div
@@ -36,7 +50,7 @@ export function RevealedTarotCard({
             transformStyle: "preserve-3d",
             transform: revealed ? "rotateY(180deg)" : "rotateY(0deg)",
             transition: `transform 0.8s cubic-bezier(0.4,0,0.2,1) ${delay}ms`,
-            paddingBottom: "150%",
+            paddingBottom: "171.5%",
           }}
         >
           <div
@@ -75,92 +89,65 @@ export function RevealedTarotCard({
             className="absolute inset-0 flex flex-col items-center justify-between overflow-hidden rounded-xl"
             style={{
               backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
+              WebkitBackdropFilter: "blur(18px)",
               transform: "rotateY(180deg)",
-              background:
-                "linear-gradient(145deg, #1E1632 0%, #160F28 100%)",
+              background: "#0F0F1A",
               border: `1.5px solid ${color}66`,
               boxShadow: revealed
-                ? `0 0 30px ${color}33, 0 8px 32px rgba(0,0,0,0.6)`
+                ? `0 0 40px ${color}25, 0 8px 32px rgba(0,0,0,0.8)`
                 : "none",
-              padding: "20px 14px",
+              padding: "16px 12px",
             }}
           >
-            <div
-              className="absolute inset-0 opacity-[0.04]"
-              style={{
-                backgroundImage: `radial-gradient(circle, ${color} 1px, transparent 1px)`,
-                backgroundSize: "18px 18px",
-              }}
-              aria-hidden="true"
-            />
-            <div
-              className="absolute rounded-lg"
-              style={{
-                inset: "6px",
-                border: `0.5px solid ${color}33`,
-              }}
-              aria-hidden="true"
-            />
-
-            <span
-              className="relative text-[0.55rem] tracking-[0.2em]"
-              style={{ fontFamily: "'Cinzel', serif", color: `${color}88` }}
-            >
-              ✦ UPRIGHT ✦
-            </span>
-
-            <div className="relative flex flex-col items-center gap-2.5">
-              <div
-                className="flex h-16 w-16 items-center justify-center rounded-full text-[28px]"
+            {/* Card Artwork Layer */}
+            <div className="absolute inset-0 z-0">
+              <img 
+                src={card.image} 
+                alt={card.name}
+                className="h-full w-full object-cover transition-transform duration-1000"
+                style={{ 
+                  filter: "brightness(0.85) contrast(1.1)",
+                  opacity: 1,
+                  transform: card.orientation === "reversed" ? "rotate(180deg)" : "none"
+                }}
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
+              {/* Subtle Gradient Overlays for Readability */}
+              <div 
+                className="absolute inset-0"
                 style={{
-                  background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`,
-                  border: `1.5px solid ${color}55`,
-                  boxShadow: `0 0 20px ${color}20`,
+                  background: `linear-gradient(to bottom, rgba(15,15,26,0.8) 0%, transparent 20%, transparent 80%, rgba(15,15,26,0.9) 100%)`,
+                }}
+              />
+            </div>
+
+            {/* Top Label: Orientation */}
+            <div className="relative z-10 w-full flex justify-center">
+              <span
+                className="text-[0.6rem] tracking-[0.25em] font-medium"
+                style={{ 
+                  fontFamily: HEADING_FONT, 
+                  color: card.orientation === "reversed" ? "#ef4444" : "#C9A84C",
+                  textShadow: "0 2px 4px rgba(0,0,0,0.5)"
                 }}
               >
-                {card.symbol}
-              </div>
-
-              <span
-                className="text-center text-[clamp(0.75rem,2vw,0.95rem)] font-semibold leading-tight tracking-[0.04em]"
-                style={{ fontFamily: "'Cinzel', serif", color: "#F0E6D3" }}
-              >
-                {card.name}
-              </span>
-
-              <span
-                className="text-center text-[0.65rem] leading-relaxed tracking-[0.02em]"
-                style={{
-                  fontFamily: "'Raleway', sans-serif",
-                  color: "rgba(240,230,211,0.45)",
-                }}
-              >
-                {card.meaning}
+                ✦ {card.orientation === "reversed" ? t.reading.reversed : t.reading.upright} ✦
               </span>
             </div>
 
-            <div
-              className="relative rounded-full px-2.5 py-0.5"
-              style={{
-                background: `rgba(${card.suit === "major" ? "201,168,76" : "139,92,246"},0.12)`,
-                border: `1px solid rgba(${card.suit === "major" ? "201,168,76" : "139,92,246"},0.25)`,
-              }}
-            >
+            {/* Bottom Label: Card Name */}
+            <div className="relative z-10 w-full flex flex-col items-center gap-1">
               <span
-                className="text-[0.58rem] font-semibold tracking-[0.12em]"
-                style={{
-                  fontFamily: "'Raleway', sans-serif",
-                  color:
-                    card.suit === "major"
-                      ? "rgba(201,168,76,0.7)"
-                      : "rgba(139,92,246,0.7)",
+                className="text-center text-[0.85rem] font-bold tracking-[0.06em]"
+                style={{ 
+                  fontFamily: HEADING_FONT, 
+                  color: "#F0E6D3",
+                  textShadow: "0 2px 8px rgba(0,0,0,0.8)"
                 }}
               >
-                {card.suit === "major"
-                  ? "MAJOR ARCANA"
-                  : card.suit.toUpperCase()}
+                {getLocalizedName(card).toUpperCase()}
               </span>
+              <div className="h-0.5 w-8 rounded-full" style={{ background: color }} />
             </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { GlobalNavBar } from "../components/GlobalNavBar";
 
 // ─── Shared UI Primitives ─────────────────────────────────────────────────────
 import { SectionTag } from "../components/ui/SectionTag";
+import { useLocale } from "../../hooks/useLocale";
 
 // ─── Deck Sub-Components ──────────────────────────────────────────────────────
 import { StackedDeck } from "../components/deck/StackedDeck";
@@ -26,8 +27,11 @@ const REQUIRED = 3;
 type DeckState = "stacked" | "splitting" | "spreading" | "interactive";
 
 export default function DeckPage() {
-  const { readingSetup, setSelectedCards } = useApp();
+  const { readingSetup, setSelectedCards, language } = useApp();
   const navigate = useNavigate();
+  const t = useLocale();
+
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
   // ─── State ──────────────────────────────────────────────────────────────────
   const [deckState, setDeckState] = useState<DeckState>("stacked");
@@ -75,7 +79,12 @@ export default function DeckPage() {
 
   const handleReveal = () => {
     if (selectedIds.length < REQUIRED) return;
-    const cards = selectedIds.map((id) => TAROT_DECK.find((c) => c.id === id)!);
+    const cards = selectedIds.map((id) => {
+      const card = { ...TAROT_DECK.find((c) => c.id === id)! };
+      // 1/3 probability for reversed
+      card.orientation = Math.random() < 1 / 3 ? "reversed" : "upright";
+      return card;
+    });
     setSelectedCards(cards);
     navigate("/reading");
   };
@@ -103,25 +112,25 @@ export default function DeckPage() {
           id="Deck-Header"
           className="mx-auto w-full max-w-[1200px] px-6 py-9"
         >
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="flex flex-col gap-1.5">
-              <SectionTag text="STEP 2 OF 3 · DRAW YOUR CARDS" centered={false} />
+          <div className="flex flex-col items-center justify-center gap-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <SectionTag text={t.deck.step} centered={true} />
               <h1
-                className="text-[clamp(1.4rem,3vw,2rem)] font-semibold tracking-[0.04em]"
-                style={{ fontFamily: "'Cinzel', serif", color: "#F0E6D3" }}
+                className="text-[clamp(1.6rem,4vw,2.4rem)] font-semibold tracking-[0.04em]"
+                style={{ fontFamily: HEADING_FONT, color: "#F0E6D3" }}
               >
-                Select Your Three Cards
+                {t.deck.heading}
               </h1>
               {readingSetup && (
                 <p
-                  className="text-[0.82rem]"
+                  className="text-[0.85rem]"
                   style={{
                     fontFamily: "'Raleway', sans-serif",
                     color: "rgba(240,230,211,0.35)",
                   }}
                 >
-                  Reading for:{" "}
-                  <span style={{ color: "rgba(201,168,76,0.55)" }}>
+                  {t.deck.readingFor}{" "}
+                  <span style={{ color: "rgba(201,168,76,0.6)" }}>
                     "{readingSetup.question}"
                   </span>
                 </p>
@@ -132,29 +141,32 @@ export default function DeckPage() {
               <button
                 id="Reset-Button"
                 onClick={handleReset}
-                className="flex items-center gap-1.5 rounded-lg border px-3.5 py-2 text-[0.78rem] tracking-[0.04em] transition-all duration-200"
+                className="flex items-center gap-1.5 rounded-lg border px-4 py-2.5 text-[0.78rem] tracking-[0.04em] transition-all duration-200 hover:-translate-y-0.5"
                 style={{
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(240,230,211,0.1)",
-                  color: "rgba(240,230,211,0.4)",
+                  border: "1px solid rgba(240,230,211,0.12)",
+                  color: "rgba(240,230,211,0.5)",
                   fontFamily: "'Raleway', sans-serif",
                   cursor: "pointer",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.color = "#C9A84C";
-                  e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)";
+                  e.currentTarget.style.borderColor = "rgba(201,168,76,0.4)";
+                  e.currentTarget.style.background = "rgba(201,168,76,0.05)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "rgba(240,230,211,0.4)";
-                  e.currentTarget.style.borderColor = "rgba(240,230,211,0.1)";
+                  e.currentTarget.style.color = "rgba(240,230,211,0.5)";
+                  e.currentTarget.style.borderColor = "rgba(240,230,211,0.12)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
                 }}
               >
                 <RotateCcw size={13} />
-                Restart Draw
+                {t.deck.restart}
               </button>
             )}
           </div>
         </header>
+
 
         {/* ── Selected Cards Tray ── */}
         {deckState === "interactive" && (
@@ -191,14 +203,14 @@ export default function DeckPage() {
             nextDisabled={!allSelected}
             nextLabel={
               allSelected
-                ? "✦ Reveal My Fate"
-                : `Choose ${REQUIRED - selectedIds.length} more card${
-                    REQUIRED - selectedIds.length !== 1 ? "s" : ""
-                  }`
+                ? t.deck.revealBtn
+                : selectedIds.length === 2 
+                  ? t.deck.chooseOne 
+                  : t.deck.chooseMore.replace("{n}", String(REQUIRED - selectedIds.length))
             }
             helperText={
               allSelected
-                ? "Your three cards are chosen — the veil is ready to lift"
+                ? t.deck.readyHint
                 : undefined
             }
           />

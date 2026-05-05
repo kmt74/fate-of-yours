@@ -1,10 +1,16 @@
 import React from "react";
 import { CardBack } from "./CardBack";
+import { useLocale } from "../../../hooks/useLocale";
+import { useApp } from "../../context/AppContext";
 
 export function SpreadingDeck() {
+  const t = useLocale();
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   return (
     <div id="Deck-State-Spreading" className="flex min-h-[480px] flex-col items-center justify-center gap-9 overflow-hidden">
-      <p style={{ fontFamily: "'Cinzel', serif", color: "rgba(201,168,76,0.6)", fontSize: "0.82rem", letterSpacing: "0.18em" }}>─ CARDS ARE SPREADING ─</p>
+      <p style={{ fontFamily: HEADING_FONT, color: "rgba(201,168,76,0.6)", fontSize: "0.82rem", letterSpacing: "0.18em" }}>─ {t.deck.spreading.toUpperCase()} ─</p>
       <div className="relative flex w-full items-end justify-center" style={{ maxWidth: "700px", height: "200px" }}>
         {[...Array(24)].map((_, i) => {
           const total = 24;
@@ -20,7 +26,7 @@ export function SpreadingDeck() {
           );
         })}
       </div>
-      <p style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.35)", fontSize: "0.8rem", animation: "pulse 0.9s ease infinite alternate" }}>Preparing your selection...</p>
+      <p style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.35)", fontSize: "0.8rem", animation: "pulse 0.9s ease infinite alternate" }}>{t.deck.spreading}</p>
     </div>
   );
 }

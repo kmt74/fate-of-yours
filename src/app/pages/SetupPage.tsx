@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useApp } from "../context/AppContext";
 import { Layout } from "../components/Layout";
 import { GlobalNavBar } from "../components/GlobalNavBar";
-import { CATEGORIES, Category } from "../data/tarot-data";
+import { CATEGORIES, Category, QUESTIONS_VI, QUESTIONS_ZH } from "../data/tarot-data";
 import { CategoryCard, QuestionChip } from "../components/tarot/CategoryCard";
 import { useLocale } from "../../hooks/useLocale";
 import { QuestionWarningModal, type FilterViolation, type ViolationCategory } from "../components/QuestionWarningModal";
@@ -29,6 +29,16 @@ export default function SetupPage() {
 
   const activeCategory = CATEGORIES.find((c) => c.id === selectedCategory);
   const accentColor = activeCategory?.accentColor ?? "#C9A84C";
+
+  // Dynamic font for Vietnamese support
+  const HEADING_FONT = lang === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
+  // Get translated questions
+  const suggestedQuestions = selectedCategory ? (
+    lang === "VI" ? QUESTIONS_VI[selectedCategory] :
+    lang === "ZH" ? QUESTIONS_ZH[selectedCategory] :
+    activeCategory?.questions ?? []
+  ) : [];
 
   const handleCategorySelect = (id: string) => {
     if (selectedCategory === id) return;
@@ -128,7 +138,7 @@ export default function SetupPage() {
               </span>
               <div style={{ height: "1px", width: "40px", background: "linear-gradient(to left, transparent, rgba(201,168,76,0.5))" }} />
             </div>
-            <h1 style={{ fontFamily: "'Cinzel', serif", color: "#F0E6D3", fontSize: "clamp(1.6rem, 4vw, 2.5rem)", fontWeight: 600, letterSpacing: "0.04em", lineHeight: 1.3 }}>
+            <h1 style={{ fontFamily: HEADING_FONT, color: "#F0E6D3", fontSize: "clamp(1.6rem, 4vw, 2.5rem)", fontWeight: 600, letterSpacing: "0.04em", lineHeight: 1.3 }}>
               {L.heading}
             </h1>
             <p style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.45)", fontSize: "0.95rem", lineHeight: 1.75, maxWidth: "520px" }}>
@@ -139,7 +149,7 @@ export default function SetupPage() {
           {/* ── Category Grid ── */}
           <div id="Category-Section" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-              <h2 style={{ fontFamily: "'Cinzel', serif", color: "rgba(201,168,76,0.7)", fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.2em" }}>
+              <h2 style={{ fontFamily: HEADING_FONT, color: "rgba(201,168,76,0.7)", fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.2em" }}>
                 {L.sectionLabel}
               </h2>
               <p style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.35)", fontSize: "0.82rem", lineHeight: 1.5 }}>
@@ -166,12 +176,12 @@ export default function SetupPage() {
           {/* ── Question Section ── */}
           {selectedCategory && activeCategory && (
             <div id="Question-Section" ref={questionRef} style={{ display: "flex", flexDirection: "column", gap: "18px", animation: "fadeSlideUp 0.35s ease" }}>
-              <h2 style={{ fontFamily: "'Cinzel', serif", color: "rgba(201,168,76,0.7)", fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.2em" }}>
+              <h2 style={{ fontFamily: HEADING_FONT, color: "rgba(201,168,76,0.7)", fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.2em" }}>
                 {L.questionHeading}
               </h2>
 
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {activeCategory.questions.map((q) => (
+                {suggestedQuestions.map((q) => (
                   <QuestionChip
                     key={q} question={q}
                     selected={selectedQuestion === q && !customQuestion}
@@ -184,7 +194,7 @@ export default function SetupPage() {
               <div style={{ position: "relative" }}>
                 <textarea
                   id="Custom-Question-Input"
-                  placeholder={lang === "VI" ? "Hoặc nhập câu hỏi của riêng bạn..." : lang === "ZH" ? "或者输入您自己的问题..." : "Or type your own question..."}
+                  placeholder={L.customPlaceholder}
                   value={customQuestion}
                   onChange={(e) => handleCustomQuestionChange(e.target.value)}
                   onFocus={() => setTextFocused(true)}

@@ -1,4 +1,5 @@
 import React from "react";
+import { useApp } from "../../context/AppContext";
 
 function renderInline(text: string): React.ReactNode {
   const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
@@ -30,6 +31,9 @@ export interface MarkdownRendererProps {
 }
 
 export function MarkdownRenderer({ text }: MarkdownRendererProps) {
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   const lines = text.split("\n");
   const elements: React.ReactNode[] = [];
   let i = 0;
@@ -43,7 +47,7 @@ export function MarkdownRenderer({ text }: MarkdownRendererProps) {
           key={i}
           className="mt-8 mb-3.5 pb-2.5 text-[1.08rem] font-semibold tracking-[0.05em]"
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: HEADING_FONT,
             color: "#C9A84C",
             borderBottom: "1px solid rgba(201,168,76,0.18)",
           }}
@@ -58,7 +62,7 @@ export function MarkdownRenderer({ text }: MarkdownRendererProps) {
           key={i}
           className="mt-6 mb-2.5 text-[0.95rem] font-semibold tracking-[0.06em]"
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: HEADING_FONT,
             color: "rgba(167,139,250,0.9)",
           }}
         >

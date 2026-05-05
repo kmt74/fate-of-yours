@@ -1,40 +1,45 @@
 {
   "landing": {
-    "eyebrow": "NGHỆ THUẬT CỔ XƯA · HÀNH TRÌNH HIỆN ĐẠI",
+    "eyebrow": "TRÍ TUỆ CỔ XƯA · TÂM HỒN KỸ THUẬT SỐ",
+    "navTitle": "Fate of Yours",
     "title": "SỐ PHẬN CỦA BẠN",
-    "subtitle": "Khám Phá Vận Mệnh",
-    "quote": "\"Những lá bài không tiết lộ điều gì sẽ xảy ra — chúng soi sáng những gì đã tồn tại trong bạn.\"",
+    "subtitle": "Khai Mở Lối Đi",
+    "cta": "Hé Lộ Hành Trình",
+    "welcomeBack": "Chào mừng trở lại",
+    "welcomeSub": "Định mệnh đang chờ đón. Bạn đã sẵn sàng cho một quẻ bài mới?",
+    "continueBtn": "Tiếp tục hành trình",
+    "quote": "\"Lá bài không nói trước tương lai — chúng soi sáng những gì vốn hiện hữu trong bạn.\"",
     "features": [
       { "sym": "☽", "text": "78 lá bài cổ mẫu, 5 thế kỷ trí tuệ" },
-      { "sym": "✦", "text": "Giải thích được cá nhân hóa bởi AI" },
-      { "sym": "◎", "text": "Riêng tư, có chủ ý, sâu sắc" }
+      { "sym": "✦", "text": "Luận giải cá nhân hóa bởi AI" },
+      { "sym": "◎", "text": "Riêng tư, sâu sắc, đầy bản sắc" }
     ],
     "scrollHint": "CUỘN ĐỂ KHÁM PHÁ",
-    "introBadge": "GIỚI THIỆU VỀ BÀI TAROT",
-    "introHeadline": "Nhà Tiên Tri Cổ Đại,",
-    "introHeadline2": "Được Tái Tạo",
-    "introP1": "Tarot đã dẫn dắt những người tìm kiếm trong hơn năm thế kỷ. Xuất phát từ châu Âu thế kỷ 15 như một trò chơi bài, 78 nguyên mẫu này đã trở thành một trong những công cụ tự nhìn lại và khám phá tâm linh lâu đời nhất của nhân loại.",
-    "introP2": "Mỗi lá bài trong bộ bài là một tấm gương phản chiếu tâm lý — không phải để tiên đoán số phận cố định, mà để soi sáng những mô thức đã hiện diện trong bạn.",
-    "introBullets": ["78 biểu tượng cổ mẫu độc đáo", "Bộ Arcana Lớn & Arcana Nhỏ", "Nhiều thế kỷ trí tuệ tập thể"],
-    "introPullQuote": "\"Biết mình qua những lá bài\"",
+    "introBadge": "GIỚI THIỆU VỀ TAROT",
+    "introHeadline": "Một Cổ Vật Tiên Tri,",
+    "introHeadline2": "Được Tái Sinh",
+    "introP1": "Tarot đã dẫn dắt những người tìm kiếm trong hơn năm thế kỷ. Xuất phát từ châu Âu thế kỷ 15, 78 hình mẫu cổ điển này đã trở thành công cụ bền bỉ nhất của nhân loại để chiêm nghiệm và khám phá tâm linh.",
+    "introP2": "Mỗi lá bài là một tấm gương phản chiếu tâm trí — không phải để dự đoán một số phận cố định, mà để soi sáng những mô thức đang hiện diện. Lá bài không nói về điều 'phải' xảy ra, mà về năng lượng bao quanh bạn hiện tại.",
+    "introBullets": ["78 biểu tượng cổ mẫu độc nhất", "Bộ Ẩn Chính & Ẩn Phụ", "Thế kỷ của trí tuệ tập thể"],
+    "introPullQuote": "\"Thấu hiểu bản thân qua những lá bài\"",
     "benefitsBadge": "TẠI SAO CHỌN CHÚNG TÔI",
-    "benefitsTitle": "Lợi Ích từ",
-    "benefitsTitleAccent": "Những Buổi Đọc Bài",
-    "benefitsSub": "Mỗi buổi đọc bài là một hành trình hướng nội. Đây là những gì trải nghiệm tham vấn lá bài có thể mang lại cho bạn.",
-    "footerTitle": "Buổi đọc bài của bạn đang chờ",
-    "footerSub": "Đăng nhập hoặc tạo tài khoản để bắt đầu hành trình vào trí tuệ cổ xưa của những lá bài.",
-    "footerTags": ["RIÊNG TƯ", "CÁ NHÂN", "SÂU SẮC"],
+    "benefitsTitle": "Giá trị từ các",
+    "benefitsTitleAccent": "Buổi Đọc Bài",
+    "benefitsSub": "Mỗi buổi đọc là một hành trình hướng nội. Đây là những gì trải nghiệm này mang lại cho bạn.",
     "benefits": [
-      { "title": "Sự Rõ Ràng Cá Nhân", "desc": "Có được cái nhìn sâu sắc về cảm xúc, mô thức và động lực tiềm thức của bạn. Những lá bài tiết lộ những gì tâm trí ý thức của bạn có thể đang né tránh." },
-      { "title": "Định Hướng Có Chỉ Dẫn", "desc": "Khi cuộc đời đặt ra những ngã rẽ, một buổi đọc bài giúp bạn cân nhắc các năng lượng và khả năng — không phải lời tiên tri mà là la bàn cho trực giác." },
-      { "title": "Suy Ngẫm Sâu Sắc", "desc": "Mỗi trải bài tạo ra một khoảnh khắc tĩnh lặng có cấu trúc. Tarot mời bạn chậm lại và lắng nghe những điều quan trọng nhất." },
-      { "title": "Lựa Chọn Có Sức Mạnh", "desc": "Hiểu được các năng lượng cổ mẫu xung quanh một tình huống giúp bạn hành động với sự nhận thức lớn hơn và ít phản ứng hơn." },
-      { "title": "Công Tác Bóng Tối", "desc": "Những lá bài dũng cảm soi sáng những phần của bản thân bạn có thể đã che giấu. Sự phát triển bắt đầu ở những nơi chúng ta ít muốn nhìn vào nhất." },
-      { "title": "Nghi Thức Hàng Ngày", "desc": "Rút một lá bài mỗi sáng để neo đậu ý định cho ngày — một thực hành chánh niệm mạnh mẽ chỉ cần vài phút." }
+      { "title": "Sự Đồng Điệu Cảm Xúc", "desc": "Kết nối với nội tâm và tìm thấy sự chữa lành thông qua phản chiếu biểu tượng." },
+      { "title": "Định Hướng Chiến Lược", "desc": "Xác định các trở ngại và cơ hội trong sự nghiệp và các dự định sáng tạo." },
+      { "title": "Chiều Sâu Quan Hệ", "desc": "Góc nhìn sâu sắc về động lực của tình yêu, gia đình và sự kết nối." },
+      { "title": "Trí Tuệ Tài Chính", "desc": "Thấu hiểu năng lượng đằng sau thế giới vật chất và sự thịnh vượng." },
+      { "title": "Cân Bằng Tâm Linh", "desc": "Kết nối lại với mục đích cao cả và dòng chảy của vũ trụ." },
+      { "title": "Dẫn Dắt Hàng Ngày", "desc": "Vượt qua những khoảnh khắc nhỏ bé với sự tỉnh thức và ý định rõ ràng." }
     ],
+    "footerTitle": "Sẵn Sàng Bắt Đầu?",
+    "footerSub": "Hành trình khám phá bản thân chỉ cách bạn một lá bài. Hãy bước vào vòng tròn và lắng nghe lời sấm truyền.",
+    "footerTags": ["TRÍ TUỆ", "ĐỊNH MỆNH", "RÕ RÀNG"],
     "auth": {
       "loginHead": "Chào Mừng Trở Lại",
-      "loginSub": "Những lá bài đang chờ sự trở về của bạn",
+      "loginSub": "Những lá bài đang chờ đợi bạn",
       "signupHead": "Bắt Đầu Hành Trình",
       "signupSub": "Hãy để vũ trụ biết bạn là ai",
       "loginTab": "Đăng Nhập",
@@ -42,23 +47,85 @@
       "emailLabel": "ĐỊA CHỈ EMAIL",
       "passwordLabel": "MẬT KHẨU",
       "dobLabel": "NGÀY SINH",
-      "dobHint": "Ngày sinh của bạn giúp cá nhân hóa buổi đọc bài",
+      "dobHint": "Ngày sinh giúp cá nhân hoá trải nghiệm đọc bài",
       "dobActive": "✦ Chọn ngày, tháng và năm sinh của bạn",
-      "dobValid": "✓ Ngày sinh đã được xác nhận",
+      "dobValid": "✓ Ngày sinh đã xác nhận",
       "loginBtn": "Đăng Nhập",
       "signupBtn": "Tạo Tài Khoản",
       "loggingIn": "Đang mở bức màn...",
-      "signingUp": "Đang dệt vận mệnh của bạn..."
+      "signingUp": "Đang dệt nên vận mệnh..."
     }
   },
   "setup": {
-    "step": "BƯỚC 1/3 · THIẾT LẬP MỤC ĐÍCH",
-    "heading": "Chọn Lĩnh Vực Của Bạn",
-    "sub": "Trước khi lá bài lên tiếng, bạn phải nói với chúng. Chọn lĩnh vực cuộc sống bạn muốn làm rõ.",
-    "sectionLabel": "CÁC LĨNH VỰC ĐỌC BÀI",
-    "sectionSub": "Chọn một lĩnh vực để tập trung năng lượng đọc bài",
+    "step": "BƯỚC 1/3 · CHỌN SỰ TẬP TRUNG",
+    "heading": "Trái tim bạn đang tìm kiếm điều gì?",
+    "sub": "Chọn lĩnh vực bạn quan tâm và cụ thể hoá bằng một câu hỏi. Ý định càng tập trung, lời giải đáp càng rõ ràng.",
+    "sectionLabel": "CHỌN LĨNH VỰC",
+    "sectionSub": "Mỗi bộ ẩn nói lên một khía cạnh khác nhau của trải nghiệm con người.",
     "questionHeading": "CÂU HỎI CỦA BẠN",
-    "proceedBtn": "Tiến Tới Bộ Bài",
-    "chooseHint": "Vui lòng chọn một lĩnh vực và một câu hỏi"
+    "customPlaceholder": "Hoặc nhập câu hỏi của riêng bạn...",
+    "proceedBtn": "Tiếp tục tới Bộ bài",
+    "chooseHint": "Vui lòng chọn lĩnh vực và đặt câu hỏi"
+  },
+  "deck": {
+    "step": "BƯỚC 2/3 · RÚT BÀI",
+    "heading": "Chọn Ba Lá Bài Của Bạn",
+    "readingFor": "Trải bài cho:",
+    "restart": "Rút lại bài",
+    "cardsAwait": "78 LÁ BÀI ĐANG CHỜ",
+    "deckDesc": "BỘ BÀI TAROT ĐẦY ĐỦ. NHẤT QUÁN VÀ SẴN SÀNG",
+    "beginBtn": "BẮT ĐẦU RÚT BÀI",
+    "splitting": "Đang xáo bài...",
+    "spreading": "Đang trải năng lượng...",
+    "selectedHeader": "LÁ BÀI ĐÃ CHỌN",
+    "guide": "Hãy để trực giác dẫn lối — di chuột và nhấn để chọn.",
+    "chooseMore": "Chọn thêm {n} lá",
+    "chooseOne": "Chọn thêm 1 lá",
+    "revealBtn": "✦ Xem Vận Mệnh",
+    "readyHint": "Ba lá bài đã được chọn — bức màn sắp được hé mở",
+    "past": "QUÁ KHỨ",
+    "present": "HIỆN TẠI",
+    "future": "TƯƠNG LAI"
+  },
+  "reading": {
+    "step": "BƯỚC 3/3 · BUỔI ĐỌC BÀI",
+    "heading": "BA LÁ BÀI CỦA BẠN",
+    "aiSummary": "TÓM TẮT BÀI ĐỌC AI",
+    "newReading": "Trải bài mới",
+    "upright": "XUÔI",
+    "reversed": "NGƯỢC",
+    "loading": "Vận mệnh của bạn đang dần hé lộ...",
+    "returnBtn": "Quay lại Bộ bài"
+  },
+  "history": {
+    "step": "KHO LƯU TRỮ",
+    "heading": "Lịch Sử Đọc Bài",
+    "welcome": "Chào mừng trở lại, {name}",
+    "count": "{n} bài đọc trong kho lưu trữ",
+    "stats": {
+      "total": "Tổng số buổi",
+      "month": "Tháng này"
+    },
+    "filters": {
+      "all": "Tất cả lĩnh vực",
+      "clear": "× Xóa bộ lọc",
+      "noMatch": "Không tìm thấy bài đọc nào phù hợp.",
+      "showAll": "Hiển thị tất cả"
+    },
+    "sort": {
+      "newest": "Mới nhất",
+      "oldest": "Cũ nhất",
+      "category": "Theo lĩnh vực"
+    },
+    "actions": {
+      "view": "Xem bài đọc",
+      "collapse": "Thu gọn",
+      "close": "Đóng"
+    },
+    "empty": {
+      "title": "Chưa có bài đọc nào",
+      "desc": "Bạn chưa thực hiện lần rút bài nào. Khi bắt đầu, lịch sử sẽ xuất hiện tại đây để bạn chiêm nghiệm lại.",
+      "btn": "Bắt đầu hành trình"
+    }
   }
 }

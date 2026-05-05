@@ -2,6 +2,7 @@ import React from "react";
 import { Sparkles, BookOpen } from "lucide-react";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { GlowDivider } from "../ui/GlowDivider";
+import { useApp } from "../../context/AppContext";
 
 const SKELETON_LINES = [
   { w: "45%", h: 18 },
@@ -23,7 +24,8 @@ const SKELETON_LINES = [
   { w: "82%", h: 13 },
 ] as const;
 
-function AiSkeleton() {
+function AiSkeleton({ language }: { language: string }) {
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
   return (
     <div id="AI-Skeleton" className="flex flex-col gap-[7px]" role="status">
       {SKELETON_LINES.map((line, i) => {
@@ -73,7 +75,7 @@ function AiSkeleton() {
             />
           ))}
         </div>
-        <span className="text-[0.72rem] tracking-[0.14em]" style={{ fontFamily: "'Cinzel', serif", color: "rgba(139,92,246,0.45)", animation: "breathe 2s ease-in-out infinite alternate" }}>
+        <span className="text-[0.72rem] tracking-[0.14em]" style={{ fontFamily: HEADING_FONT, color: "rgba(139,92,246,0.45)", animation: "breathe 2s ease-in-out infinite alternate" }}>
           The Oracle is consulting the cards...
         </span>
       </div>
@@ -94,6 +96,9 @@ export function AiInterpretationPanel({
   fullText,
   isTypingDone,
 }: AiInterpretationPanelProps) {
+  const { language } = useApp();
+  const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
+
   return (
     <section
       id="AI-Interpretation-Section"
@@ -117,7 +122,7 @@ export function AiInterpretationPanel({
           <Sparkles size={16} color="#A78BFA" />
         </div>
         <div>
-          <span className="block text-[0.88rem] font-semibold tracking-[0.1em]" style={{ fontFamily: "'Cinzel', serif", color: "#A78BFA" }}>AI Interpretation</span>
+          <span className="block text-[0.88rem] font-semibold tracking-[0.1em]" style={{ fontFamily: HEADING_FONT, color: "#A78BFA" }}>AI Interpretation</span>
           <span className="text-[0.72rem]" style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.3)" }}>
             {isLoading ? "Consulting the ancient wisdom..." : isTypingDone ? "Reading complete · scroll to explore" : "Channeling the cards..."}
           </span>
@@ -134,7 +139,7 @@ export function AiInterpretationPanel({
 
       <div id="AI-Content" className="relative" style={{ maxWidth: "68ch" }}>
         {isLoading ? (
-          <AiSkeleton />
+          <AiSkeleton language={language} />
         ) : (
           <div className="relative">
             {isTypingDone ? (

@@ -15,7 +15,7 @@ config({ path: path.join(__dirname, '..', '.env') });
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
-const JSONL_PATH = process.env.JSONL_PATH || path.join(__dirname, '..', '..', 'labyrinthos_parsed_features.jsonl');
+const JSONL_PATH = process.env.JSONL_PATH || path.join(__dirname, 'data', 'labyrinthos_parsed_features.jsonl');
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
   console.error('❌ Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in .env');

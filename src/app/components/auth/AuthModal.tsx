@@ -108,7 +108,6 @@ export function AuthModule({ c }: { c: any }) {
 
     setLoading(true);
     const dob = `${dobYear}-${String(dobMonth).padStart(2,"0")}-${String(dobDay).padStart(2,"0")}`;
-
     try {
       if (!supabase) throw new Error("Supabase not configured");
       const { data, error } = await supabase.auth.signUp({
