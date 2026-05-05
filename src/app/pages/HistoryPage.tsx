@@ -9,6 +9,8 @@ import {
   Calendar, ChevronDown, ChevronUp, Filter, ArrowUpDown, Sparkles,
 } from "lucide-react";
 import { MarkdownRenderer } from "../components/reading/MarkdownRenderer";
+import { RevealedTarotCard } from "../components/reading/RevealedTarotCard";
+import { ReadingContextCard } from "../components/reading/ReadingContextCard";
 import { useLocale } from "../../hooks/useLocale";
 import type { TarotCard } from "../data/tarot-data";
 
@@ -90,8 +92,7 @@ function MiniCard({ card, index, language, t }: { card: any; index: number; lang
 }
 
 // ─── History Item ─────────────────────────────────────────────────────────────
-function HistoryItem({ reading, language, t }: { reading: any; language: string; t: any }) {
-  const [expanded, setExpanded] = useState(false);
+function HistoryItem({ reading, language, t, onClick }: { reading: any; language: string; t: any; onClick: () => void }) {
   const category = CATEGORIES.find((c) => c.id === reading.category);
   const { date, time } = formatDate(reading.timestamp, language);
   const rgb = category ? hexToRgb(category.accentColor) : "201,168,76";
@@ -105,24 +106,20 @@ function HistoryItem({ reading, language, t }: { reading: any; language: string;
     return CATEGORIES.find(c => c.id === id)?.label || id;
   };
 
-  const getLocalizedCardName = (card: any) => {
-    return card.name;
-  };
-
   return (
     <div
       id={`History-Item-${reading.id}`}
+      onClick={onClick}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
-        background: hov || expanded ? "rgba(255,255,255,0.032)" : "rgba(255,255,255,0.018)",
-        border: `1px solid ${expanded ? `rgba(${rgb},0.3)` : hov ? "rgba(240,230,211,0.1)" : "rgba(240,230,211,0.07)"}`,
+        background: hov ? "rgba(255,255,255,0.032)" : "rgba(255,255,255,0.018)",
+        border: `1px solid ${hov ? "rgba(240,230,211,0.1)" : "rgba(240,230,211,0.07)"}`,
         borderRadius: "16px",
         overflow: "hidden",
+        cursor: "pointer",
         transition: "all 0.22s ease",
-        boxShadow: expanded ? `0 0 30px rgba(${rgb},0.08)` : "none",
       }}
     >
-      {/* ── Main Row ── */}
       <div style={{ padding: "18px 22px", display: "flex", gap: "16px", alignItems: "flex-start" }}>
         <div style={{
           width: "40px", height: "40px", borderRadius: "11px", flexShrink: 0,
@@ -169,74 +166,26 @@ function HistoryItem({ reading, language, t }: { reading: any; language: string;
               ))}
             </div>
           </div>
-
-          <div style={{ display: "flex", gap: "6px", marginTop: "10px", flexWrap: "wrap" }}>
-            {reading.cards.map((card: any, i: number) => {
-              const COLORS = ["rgba(167,139,250,0.7)", "#C9A84C", "rgba(126,168,224,0.7)"];
-              const POS_LABELS = [t.deck.past, t.deck.present, t.deck.future];
-              return (
-                <div key={card.id} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <span style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.63rem", letterSpacing: "0.1em", color: COLORS[i], fontWeight: 600 }}>{POS_LABELS[i]}</span>
-                  <span style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.7rem", color: "rgba(240,230,211,0.38)" }}>{getLocalizedCardName(card)}</span>
-                  {i < 2 && <span style={{ color: "rgba(240,230,211,0.15)", fontSize: "10px" }}>·</span>}
-                </div>
-              );
-            })}
-          </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "8px", flexShrink: 0, alignItems: "flex-end" }}>
           <button
-            onClick={() => setExpanded(!expanded)}
             style={{
               display: "flex", alignItems: "center", gap: "6px",
-              background: expanded ? `rgba(${rgb},0.12)` : "rgba(255,255,255,0.04)",
-              border: `1px solid ${expanded ? `rgba(${rgb},0.35)` : "rgba(240,230,211,0.1)"}`,
+              background: hov ? `rgba(${rgb},0.12)` : "rgba(255,255,255,0.04)",
+              border: `1px solid ${hov ? `rgba(${rgb},0.35)` : "rgba(240,230,211,0.1)"}`,
               borderRadius: "8px", padding: "7px 14px",
-              color: expanded ? (category?.accentColor ?? "#C9A84C") : "rgba(240,230,211,0.5)",
+              color: hov ? (category?.accentColor ?? "#C9A84C") : "rgba(240,230,211,0.5)",
               cursor: "pointer", fontFamily: "'Raleway',sans-serif",
               fontSize: "0.76rem", fontWeight: 600, letterSpacing: "0.04em",
               transition: "all 0.2s",
             }}
           >
             <Sparkles size={12} />
-            {expanded ? t.history.actions.collapse : t.history.actions.view}
-            {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+            {t.history.actions.view}
           </button>
         </div>
       </div>
-
-      {expanded && (
-        <div style={{
-          padding: "0 22px 20px",
-          animation: "slideDown 0.25s ease",
-        }}>
-          <div style={{ height: "1px", background: `linear-gradient(to right, rgba(${rgb},0.3), transparent)`, marginBottom: "18px" }} />
-
-          <div style={{
-            background: `rgba(${rgb},0.05)`,
-            border: `1px solid rgba(${rgb},0.14)`,
-            borderRadius: "12px", padding: "18px 20px",
-            marginBottom: "16px",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-              <div style={{ width: "24px", height: "24px", borderRadius: "7px", background: `rgba(${rgb},0.12)`, border: `1px solid rgba(${rgb},0.25)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Sparkles size={12} color={category?.accentColor ?? "#C9A84C"} />
-              </div>
-              <span style={{ fontFamily: HEADING_FONT, color: category?.accentColor ?? "#C9A84C", fontSize: "0.72rem", letterSpacing: "0.12em" }}>{t.reading.aiSummary}</span>
-            </div>
-            <div style={{ padding: "0 10px" }}>
-              <MarkdownRenderer text={reading.summary} />
-            </div>
-          </div>
-
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-            <button onClick={() => setExpanded(false)} style={{ fontFamily: "'Raleway',sans-serif", fontSize: "0.78rem", background: "none", border: "none", color: "rgba(240,230,211,0.28)", cursor: "pointer", letterSpacing: "0.04em" }}>
-              {t.history.actions.close}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -291,6 +240,7 @@ export default function HistoryPage() {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [selectedReading, setSelectedReading] = useState<any>(null);
 
   const HEADING_FONT = language === "VI" ? "'Playfair Display', serif" : "'Cinzel', serif";
 
@@ -318,6 +268,74 @@ export default function HistoryPage() {
     if (language === "ZH") return CATEGORY_ZH[id]?.label || id;
     return CATEGORIES.find(c => c.id === id)?.label || id;
   };
+
+  if (selectedReading) {
+    const categoryObj = CATEGORIES.find(c => c.id === selectedReading.category);
+    const rgb = categoryObj ? hexToRgb(categoryObj.accentColor) : "201,168,76";
+    
+    return (
+      <Layout>
+        <div style={{ 
+          minHeight: "calc(100vh - 64px)", 
+          backgroundColor: "#0A0A12", 
+          backgroundImage: `radial-gradient(ellipse at 50% 0%,rgba(${rgb},0.06) 0%,transparent 55%)`, 
+          padding: "48px 24px 120px" 
+        }}>
+          <div style={{ maxWidth: "860px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "40px", alignItems: "center" }}>
+            
+            <div style={{ width: "100%", maxWidth: "600px", animation: "slideDown 0.4s ease" }}>
+              {categoryObj && <ReadingContextCard category={categoryObj} question={selectedReading.question} />}
+            </div>
+
+            <div style={{ 
+              display: "flex", gap: "24px", flexWrap: "wrap", justifyContent: "center",
+              animation: "slideDown 0.5s ease"
+            }}>
+              {selectedReading.cards.map((card: any, i: number) => (
+                <RevealedTarotCard 
+                  key={card.id} 
+                  card={card} 
+                  position={["past", "present", "future"][i] as any} 
+                  positionIndex={i} 
+                  revealed={true} 
+                  delay={i * 100} 
+                />
+              ))}
+            </div>
+
+            <div style={{ 
+              width: "100%", 
+              background: `rgba(${rgb},0.04)`, 
+              borderRadius: "16px", 
+              padding: "32px", 
+              border: `1px solid rgba(${rgb},0.15)`,
+              boxShadow: `0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(${rgb},0.1)`,
+              animation: "slideDown 0.6s ease"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+                <Sparkles size={18} color={categoryObj?.accentColor ?? "#C9A84C"} />
+                <h3 style={{ fontFamily: HEADING_FONT, color: categoryObj?.accentColor ?? "#C9A84C", fontSize: "1.1rem", letterSpacing: "0.08em" }}>
+                  {t.reading.aiSummary}
+                </h3>
+              </div>
+              <MarkdownRenderer text={selectedReading.summary} />
+            </div>
+
+          </div>
+        </div>
+
+        <GlobalNavBar
+          onBack={() => setSelectedReading(null)}
+          onNext={() => navigate("/setup")}
+          nextLabel={t.reading.newReading}
+        />
+        
+        <style>{`
+          @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+        `}</style>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -457,7 +475,7 @@ export default function HistoryPage() {
                 <button onClick={() => setFilter("all")} style={{ marginTop: "12px", background: "none", border: "none", cursor: "pointer", color: "#C9A84C", fontFamily: "'Raleway',sans-serif", fontSize: "0.82rem" }}>{t.history.filters.showAll}</button>
               </div>
             ) : (
-              filtered.map((r) => <HistoryItem key={r.id} reading={r} language={language} t={t} />)
+              filtered.map((r) => <HistoryItem key={r.id} reading={r} onClick={() => setSelectedReading(r)} language={language} t={t} />)
             )}
           </div>
 
@@ -473,7 +491,6 @@ export default function HistoryPage() {
       />
 
       <style>{`
-        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes menuOpen { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
       `}</style>
     </Layout>

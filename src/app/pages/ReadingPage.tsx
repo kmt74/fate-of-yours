@@ -38,7 +38,7 @@ import type { Position } from "../lib/theme";
 //     └─ GlobalNavBar
 
 export default function ReadingPage() {
-  const { readingSetup, selectedCards, resetReading, language, user } = useApp();
+  const { readingSetup, selectedCards, resetReading, language, user, addReadingToHistory } = useApp();
   const navigate = useNavigate();
 
   // ─── Derived Data ─────────────────────────────────────────────────────────
@@ -65,9 +65,11 @@ export default function ReadingPage() {
     if (!cardsRevealed || selectedCards.length < 3) return;
 
     const timer = setTimeout(async () => {
+      let finalSummary = "";
       try {
         const aiText = await getTarotReading(selectedCards, category, question, language);
         setFullText(aiText);
+        finalSummary = aiText;
         setRateLimitMsg(null);
       } catch (err) {
         console.error("[ReadingPage] AI failed:", err);
@@ -87,9 +89,17 @@ export default function ReadingPage() {
             ? "⚠️ Không thể kết nối với máy chủ AI. Đã dùng bản offline."
             : "⚠️ Cannot connect to AI server. Showing offline reading.");
         }
-        setFullText(offlineReading(selectedCards, category, question, language));
+        finalSummary = offlineReading(selectedCards, category, question, language);
+        setFullText(finalSummary);
       } finally {
         setAiLoading(false);
+        // Lưu lịch sử sau khi có kết quả (bất kể là AI hay Offline)
+        addReadingToHistory({
+          category,
+          question,
+          cards: selectedCards,
+          summary: finalSummary,
+        });
       }
     }, 2400);
 

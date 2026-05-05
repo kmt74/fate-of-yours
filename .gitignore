@@ -29,3 +29,4 @@ dist-ssr
 .env.production
 # .env.example is safe to commit (contains no real values)
 .vercel
+.env*.local
