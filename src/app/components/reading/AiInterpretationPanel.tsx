@@ -142,13 +142,9 @@ export function AiInterpretationPanel({
           <AiSkeleton language={language} />
         ) : (
           <div className="relative">
-            {isTypingDone ? (
-              <MarkdownRenderer text={fullText} />
-            ) : (
-              <p className="min-h-[120px] whitespace-pre-wrap text-[0.97rem]" style={{ fontFamily: "'Raleway', sans-serif", color: "rgba(240,230,211,0.78)", lineHeight: 1.95 }}>
-                {displayedText}
-                <span className="ml-0.5 inline-block h-[1em] w-0.5 align-text-bottom" style={{ background: "#8B5CF6", animation: "blink 0.7s step-end infinite" }} />
-              </p>
+            <MarkdownRenderer text={isTypingDone ? fullText : displayedText} />
+            {!isTypingDone && (
+              <span className="ml-0.5 inline-block h-[1em] w-0.5 align-text-bottom" style={{ background: "#8B5CF6", animation: "blink 0.7s step-end infinite" }} />
             )}
           </div>
         )}

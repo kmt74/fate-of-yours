@@ -41,6 +41,31 @@ export function MarkdownRenderer({ text }: MarkdownRendererProps) {
   while (i < lines.length) {
     const line = lines[i];
 
+    // Handle Images: ![caption](url)
+    const imageMatch = line.match(/^!\[(.*?)\]\((.*?)\)$/);
+    if (imageMatch) {
+      const [_, caption, url] = imageMatch;
+      elements.push(
+        <div key={`img-${i}`} className="my-8 flex flex-col items-center">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-[rgba(139,92,246,0.3)] to-[rgba(201,168,76,0.3)] rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <img 
+              src={url} 
+              alt={caption} 
+              className="relative rounded-lg w-48 h-auto shadow-2xl border border-white/5"
+            />
+          </div>
+          {caption && (
+            <span className="mt-3 text-[0.7rem] uppercase tracking-widest text-white/30 font-medium">
+              {caption}
+            </span>
+          )}
+        </div>
+      );
+      i++;
+      continue;
+    }
+
     if (line.startsWith("## ")) {
       elements.push(
         <h2
