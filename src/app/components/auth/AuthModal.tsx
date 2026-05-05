@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Eye, EyeOff, Shield } from "lucide-react";
 import { useApp } from "../../context/AppContext";
+import { supabase } from "../../../lib/supabase";
 
 // ─── Dev-only admin credentials ───────────────────────────────────────────────
 const ADMIN_EMAIL = "admin@fate-of-yours.com";
@@ -71,27 +72,22 @@ export function AuthModule({ c }: { c: any }) {
     if (!loginPass) errs.pass = "Password is required";
     setLoginErrs(errs);
     if (Object.keys(errs).length) return;
-    
+
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: loginEmail, password: loginPass })
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: loginPass,
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setLoginErrs({ auth: data.message });
-      } else {
+      if (error) {
+        setLoginErrs({ auth: error.message === "Invalid login credentials" ? "Wrong email or password." : error.message });
+      } else if (data.user) {
         login(data.user);
-        if (data.user.isAdmin) {
-          navigate("/admin");
-        } else {
-          navigate("/setup");
-        }
+        navigate("/setup");
       }
-    } catch (error) {
-      setLoginErrs({ auth: "Server is unreachable. Please try again later." });
+    } catch (error: any) {
+      setLoginErrs({ auth: "Cannot connect to server. Check your internet connection." });
     } finally {
       setLoading(false);
     }
@@ -109,27 +105,30 @@ export function AuthModule({ c }: { c: any }) {
     if (dobErr) errs.dob = dobErr;
     setSignErrs(errs);
     if (Object.keys(errs).length) return;
-    
+
     setLoading(true);
     const dob = `${dobYear}-${String(dobMonth).padStart(2,"0")}-${String(dobDay).padStart(2,"0")}`;
-    
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: signEmail, password: signPass, dateOfBirth: dob })
+      if (!supabase) throw new Error("Supabase not configured");
+      const { data, error } = await supabase.auth.signUp({
+        email: signEmail,
+        password: signPass,
+        options: { data: { date_of_birth: dob } },
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setSignErrs({ auth: data.message });
-      } else {
-        // Automatically login after successful registration or require login?
-        // Let's log them in. The user object is not returned on register, but we can set it.
-        signup({ email: signEmail, dob: dob, status: 'offline' });
-        navigate("/setup");
+      if (error) {
+        setSignErrs({ auth: error.message });
+      } else if (data.user) {
+        // Supabase may require email confirmation — if so, user.identities will be empty
+        const needsConfirm = data.user.identities?.length === 0;
+        if (needsConfirm) {
+          setSignErrs({ auth: "This email is already registered. Please sign in instead." });
+        } else {
+          signup(data.user);
+          navigate("/setup");
+        }
       }
-    } catch (error) {
-      setSignErrs({ auth: "Server is unreachable. Please try again later." });
+    } catch (error: any) {
+      setSignErrs({ auth: "Cannot connect to server. Check your internet connection." });
     } finally {
       setLoading(false);
     }

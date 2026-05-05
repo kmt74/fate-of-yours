@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "local": "vercel dev",
     "build": "vite build",
     "dev": "vite",
     "server": "nodemon server/server.js",
