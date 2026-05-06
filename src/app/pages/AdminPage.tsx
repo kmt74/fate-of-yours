@@ -7,20 +7,59 @@ import { useNavigate } from "react-router";
 import { CATEGORIES } from "../data/tarot-data";
 
 export default function AdminPage() {
-  const { adminUsers, banUser, deleteUser } = useApp();
   const [activeTab, setActiveTab] = useState<"overview" | "users">("overview");
   const [timeframe, setTimeframe] = useState<"7d" | "30d" | "1y">("7d");
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
+  const [adminUsers, setAdminUsers] = useState<any[]>([]);
   const [allReadings, setAllReadings] = useState<any[]>([]);
 
-  React.useEffect(() => {
+  const fetchUsers = () => {
+    fetch("http://localhost:5000/api/auth/users")
+      .then(res => res.json())
+      .then(data => setAdminUsers(data))
+      .catch(err => console.error("Failed to fetch admin users", err));
+  };
+
+  const fetchReadings = () => {
     fetch("http://localhost:5000/api/readings")
       .then(res => res.json())
       .then(data => setAllReadings(data))
       .catch(err => console.error("Failed to fetch all readings", err));
-  }, [adminUsers]); // Refetch readings when adminUsers changes (e.g., someone gets deleted)
+  };
+
+  React.useEffect(() => {
+    fetchUsers();
+    fetchReadings();
+  }, []);
+
+  const banUser = (id: string) => {
+    fetch(`http://localhost:5000/api/auth/users/${id}/ban`, {
+      method: "PUT",
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          fetchUsers();
+        }
+      })
+      .catch(err => console.error("Failed to ban user", err));
+  };
+
+  const deleteUser = (id: string) => {
+    fetch(`http://localhost:5000/api/auth/users/${id}`, {
+      method: "DELETE",
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          fetchUsers();
+          fetchReadings();
+        }
+      })
+      .catch(err => console.error("Failed to delete user", err));
+  };
 
   const visits = useMemo(() => DB.getVisits(), []);
 
